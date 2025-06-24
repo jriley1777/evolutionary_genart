@@ -15,6 +15,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/:type/:slug" element={<Home />} />
       </Routes>
     </Router>
   );

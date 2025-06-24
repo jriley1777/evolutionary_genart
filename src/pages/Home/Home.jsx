@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { projects } from "../../data/projects";
 import "./Home.css";
 import SketchWithFullscreen from "../../components/SketchWithFullscreen/SketchWithFullscreen";
@@ -7,12 +7,23 @@ import BlogPost from "../../components/BlogPost/BlogPost";
 import * as sketches from "../../sketches/sketches";
 
 const Home = () => {
-  const [activeProject, setActiveProject] = useState('sine-wave-puddle');
-  const [selectedGeneration, setSelectedGeneration] = useState('gen1');
+  const param = useParams();
+  const navigate = useNavigate();
+  console.log(param)
+  const [activeProject, setActiveProject] = useState(param?.slug || 'sine-wave-puddle');
+  const [selectedGeneration, setSelectedGeneration] = useState(param?.type || 'gen1');
+  console.log(activeProject, selectedGeneration)
   const project = projects.find((p) => p.slug === activeProject);
   const SketchComponent = project ? sketches.default[project.sketch] : null;
   const [blogContent, setBlogContent] = useState("");
   const [isBlogLoading, setIsBlogLoading] = useState(false);
+
+  useEffect(() => {
+    if (param?.slug && param.slug !== activeProject) {
+      setActiveProject(param.slug)
+      setSelectedGeneration(param.type)
+    }
+  }, [param])
 
   useEffect(() => {
     if (project) {
@@ -29,6 +40,16 @@ const Home = () => {
         });
     }
   }, [project.blog]); // Only depend on project slug
+
+  // Handle project click - prevent navigation if it's the active project
+  const handleProjectClick = (e, projectSlug, projectType) => {
+    if (projectSlug === activeProject) {
+      e.preventDefault(); // Prevent navigation
+      return; // Do nothing if clicking the same project
+    }
+    // Navigate to the new project
+    navigate(`/${projectType}/${projectSlug}`);
+  };
 
   // Filter projects by selected generation
   const filteredProjects = projects.filter(project => project.type === selectedGeneration);
@@ -69,15 +90,15 @@ const Home = () => {
             <div className="project-list">
               {filteredProjects.map((project, projectIndex) => (
                 <Link 
-                  to={`#`} 
+                  to={`/${project.type}/${project.slug}`} 
                   key={project.slug}
-                  className="project-item"
+                  className={`project-item ${project.slug === activeProject ? 'active' : ''}`}
                   data-type={project.type}
                   style={{ 
                     '--item-index': projectIndex,
                     animationDelay: `${projectIndex * 0.1}s`
                   }}
-                  onClick={() => setActiveProject(project.slug)}
+                  onClick={(e) => handleProjectClick(e, project.slug, project.type)}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '1.2rem' }}>{typeEmojis[project.type]}</span>
@@ -99,6 +120,7 @@ const Home = () => {
             </div>
             <div className="sketch-container">
               {isBlogLoading ? <div>Loading...</div> : <SketchWithFullscreen 
+                key={activeProject} // Force re-render when project changes
                 SketchComponent={SketchComponent}
                 title={project.title}
                 description={project.description}

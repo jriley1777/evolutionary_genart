@@ -282,3 +282,20 @@
   border-radius: 10px;
   padding: 10px;
 }
+
+.project-item.active {
+  border-color: var(--primary-blue);
+  background: var(--primary-blue);
+  color: white;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.project-item.active h3,
+.project-item.active p {
+  color: white;
+}
+
+.project-item.active::before {
+  display: none; /* Disable the shine effect for active item */
+}

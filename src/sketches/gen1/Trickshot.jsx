@@ -8,7 +8,7 @@ const Trickshot = ({ isFullscreen = false }) => {
   let startPoint = { x: 0, y: 0 };
   let endPoint = { x: 0, y: 0 };
   let velocity;
-  let gravity = 0.5;
+  let gravity = 0.28;
   let shotsRemaining = 10;
   let successfulShots = 0;
   let gameOver = false;
@@ -24,26 +24,40 @@ const Trickshot = ({ isFullscreen = false }) => {
   let gameOverGifLoaded = false;
 
   const missMessages = [
-    "SKILL ISSUE",
-    "GET GOOD",
-    "L + RATIO",
-    "TOUCH GRASS",
-    "NOOB ALERT",
-    "GIT GUD",
-    "CRINGE",
-    "BASED",
-    "SHEEEESH",
-    "BUSSIN",
-    "NO CAP",
-    "FR FR",
-    "ON GOD",
-    "LITERALLY",
-    "VIBES",
-    "SLAPS",
-    "FIRE",
-    "W",
-    "L",
-    "RATIO"
+    "SKILL ISSUE FR",
+    "GET GOOD NOOB",
+    "L + RATIO + TOUCH GRASS",
+    "CRINGE ALERT",
+    "BASED ON WHAT?",
+    "SHEEEESH NAH",
+    "BUSSIN FR FR",
+    "NO CAP YOU MISSED",
+    "ON GOD YOU SUCK",
+    "LITERALLY UNPLAYABLE",
+    "VIBES ARE OFF",
+    "SLAPS BUT NOT REALLY",
+    "FIRE BUT YOU MISSED",
+    "W MOMENT (NOT)",
+    "L MOMENT FR",
+    "RATIO + YOU FELL OFF",
+    "GYAT DAMN YOU BAD",
+    "FANUM TAX ON YOUR SKILLS",
+    "OHIO MOMENT",
+    "SIGMA GRINDSET FAIL",
+    "BUSSIN BUSSIN (NOT)",
+    "FR FR NO CAP YOU MISSED",
+    "ON GOD ON GOD YOU BAD",
+    "LITERALLY LITERALLY BAD",
+    "VIBES VIBES BUT YOU MISSED",
+    "SLAPS SLAPS BUT NOT REALLY",
+    "FIRE FIRE BUT YOU MISSED",
+    "W W BUT ACTUALLY L",
+    "L L FR FR",
+    "RATIO RATIO + TOUCH GRASS",
+    "GYAT DAMN GYAT DAMN YOU BAD",
+    "FANUM TAX FANUM TAX ON YOUR SKILLS",
+    "OHIO OHIO MOMENT",
+    "SIGMA GRINDSET SIGMA GRINDSET FAIL"
   ];
 
   class Goal {
@@ -56,6 +70,15 @@ const Trickshot = ({ isFullscreen = false }) => {
       this.showCelebration = false;
       this.memeImage = null;
       this.memeLoaded = false;
+      
+      // Moving goal properties
+      this.isMoving = false;
+      this.moveType = 'none'; // 'horizontal', 'vertical', or 'none'
+      this.originalX = x;
+      this.originalY = y;
+      this.moveRange = 60; // How far it moves from center
+      this.moveSpeed = 0.02; // Speed of oscillation (slow)
+      this.moveTime = 0;
     }
 
     preload(p5) {
@@ -65,7 +88,37 @@ const Trickshot = ({ isFullscreen = false }) => {
       });
     }
 
+    update(p5) {
+      if (this.isMoving) {
+        this.moveTime += this.moveSpeed;
+        
+        if (this.moveType === 'horizontal') {
+          this.x = this.originalX + Math.sin(this.moveTime) * this.moveRange;
+        } else if (this.moveType === 'vertical') {
+          this.y = this.originalY + Math.sin(this.moveTime) * this.moveRange;
+        }
+      }
+    }
+
+    startMoving(moveType) {
+      this.isMoving = true;
+      this.moveType = moveType;
+      this.originalX = this.x;
+      this.originalY = this.y;
+      this.moveTime = 0;
+    }
+
+    stopMoving() {
+      this.isMoving = false;
+      this.moveType = 'none';
+      this.x = this.originalX;
+      this.y = this.originalY;
+    }
+
     draw(p5) {
+      // Update position if moving
+      this.update(p5);
+      
       // Draw the cup
       p5.fill(200);
       p5.stroke(255);
@@ -111,7 +164,7 @@ const Trickshot = ({ isFullscreen = false }) => {
         p5.fill(255);
         p5.text("no cap, that was bussin", p5.width / 2, p5.height / 2 + 90);
         p5.textSize(20);
-        p5.text("Press SPACE to continue", p5.width / 2, p5.height / 2 + 130);
+        p5.text("Press S to continue", p5.width / 2, p5.height / 2 + 130);
         p5.pop();
       }
     }
@@ -158,31 +211,67 @@ const Trickshot = ({ isFullscreen = false }) => {
         // Check inside left wall collision with continuous detection
         if (ball.x - ball.radius < this.x + this.wallThickness) {
           ball.x = this.x + this.wallThickness + ball.radius;
-          ball.velocity.x *= -1; // Maintain full velocity in reverse
+          ball.velocity.x *= -0.8; // Stronger dampening
           return true;
         }
 
         // Check inside right wall collision with continuous detection
         if (ball.x + ball.radius > this.x + this.width - this.wallThickness) {
           ball.x = this.x + this.width - this.wallThickness - ball.radius;
-          ball.velocity.x *= -1; // Maintain full velocity in reverse
+          ball.velocity.x *= -0.8; // Stronger dampening
           return true;
         }
 
-        // Check inside bottom wall collision with continuous detection and improved logic
+        // IMPROVED: Check inside bottom wall collision with better continuous detection
         const bottomWallY = this.y + this.height - this.wallThickness;
         const ballBottom = ball.y + ball.radius;
         const prevBallBottom = ball.prevY + ball.radius;
         
-        // Check if ball crossed the bottom wall between frames
-        if (ballBottom > bottomWallY && prevBallBottom <= bottomWallY) {
+        // Check if ball is currently intersecting with the bottom wall
+        if (ballBottom >= bottomWallY) {
           ball.y = bottomWallY - ball.radius;
-          // Strong dampening effect for bottom
-          ball.velocity.y *= -0.3; // Much stronger dampening
-          ball.velocity.x *= 0.5; // Reduce horizontal velocity
+          
+          // Much stronger dampening for bottom collisions
+          ball.velocity.y *= -0.2; // Very strong dampening
+          ball.velocity.x *= 0.3; // Reduce horizontal velocity significantly
           
           // If velocity is very low, stop the ball and show celebration
-          if (Math.abs(ball.velocity.y) < 0.5 && Math.abs(ball.velocity.x) < 0.5) {
+          if (Math.abs(ball.velocity.y) < 1.0 && Math.abs(ball.velocity.x) < 1.0) {
+            ball.velocity.y = 0;
+            ball.velocity.x = 0;
+            ball.isMoving = false;
+            this.showCelebration = true;
+            successfulShots++;
+            return true;
+          }
+          return true;
+        }
+        
+        // Additional check: if ball was above and is now below (high velocity case)
+        if (prevBallBottom < bottomWallY && ballBottom > bottomWallY) {
+          ball.y = bottomWallY - ball.radius;
+          ball.velocity.y *= -0.2;
+          ball.velocity.x *= 0.3;
+          
+          if (Math.abs(ball.velocity.y) < 1.0 && Math.abs(ball.velocity.x) < 1.0) {
+            ball.velocity.y = 0;
+            ball.velocity.x = 0;
+            ball.isMoving = false;
+            this.showCelebration = true;
+            successfulShots++;
+            return true;
+          }
+          return true;
+        }
+        
+        // ADDITIONAL: Check if ball passed through the bottom wall at high speed
+        // This handles cases where the ball moves so fast it skips the above checks
+        if (ball.y > bottomWallY - ball.radius && ball.prevY <= bottomWallY - ball.radius) {
+          ball.y = bottomWallY - ball.radius;
+          ball.velocity.y *= -0.2;
+          ball.velocity.x *= 0.3;
+          
+          if (Math.abs(ball.velocity.y) < 1.0 && Math.abs(ball.velocity.x) < 1.0) {
             ball.velocity.y = 0;
             ball.velocity.x = 0;
             ball.isMoving = false;
@@ -252,6 +341,15 @@ const Trickshot = ({ isFullscreen = false }) => {
         // Apply gravity
         this.velocity.y += gravity;
         
+        // CAP VELOCITY to prevent clipping through collision detection
+        const maxVelocity = 25; // Maximum velocity to prevent clipping
+        const currentSpeed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+        if (currentSpeed > maxVelocity) {
+          const scale = maxVelocity / currentSpeed;
+          this.velocity.x *= scale;
+          this.velocity.y *= scale;
+        }
+        
         // Update position
         this.x += this.velocity.x;
         this.y += this.velocity.y;
@@ -310,11 +408,21 @@ const Trickshot = ({ isFullscreen = false }) => {
     }
     
     ball = new Ball(p5);
-    // Initial cup position in bottom half
-    const cupX = p5.random(100, p5.width - 200);
-    const cupY = p5.random(p5.height / 2, p5.height - 200);
+    // Position cup with more variation - right half of screen, various heights
+    const cupX = p5.random(p5.width * 0.5, p5.width - 200);
+    const cupY = p5.random(p5.height * 0.4, p5.height - 200);
     goal = new Goal(cupX, cupY, 150, 200, 15);
     goal.preload(p5);
+    
+    // Randomly decide if goal should move (30% chance)
+    const shouldMove = Math.random() < 0.3;
+    if (shouldMove) {
+      // Randomly choose movement type
+      const moveTypes = ['horizontal', 'vertical'];
+      const moveType = moveTypes[Math.floor(Math.random() * moveTypes.length)];
+      goal.startMoving(moveType);
+    }
+    
     // Load miss meme
     missMeme = p5.loadImage('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWU4Mms5aGR3dXZxMDc2MzRsN2p4MnA2ZDhnYTg4YXE0MXdzcTgxcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YaLyGY3YILpxfjdJFD/giphy.gif', () => {
       missMemeLoaded = true;
@@ -353,6 +461,9 @@ const Trickshot = ({ isFullscreen = false }) => {
     p5.textAlign(p5.LEFT, p5.TOP);
     p5.text(`Shots: ${shotsRemaining}`, 20, 20);
     p5.text(`Successful: ${successfulShots}`, 20, 50);
+    p5.textSize(20);
+    p5.text(`'S' to next shot`, 20, 80);
+    p5.text(`'R' to restart`, 20, 100);
 
     // Draw miss message and meme
     if (showMissMessage) {
@@ -423,8 +534,8 @@ const Trickshot = ({ isFullscreen = false }) => {
       const dx = startPoint.x - endPoint.x;
       const dy = startPoint.y - endPoint.y;
       const distance = p5.sqrt(dx * dx + dy * dy);
-      const maxDistance = 300; // Reduced from 200 to make it more sensitive
-      const power = p5.map(p5.min(distance, maxDistance), 0, maxDistance, 0, 30);
+      const maxDistance = 200; // Reduced from 300 to limit maximum velocity
+      const power = p5.map(p5.min(distance, maxDistance), 0, maxDistance, 0, 22); // Reduced from 30 to 20
       
       // Calculate angle and set velocity
       const angle = p5.atan2(dy, dx);
@@ -443,11 +554,22 @@ const Trickshot = ({ isFullscreen = false }) => {
   };
 
   const resetCupPosition = (p5) => {
-    // Position cup in bottom half of canvas
-    const cupX = p5.random(100, p5.width - 200);
-    const cupY = p5.random(p5.height/2, p5.height - 200);
+    // Position cup with more variation - right half of screen, various heights
+    const cupX = p5.random(p5.width * 0.5, p5.width - 200);
+    const cupY = p5.random(p5.height * 0.4, p5.height - 200);
     goal.x = cupX;
     goal.y = cupY;
+    
+    // Randomly decide if goal should move (30% chance)
+    const shouldMove = Math.random() < 0.3;
+    if (shouldMove) {
+      // Randomly choose movement type
+      const moveTypes = ['horizontal', 'vertical'];
+      const moveType = moveTypes[Math.floor(Math.random() * moveTypes.length)];
+      goal.startMoving(moveType);
+    } else {
+      goal.stopMoving();
+    }
   };
 
   const keyPressed = (p5) => {
@@ -461,7 +583,7 @@ const Trickshot = ({ isFullscreen = false }) => {
       showMissMessage = false;
       lastShotSuccessful = false;
       resetCupPosition(p5);
-    } else if (p5.key === ' ') {
+    } else if (p5.key === 's' || p5.key === 'S') {
       if (ball.isMoving) {
         // Only show miss message if the last shot wasn't successful
         if (!lastShotSuccessful) {

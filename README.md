@@ -1,12 +1,59 @@
-# React + Vite
+# Evolutionary Generative Art
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based generative art application featuring interactive sketches and creative visual experiments.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Interactive generative art sketches using p5.js
+- React-based UI with modern styling
+- Blog documentation for each piece
+- Responsive design
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Deployment
+
+### Netlify Deployment
+
+This app is configured for easy deployment to Netlify:
+
+1. **Connect your GitHub repository** to Netlify
+2. **Build settings** are already configured in `netlify.toml`:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+3. **Deploy** - Netlify will automatically build and deploy your React app
+
+### Alternative Deployment Options
+
+- **Vercel**: Connect your GitHub repo and deploy with zero configuration
+- **GitHub Pages**: Use the `gh-pages` package for static hosting
+- **Firebase Hosting**: Deploy to Google's Firebase platform
+
+## Project Structure
+
+- `src/sketches/` - Generative art pieces
+- `src/components/` - React components
+- `src/pages/` - Page components
+- `public/blog/` - Blog documentation
+
+## Technologies
+
+- React 19
+- Vite
+- p5.js (via react-p5)
+- React Router
+- React Markdown

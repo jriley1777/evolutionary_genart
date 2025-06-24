@@ -88,14 +88,4 @@ export const projects = [
     date: "2025-06-14",
     blog: "blog/trickshot.md"
   }
-  // {
-  //   type: "interactive",
-  //   slug: "multi-draw",
-  //   title: "Multi Draw",
-  //   description: "Multiplayer drawing canvas.  Open in two tabs to see the magic.",
-  //   sketch: "MultiDraw",
-  //   tags: ["socketio", "draw", "multiplayer"],
-  //   date: "2025-06-14",
-  //   blog: "blog/multi-draw.md"
-  // }
 ];

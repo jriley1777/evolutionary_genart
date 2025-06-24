@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FullscreenOverlay from '../FullscreenOverlay/FullscreenOverlay';
+import { getFullscreenState, addFullscreenToUrl, removeFullscreenFromUrl } from '../../utils/urlUtils';
 
 const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
   const [sketchKey, setSketchKey] = useState(0);
+
+  // Update URL when fullscreen state changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const newUrl = isFullscreen ? addFullscreenToUrl() : removeFullscreenFromUrl();
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [isFullscreen]);
+
+  // Handle browser back button when in fullscreen
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isFullscreen) {
+        // If we're in fullscreen and the back button is pressed, exit fullscreen
+        setSketchKey(prev => prev + 1);
+        setIsFullscreen(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isFullscreen]);
 
   const toggleFullscreen = () => {
     if (isFullscreen) {

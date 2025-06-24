@@ -64,6 +64,7 @@ const SplitFlap = () => {
   const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const [autoMode, setAutoMode] = useState(true);
 
   useEffect(() => {
     const updateGridSize = () => {
@@ -138,8 +139,10 @@ const SplitFlap = () => {
     return () => clearInterval(animationInterval);
   }, [displayText, targetText]);
 
-  // Add effect for cycling through quotes
+  // Modified effect for cycling through quotes - only runs when autoMode is true
   useEffect(() => {
+    if (!autoMode) return; // Don't run if auto mode is off
+
     const quoteInterval = setInterval(() => {
       setQuoteIndex((prevIndex) => {
         // Find the next quote that fits within the display limit
@@ -177,7 +180,7 @@ const SplitFlap = () => {
     }, 5000);
 
     return () => clearInterval(quoteInterval);
-  }, [quoteIndex]);
+  }, [quoteIndex, autoMode]); // Added autoMode to dependencies
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -202,6 +205,17 @@ const SplitFlap = () => {
     setDisplayText(currentDisplay.join(''));
     setTargetText(truncatedText);
     setIsAnimating(true);
+  };
+
+  const toggleAutoMode = () => {
+    setAutoMode(!autoMode);
+    if (!autoMode) {
+      // If turning auto mode on, start with current quote
+      const currentQuote = INSPIRING_QUOTES[quoteIndex];
+      setInputText(currentQuote);
+      handleSubmit({ preventDefault: () => {} });
+      setIsAnimating(true);
+    }
   };
 
   const createGrid = () => {
@@ -311,6 +325,24 @@ const SplitFlap = () => {
         gap: '8px',
         position: 'relative'
       }}>
+        <button
+          type="button"
+          onClick={toggleAutoMode}
+          style={{
+            padding: '8px 16px',
+            fontSize: '16px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            background: autoMode ? 'rgba(0, 255, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            cursor: 'pointer',
+            color: autoMode ? '#000' : '#000',
+            fontWeight: autoMode ? 'bold' : 'normal',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          Auto
+        </button>
         <input
           type="text"
           value={inputText}

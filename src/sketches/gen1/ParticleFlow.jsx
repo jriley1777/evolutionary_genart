@@ -90,7 +90,7 @@ const ParticleFlow = ({ isFullscreen = false }) => {
     p5.background(0);
     
     // Initialize particles
-    const particleCount = p5.floor((p5.width * p5.height) / 1000);
+    const particleCount = p5.floor((p5.width * p5.height) / 100);
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle(p5));
     }

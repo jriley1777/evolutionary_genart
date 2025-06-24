@@ -1,0 +1,56 @@
+.canvas-container {
+  width: 100% !important;
+  max-width: 100vw !important;
+  height: calc(100vh - 200px) !important;
+  max-height: calc(100vh - 200px) !important;
+  overflow: hidden !important;
+}
+
+.canvas-container.fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+}
+
+canvas.fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  object-fit: cover !important;
+} 
+
+
+.progressive-blur-container {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-event: none;
+  overflow: hidden;
+}
+
+.progressive-blur-container > .blur-filter {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.progressive-blur-container > .blur-filter:nth-child(1) {
+  backdrop-filter: blur(1px) brightness(80%) hue-rotate(120deg);
+  mask: linear-gradient(rgba(0, 0, 0, 0) -20%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 0) 55%);
+}

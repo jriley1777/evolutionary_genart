@@ -1,0 +1,284 @@
+/* Nintendo-inspired Game UI Styles */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --primary-red: #ff6b6b;
+  --primary-blue: #4ecdc4;
+  --primary-yellow: #ffe66d;
+  --primary-green: #95e1d3;
+  --primary-purple: #a8e6cf;
+  --dark-bg: #2c3e50;
+  --light-bg: #ecf0f1;
+  --accent-orange: #ff9f43;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+.home-container {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Press Start 2P', monospace;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Halftone effect overlay with larger dots */
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  background-image: radial-gradient(circle at 25% 25%, rgba(0,0,0,0.15) 4px, transparent 4px),
+                    radial-gradient(circle at 75% 75%, rgba(0,0,0,0.15) 4px, transparent 4px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-header {
+  border-top: 1px solid var(--dark-bg);
+  border-bottom: 1px solid var(--dark-bg);
+  color: black;
+  width: 100vw;
+  padding-left: 40px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  position: relative;
+  z-index: 10;
+}
+
+.projects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem;
+  padding-bottom: 60px;
+  width: 25vw;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: calc(100vh - 100px);
+  /* height: 100%; */
+  position: relative;
+  z-index: 5;
+}
+
+.projects-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Generation Dropdown */
+.generation-dropdown-container {
+  margin-bottom: 1rem;
+}
+
+.generation-dropdown {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  color: var(--dark-bg);
+  background: var(--light-bg);
+  border: 3px solid var(--dark-bg);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  width: 100%;
+  outline: none;
+}
+
+.generation-dropdown:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  border-color: var(--primary-red);
+}
+
+.generation-dropdown:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.generation-dropdown option {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  background: var(--light-bg);
+  color: var(--dark-bg);
+  padding: 0.5rem;
+}
+
+/* Category Headers */
+.category-header {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  color: var(--dark-bg);
+  text-shadow: 2px 2px 0px var(--primary-yellow);
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 1rem;
+  background: var(--light-bg);
+  border: 3px solid var(--dark-bg);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+}
+
+.category-header::before {
+  content: '▶';
+  margin-right: 0.5rem;
+  color: var(--primary-red);
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 1rem;
+  min-width: 280px;
+}
+
+.project-item {
+  text-decoration: none;
+  color: inherit;
+  background: var(--light-bg);
+  padding: 1.2rem;
+  border: 3px solid var(--dark-bg);
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.project-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.project-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  border-color: var(--primary-red);
+}
+
+.project-item:hover::before {
+  left: 100%;
+}
+
+.project-item:active {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.project-item h3 {
+  margin: 0 0 0.5rem;
+  color: var(--dark-bg);
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-item p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Type-specific colors */
+.project-item[data-type="gen0"] {
+  border-left: 6px solid var(--primary-red);
+}
+
+.project-item[data-type="gen1"] {
+  border-left: 6px solid var(--primary-blue);
+}
+
+.project-item[data-type="gen2"] {
+  border-left: 6px solid var(--primary-yellow);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem 1rem 1rem 0;
+  }
+
+  .home-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .projects-grid {
+    padding: 1rem;
+  }
+
+  .project-list {
+    min-width: 250px;
+  }
+
+  .project-item {
+    padding: 1rem;
+  }
+
+  .generation-dropdown {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+.sketch-preview {
+  width: 100%;
+  padding: 20px 20px 20px 20px;
+  max-width: 70vw;
+  overflow-y: scroll;
+}
+
+.sketch-title {
+  border: 4px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
+  position: relative;
+  z-index: 100000;
+  margin-bottom: 20px;
+}
+
+.sketch-container {
+  z-index: 100000;
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 0;
+}
+
+.blog-post {
+  overflow-y: scroll;
+  background-color: white;
+  position: relative;
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  border: 4px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+}

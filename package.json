@@ -21,9 +21,7 @@
     "react-markdown": "^10.1.0",
     "react-p5": "^1.4.1",
     "react-router-dom": "^7.6.2",
-    "react-syntax-highlighter": "^15.6.1",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "react-syntax-highlighter": "^15.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

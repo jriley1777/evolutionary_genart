@@ -6,6 +6,36 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
   const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
   const [sketchKey, setSketchKey] = useState(0);
 
+  // Helper function to enter browser fullscreen
+  const enterBrowserFullscreen = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        await document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        await document.documentElement.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.log('Fullscreen request failed:', error);
+    }
+  };
+
+  // Helper function to exit browser fullscreen
+  const exitBrowserFullscreen = async () => {
+    try {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        await document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        await document.msExitFullscreen();
+      }
+    } catch (error) {
+      console.log('Exit fullscreen failed:', error);
+    }
+  };
+
   // Update URL when fullscreen state changes
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -21,6 +51,7 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
         // If we're in fullscreen and the back button is pressed, exit fullscreen
         setSketchKey(prev => prev + 1);
         setIsFullscreen(false);
+        exitBrowserFullscreen();
       }
     };
 
@@ -28,12 +59,44 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [isFullscreen]);
 
-  const toggleFullscreen = () => {
+  // Handle browser fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isBrowserFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement
+      );
+      
+      // If browser fullscreen was exited externally, update our state
+      if (!isBrowserFullscreen && isFullscreen) {
+        setIsFullscreen(false);
+        setSketchKey(prev => prev + 1);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+    };
+  }, [isFullscreen]);
+
+  const toggleFullscreen = async () => {
     if (isFullscreen) {
-      // When minimizing from fullscreen, force a reload
+      // When minimizing from fullscreen, force a reload and exit browser fullscreen
       setSketchKey(prev => prev + 1);
+      setIsFullscreen(false);
+      await exitBrowserFullscreen();
+    } else {
+      // When entering fullscreen, set our state and enter browser fullscreen
+      setIsFullscreen(true);
+      await enterBrowserFullscreen();
     }
-    setIsFullscreen(!isFullscreen);
   };
 
   return (

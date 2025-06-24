@@ -386,20 +386,18 @@ const GenFlower1 = ({ isFullscreen = false }) => {
 
   return (
     <>
-    <Sketch
-      className="gen-flower-1"
-      setup={setup} 
-      draw={draw}
-    />
-    <div class="progressive-blur-container">
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-      <div class="blur-filter"></div>
-    </div>
+      <Sketch
+        className="gen-flower-1"
+        setup={setup} 
+        draw={draw}
+      />
+      <div className="progressive-blur-container">
+        <div className="blur-filter"></div>
+        <div className="blur-filter"></div>
+        <div className="blur-filter"></div>
+        <div className="blur-filter"></div>
+        <div className="blur-filter"></div>
+      </div>
     </>
   );
 };

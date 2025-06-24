@@ -9,10 +9,8 @@ import * as sketches from "../../sketches/sketches";
 const Home = () => {
   const param = useParams();
   const navigate = useNavigate();
-  console.log(param)
   const [activeProject, setActiveProject] = useState(param?.slug || 'sine-wave-puddle');
   const [selectedGeneration, setSelectedGeneration] = useState(param?.type || 'gen1');
-  console.log(activeProject, selectedGeneration)
   const project = projects.find((p) => p.slug === activeProject);
   const SketchComponent = project ? sketches.default[project.sketch] : null;
   const [blogContent, setBlogContent] = useState("");

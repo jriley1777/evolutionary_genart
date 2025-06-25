@@ -1,95 +1,160 @@
-# SineWavePuddle Gen2: Fractal Decomposition
+# SineWavePuddle Gen2: Walker-Based Fractal Ecosystems
+
+*Exploring emergent behavior through autonomous walkers, fractal wave decomposition, and organic movement patterns*
 
 ## Concept
 
-SineWavePuddle Gen2 explores the mathematical beauty of **fractal decomposition** - the process of breaking down complex wave patterns into simpler, self-similar components. This iteration focuses on the core concept of how waves can be decomposed into multiple layers of detail, each contributing to the overall organic form.
+SineWavePuddle Gen2 has evolved into a sophisticated ecosystem simulation featuring autonomous walkers that create fractal wave patterns. This iteration explores the concept of **emergent behavior** - how complex, beautiful patterns can arise from simple rules and autonomous agents. The piece demonstrates how individual walkers, each following simple movement algorithms, can collectively create a living, breathing landscape of fractal waves.
 
 ## Key Features
 
-### Fractal Decomposition Layers
-Each wave center generates 3-5 fractal layers, each with its own:
-- **Frequency**: Higher frequencies (1.5-4.0) create finer detail
-- **Amplitude**: Controls the strength of each layer's contribution
-- **Phase**: Independent timing creates complex interference patterns
-- **Noise Scale**: Perlin noise adds organic variation at different scales
+### Autonomous Walker System
+The piece features multiple autonomous walkers that:
+- **Follow organic curved paths** using multiple sine waves and Perlin noise
+- **Respond to mouse presence** with attraction/repulsion behaviors
+- **Create waves periodically** as they move through the environment
+- **Maintain safe distances** from each other and the mouse
+- **Have unique personalities** with different movement speeds and exploration patterns
 
-### Simplified Performance
-- **Reduced Complexity**: Removed interference field calculations and energy systems
-- **Optimized Rendering**: 200 points per wave (vs 1000) for smooth performance
-- **Streamlined Color**: Simple HSB color scheme based on wave progress and life
-- **Focused Interaction**: Direct wave center creation without complex source systems
+### Fractal Wave Decomposition
+Each wave center generates complex fractal patterns with:
+- **Multiple decomposition layers** (3-5 layers per wave)
+- **Independent frequencies** (1.5-4.0) for varying detail levels
+- **Layered noise systems** that create organic variation at different scales
+- **Phase-independent animation** for complex interference patterns
 
-### Organic Movement
-- **Gentle Drift**: Wave centers move slowly with Perlin noise
-- **Life Cycles**: Each center has a natural lifespan (400-800 frames)
-- **Layered Animation**: Each fractal layer animates independently
+### Interactive Ecosystem
+The system responds to user interaction:
+- **Mouse attraction**: Walkers are drawn to stationary mouse positions
+- **Safe distance maintenance**: Walkers maintain minimum distances from mouse and each other
+- **Exploration mode**: Walkers return to organic exploration when mouse is inactive
+- **Dynamic wave creation**: Waves are generated based on walker movement patterns
 
 ## Technical Implementation
 
-### Fractal Layer Structure
+### Walker Behavior System
 ```javascript
-this.fractalLayers.push({
-  frequency: p5.random(1.5, 4.0),    // Detail level
-  amplitude: p5.random(0.2, 0.6),    // Contribution strength
-  phase: p5.random(p5.TWO_PI),       // Timing offset
-  noiseScale: p5.random(0.05, 0.15), // Organic variation
-  detailLevel: i + 1                 // Layer hierarchy
-});
+class Walker {
+  constructor(p5, x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.interestInMouse = p5.random(0.3, 0.8);
+    this.explorationRadius = p5.random(0.2, 0.6);
+    this.explorationSpeed = p5.random(0.008, 0.015);
+    this.attractionSpeed = p5.random(0.015, 0.025);
+    this.safeDistance = 100;
+    this.walkerSafeDistance = 80;
+  }
+
+  update(p5, otherWalkers) {
+    // Determine behavior based on mouse proximity and activity
+    const distanceToMouse = p5.dist(this.x, this.y, mouseX, mouseY);
+    const mouseStationaryTime = globalTime - lastMouseMoveTime;
+    const shouldBeAttracted = this.attractionMode && 
+                             mouseInCanvas &&
+                             distanceToMouse < 400 &&
+                             mouseStationaryTime < 300;
+    
+    if (shouldBeAttracted) {
+      // Attraction mode - move toward mouse while maintaining safe distance
+      const angleToMouse = p5.atan2(mouseY - this.y, mouseX - this.x);
+      targetX = mouseX - p5.cos(angleToMouse) * this.safeDistance;
+      targetY = mouseY - p5.sin(angleToMouse) * this.safeDistance;
+    } else {
+      // Exploration mode - create organic curved paths
+      const time = globalTime * 0.01;
+      const radius = p5.min(p5.width, p5.height) * this.explorationRadius;
+      
+      // Multiple sine waves for complex curved paths
+      const primaryX = p5.cos(time * speedMultiplier + patternOffset) * radius * 0.4;
+      const primaryY = p5.sin(time * speedMultiplier * 1.3 + patternOffset) * radius * 0.4;
+      const secondaryX = p5.cos(time * speedMultiplier * 0.7 + patternOffset * 2) * radius * 0.3;
+      const secondaryY = p5.sin(time * speedMultiplier * 0.9 + patternOffset * 1.5) * radius * 0.3;
+      
+      // Add Perlin noise for organic variation
+      const noiseX = (p5.noise(this.noiseOffset + time * 0.5) - 0.5) * radius * 0.2;
+      const noiseY = (p5.noise(this.noiseOffset + 1000 + time * 0.5) - 0.5) * radius * 0.2;
+      
+      targetX = centerX + primaryX + secondaryX + noiseX;
+      targetY = centerY + primaryY + secondaryY + noiseY;
+    }
+  }
+}
 ```
 
-### Wave Generation
-Each wave combines multiple fractal layers:
-1. **Base Radius**: Foundation wave size
-2. **Sine Components**: Primary wave patterns at different frequencies
-3. **Noise Detail**: Organic variation scaled by layer
-4. **Combined Offset**: All layers contribute to final radius
-
-### Performance Optimizations
-- **Reduced Point Count**: 200 points vs 1000 for smooth rendering
-- **Simplified Color**: Direct HSB mapping without complex calculations
-- **Efficient Updates**: Minimal per-frame computations
-- **Streamlined Rendering**: Single draw pass for outlines and fills
+### Fractal Wave Generation
+Each wave center creates complex fractal patterns:
+```javascript
+generateWave(p5, waveIndex) {
+  const wavePoints = [];
+  const numPoints = 30;
+  const waveRadius = this.radius * (waveIndex / this.waveCount);
+  
+  for (let i = 0; i < numPoints; i++) {
+    const angle = p5.map(i, 0, numPoints, 0, p5.TWO_PI);
+    let radius = waveRadius;
+    
+    // Add fractal decomposition layers
+    let fractalOffset = 0;
+    this.fractalLayers.forEach(layer => {
+      // Primary sine wave for this layer
+      fractalOffset += p5.sin(
+        angle * layer.frequency + 
+        globalTime * 0.01 * layer.frequency + 
+        layer.phase
+      ) * layer.amplitude * 20;
+      
+      // Add noise detail scaled by layer
+      fractalOffset += p5.noise(
+        p5.cos(angle) * layer.noiseScale + this.noiseOffset,
+        p5.sin(angle) * layer.noiseScale + waveIndex * 0.1
+      ) * layer.amplitude * 15;
+    });
+    
+    radius += fractalOffset;
+    const x = this.x + p5.cos(angle) * radius;
+    const y = this.y + p5.sin(angle) * radius;
+    wavePoints.push({ x, y });
+  }
+  
+  return wavePoints;
+}
+```
 
 ## Interaction
 
-- **Click**: Add new wave center at mouse position
-- **C Key**: Clear all wave centers
-- **R Key**: Reset to initial state
-- **S Key**: Add random wave center
+- **Mouse Movement**: Walkers are attracted to stationary mouse positions
+- **Mouse Proximity**: Walkers maintain safe distances while being drawn to the mouse
+- **Automatic Exploration**: Walkers return to organic exploration when mouse is inactive
+- **Wave Creation**: Waves are automatically generated as walkers move
 
 ## Mathematical Foundation
 
-The fractal decomposition follows the principle that complex waveforms can be expressed as the sum of simpler components:
+The system demonstrates emergent behavior through:
+- **Simple rules** creating complex patterns
+- **Autonomous agents** with individual personalities
+- **Collective behavior** emerging from individual actions
+- **Fractal decomposition** creating infinite detail at multiple scales
 
-```
-Wave(θ) = Σ(Layer_i(θ))
-Layer_i(θ) = A_i * sin(f_i * θ + φ_i) + N_i(θ)
-```
-
-Where:
-- `A_i` = amplitude of layer i
-- `f_i` = frequency of layer i  
-- `φ_i` = phase of layer i
-- `N_i(θ)` = noise component for layer i
-
-This creates waves that exhibit both mathematical precision and organic complexity, with each layer contributing to the overall form while maintaining its own character.
+Each walker follows simple movement algorithms, but their collective behavior creates a living ecosystem of fractal waves that responds to user interaction while maintaining organic, natural movement patterns.
 
 ## Visual Aesthetics
 
-The simplified approach creates:
-- **Clean Forms**: Focus on wave structure without visual clutter
-- **Depth Through Layering**: Multiple wave rings create natural depth
-- **Organic Variation**: Noise and phase differences create natural asymmetry
-- **Temporal Evolution**: Waves grow, move, and fade naturally
+The piece creates:
+- **Living landscapes** that feel alive and responsive
+- **Organic movement** through curved paths and natural variation
+- **Fractal complexity** with infinite detail at multiple scales
+- **Interactive ecosystems** that respond to user presence
+- **Emergent beauty** from simple underlying rules
 
 ## Performance Benefits
 
-- **60 FPS**: Smooth animation even with multiple wave centers
-- **Responsive Interaction**: Immediate feedback to user input
-- **Scalable**: Can handle 10+ wave centers without performance degradation
-- **Memory Efficient**: Minimal object creation and cleanup
+- **Efficient walker system** with optimized movement calculations
+- **Reduced wave complexity** for smooth performance
+- **Smart interaction detection** that minimizes computational overhead
+- **Scalable architecture** that can handle multiple walkers and waves
 
-This iteration demonstrates how focusing on a single concept (fractal decomposition) while optimizing for performance can create compelling generative art that's both mathematically interesting and visually engaging.
+This iteration demonstrates how focusing on emergent behavior and autonomous agents can create compelling generative art that feels alive and responsive while maintaining mathematical sophistication and visual beauty.
 
 ---
 

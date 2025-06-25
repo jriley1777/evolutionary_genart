@@ -101,9 +101,9 @@ This creates a natural fade from bright colors in the center to darker colors at
 ### Performance Optimization
 
 The sketch includes several performance optimizations:
-- Maximum wave limit to prevent performance issues
-- Efficient noise sampling
-- Optimized rendering order
+- Maximum wave limit (100 waves) to prevent performance issues
+- Efficient noise sampling with reduced intensity for distant waves
+- Optimized rendering order with separate outline and fill passes
 
 ## Building Your Own
 

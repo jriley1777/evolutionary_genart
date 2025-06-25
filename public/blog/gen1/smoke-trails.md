@@ -1,22 +1,23 @@
 # Smoke Trails: Interactive Smoke Simulation with Organic Particle Physics
 
-*Creating realistic smoke effects through particle systems, turbulence, and interactive emission*
+*Creating realistic smoke effects through particle systems, turbulence, and interactive emission with starter smoke*
 
 ## Overview
 
-Smoke Trails is an interactive generative art piece that simulates realistic smoke using a sophisticated particle system. Users can create smoke by moving their mouse or clicking, and the particles drift upward with natural turbulence, expand in size, and fade over time. This piece demonstrates advanced techniques in particle physics, smoke simulation, and real-time interaction.
+Smoke Trails is an interactive generative art piece that simulates realistic smoke using a sophisticated particle system. The piece features starter smoke that continuously emits from the bottom center, and users can create additional smoke by moving their mouse or clicking. The particles drift upward with natural turbulence, expand in size, and fade over time. This piece demonstrates advanced techniques in particle physics, smoke simulation, and real-time interaction.
 
 ## What Makes It Unique
 
 This piece stands out for its realistic approach to smoke simulation:
 
 - **Organic particle physics** with turbulence and natural movement
+- **Starter smoke system** that provides continuous ambient smoke
 - **Interactive smoke emission** that responds to mouse input
 - **Realistic smoke behavior** including expansion and fading
 - **Perlin noise turbulence** that creates natural, non-repetitive movement
 - **Dynamic particle lifecycle** with growth, movement, and decay
 
-The result is a piece that feels like creating real smoke trails in the air.
+The result is a piece that feels like creating real smoke trails in the air, with both ambient and interactive elements.
 
 ## Core Techniques
 
@@ -70,7 +71,30 @@ class Particle {
 
 Particles use velocity, acceleration, and turbulence to create natural smoke movement.
 
-### 2. Perlin Noise Turbulence
+### 2. Starter Smoke System
+
+The piece includes a continuous starter smoke system:
+
+```javascript
+// Starter smoke at bottom center
+if (starterSmokeActive) {
+  const centerX = p5.width / 2;
+  const centerY = p5.height - 50; // 50px from bottom
+  
+  // Add some randomness to the starter smoke position
+  const randomX = centerX + p5.random(-20, 20);
+  const randomY = centerY + p5.random(-10, 10);
+  
+  // Create 2-3 particles per frame for starter smoke
+  for (let i = 0; i < p5.floor(p5.random(2, 4)); i++) {
+    particles.push(new Particle(p5, randomX, randomY));
+  }
+}
+```
+
+This creates a continuous ambient smoke effect that provides visual interest even without user interaction.
+
+### 3. Perlin Noise Turbulence
 
 The key to realistic smoke movement is Perlin noise-based turbulence:
 
@@ -83,7 +107,7 @@ this.acc.add(noiseX * this.turbulence, noiseY * this.turbulence);
 
 Each particle has its own noise offset, creating independent, organic movement patterns.
 
-### 3. Particle Lifecycle System
+### 4. Particle Lifecycle System
 
 Particles have a complete lifecycle with growth and decay:
 
@@ -103,7 +127,7 @@ isDead() {
 
 Particles start small, grow over time, and fade out as they age.
 
-### 4. Interactive Emission System
+### 5. Interactive Emission System
 
 The piece responds to mouse input for smoke creation:
 
@@ -115,16 +139,24 @@ if (isMousePressed) {
   }
 }
 
+const mousePressed = (p5) => {
+  isMousePressed = true;
+  // Stop starter smoke when user starts interacting
+  starterSmokeActive = false;
+};
+
 const mouseMoved = (p5) => {
   mouseX = p5.mouseX;
   mouseY = p5.mouseY;
   isMousePressed = true;
+  // Stop starter smoke when user starts interacting
+  starterSmokeActive = false;
 };
 ```
 
-Multiple particles are created per frame when the mouse is active, creating dense smoke trails.
+Multiple particles are created per frame when the mouse is active, creating dense smoke trails. The starter smoke stops when the user begins interacting.
 
-### 5. Visual Rendering System
+### 6. Visual Rendering System
 
 The smoke is rendered using circular particles with transparency:
 
@@ -148,6 +180,14 @@ The smoke simulation includes:
 - **Turbulent movement**: Perlin noise creates organic motion
 - **Particle expansion**: Smoke grows as it rises
 - **Natural decay**: Particles fade and disappear over time
+
+### Starter Smoke System
+
+The piece provides:
+- **Continuous ambient smoke**: Starter smoke from bottom center
+- **Random positioning**: Slight variation in emission point
+- **Variable density**: 2-4 particles per frame
+- **Interaction response**: Stops when user begins interacting
 
 ### Interactive Particle Emission
 
@@ -180,8 +220,9 @@ To create a similar smoke simulation:
 1. **Set up particle physics**: Use velocity, acceleration, and forces
 2. **Add Perlin noise**: Create organic turbulence
 3. **Implement lifecycle**: Growth, movement, and decay
-4. **Add interaction**: Respond to mouse or other inputs
-5. **Optimize rendering**: Use transparency and efficient drawing
+4. **Add starter systems**: Create ambient effects
+5. **Add interaction**: Respond to mouse or other inputs
+6. **Optimize rendering**: Use transparency and efficient drawing
 
 ## Related Techniques and Examples
 
@@ -195,6 +236,9 @@ To create a similar smoke simulation:
 ### Challenge: Realistic Smoke Movement
 **Solution**: Use Perlin noise for turbulence and upward drift for natural motion
 
+### Challenge: Starter Smoke Integration
+**Solution**: Implement continuous emission with interaction-based deactivation
+
 ### Challenge: Particle Lifecycle Management
 **Solution**: Implement growth, decay, and cleanup systems
 
@@ -206,13 +250,14 @@ To create a similar smoke simulation:
 
 ## Conclusion
 
-Smoke Trails demonstrates how physics-based systems can create realistic, interactive art. By combining particle physics, Perlin noise turbulence, and interactive emission, we can create pieces that feel like manipulating real physical phenomena.
+Smoke Trails demonstrates how physics-based systems can create realistic, interactive art. By combining particle physics, Perlin noise turbulence, starter smoke systems, and interactive emission, we can create pieces that feel like manipulating real physical phenomena.
 
 The key insights are:
 - **Physics creates realism**: Velocity, acceleration, and forces create natural movement
 - **Noise creates organic motion**: Perlin noise adds natural, non-repetitive variation
+- **Starter systems create engagement**: Ambient effects provide immediate visual interest
 - **Lifecycle creates depth**: Growth and decay make particles feel alive
-- **Interaction creates engagement**: Mouse-driven emission makes the piece responsive
+- **Interaction creates immersion**: Mouse-driven emission makes the piece responsive
 
 This approach can be extended to create many other types of particle simulations, from fire to water to dust to abstract effects.
 

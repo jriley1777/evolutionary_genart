@@ -1,10 +1,10 @@
 # Trickshot: Physics-Based Gaming with Meme Culture Aesthetics
 
-*Creating an engaging ball physics game with continuous collision detection and internet culture humor*
+*Creating an engaging ball physics game with continuous collision detection, moving targets, and internet culture humor*
 
 ## Overview
 
-Trickshot is an interactive physics-based game that challenges players to shoot a ball into a cup using realistic physics simulation. The game features continuous collision detection, realistic ball physics, and a unique blend of gaming mechanics with internet meme culture. Players must carefully aim and power their shots, with the game providing humorous feedback through meme references and internet slang.
+Trickshot is an interactive physics-based game that challenges players to shoot a ball into a cup using realistic physics simulation. The game features continuous collision detection, realistic ball physics, moving targets, and a unique blend of gaming mechanics with internet meme culture. Players must carefully aim and power their shots, with the game providing humorous feedback through meme references and internet slang.
 
 ## What Makes It Unique
 
@@ -13,7 +13,8 @@ This piece stands out for its combination of technical sophistication and cultur
 - **Continuous collision detection** for accurate physics simulation
 - **Realistic ball physics** with gravity, velocity, and damping
 - **Interactive aiming system** with drag-to-shoot mechanics
-- **Meme culture integration** with humorous feedback messages
+- **Moving targets** that add dynamic challenge
+- **Meme culture integration** with humorous feedback messages and GIFs
 - **Progressive difficulty** with limited shots and scoring system
 
 The result is a game that feels both technically polished and culturally engaging.
@@ -67,47 +68,87 @@ class Ball {
 
 The ball has position, velocity, and physics properties that create realistic movement.
 
-### 2. Continuous Collision Detection
+### 2. Moving Goal System
+
+The game features dynamic moving targets that add challenge:
+
+```javascript
+class Goal {
+  constructor(x, y, width, height, wallThickness) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.wallThickness = wallThickness;
+    
+    // Moving goal properties
+    this.isMoving = false;
+    this.moveType = 'none'; // 'horizontal', 'vertical', or 'none'
+    this.originalX = x;
+    this.originalY = y;
+    this.moveRange = 60; // How far it moves from center
+    this.moveSpeed = 0.02; // Speed of oscillation (slow)
+    this.moveTime = 0;
+  }
+
+  update(p5) {
+    if (this.isMoving) {
+      this.moveTime += this.moveSpeed;
+      
+      if (this.moveType === 'horizontal') {
+        this.x = this.originalX + Math.sin(this.moveTime) * this.moveRange;
+      } else if (this.moveType === 'vertical') {
+        this.y = this.originalY + Math.sin(this.moveTime) * this.moveRange;
+      }
+    }
+  }
+
+  startMoving(moveType) {
+    this.isMoving = true;
+    this.moveType = moveType;
+    this.originalX = this.x;
+    this.originalY = this.y;
+    this.moveTime = 0;
+  }
+}
+```
+
+Goals can move horizontally or vertically, adding dynamic challenge to the game.
+
+### 3. Enhanced Collision Detection
 
 The game uses sophisticated collision detection for accurate physics:
 
 ```javascript
 checkCollision(ball) {
-  const isInsideCup = ball.x > this.x + this.wallThickness &&
-                     ball.x < this.x + this.width - this.wallThickness &&
-                     ball.y > this.y &&
-                     ball.y < this.y + this.height - this.wallThickness;
-
-  // Check top rim collisions first with continuous detection
+  // Check top rim collisions with continuous detection
   // Left rim
   if (ball.y - ball.radius < this.y + this.wallThickness &&
       ball.y + ball.radius > this.y &&
       ball.x > this.x - this.wallThickness &&
       ball.x < this.x + this.wallThickness * 2) {
-    // Ensure ball is above the rim
     if (ball.y < this.y + this.wallThickness) {
       ball.y = this.y - ball.radius;
-      // Dampen velocity while maintaining upward direction
       ball.velocity.y = -Math.abs(ball.velocity.y) * 0.7;
       ball.velocity.x *= 0.7;
       return true;
     }
   }
 
-  // Check inside bottom wall collision with continuous detection
+  // Check inside bottom wall collision with improved continuous detection
   const bottomWallY = this.y + this.height - this.wallThickness;
   const ballBottom = ball.y + ball.radius;
   const prevBallBottom = ball.prevY + ball.radius;
   
-  // Check if ball crossed the bottom wall between frames
-  if (ballBottom > bottomWallY && prevBallBottom <= bottomWallY) {
+  if (ballBottom >= bottomWallY) {
     ball.y = bottomWallY - ball.radius;
-    // Strong dampening effect for bottom
-    ball.velocity.y *= -0.3;
-    ball.velocity.x *= 0.5;
+    
+    // Much stronger dampening for bottom collisions
+    ball.velocity.y *= -0.2; // Very strong dampening
+    ball.velocity.x *= 0.3; // Reduce horizontal velocity significantly
     
     // If velocity is very low, stop the ball and show celebration
-    if (Math.abs(ball.velocity.y) < 0.5 && Math.abs(ball.velocity.x) < 0.5) {
+    if (Math.abs(ball.velocity.y) < 1.0 && Math.abs(ball.velocity.x) < 1.0) {
       ball.velocity.y = 0;
       ball.velocity.x = 0;
       ball.isMoving = false;
@@ -120,9 +161,9 @@ checkCollision(ball) {
 }
 ```
 
-Continuous collision detection prevents balls from passing through walls.
+Continuous collision detection prevents balls from passing through walls and provides realistic physics responses.
 
-### 3. Interactive Aiming System
+### 4. Interactive Aiming System
 
 The game features a drag-to-shoot aiming system:
 
@@ -167,58 +208,61 @@ const mouseReleased = (p5) => {
 };
 ```
 
-Players drag from the ball to set direction and power.
+Players drag from the ball to set direction and power, with visual feedback showing the drag vector.
 
-### 4. Meme Culture Integration
+### 5. Enhanced Meme Culture Integration
 
-The game includes humorous feedback using internet culture:
+The game includes humorous feedback using contemporary internet culture:
 
 ```javascript
 const missMessages = [
-  "SKILL ISSUE",
-  "GET GOOD",
-  "L + RATIO",
-  "TOUCH GRASS",
-  "NOOB ALERT",
-  "GIT GUD",
-  "CRINGE",
-  "BASED",
-  "SHEEEESH",
-  "BUSSIN",
-  "NO CAP",
-  "FR FR",
-  "ON GOD",
-  "LITERALLY",
-  "VIBES",
-  "SLAPS",
-  "FIRE",
-  "W",
-  "L",
-  "RATIO"
+  "SKILL ISSUE FR",
+  "GET GOOD NOOB",
+  "L + RATIO + TOUCH GRASS",
+  "CRINGE ALERT",
+  "BASED ON WHAT?",
+  "SHEEEESH NAH",
+  "BUSSIN FR FR",
+  "NO CAP YOU MISSED",
+  "ON GOD YOU SUCK",
+  "LITERALLY UNPLAYABLE",
+  "VIBES ARE OFF",
+  "SLAPS BUT NOT REALLY",
+  "FIRE BUT YOU MISSED",
+  "W MOMENT (NOT)",
+  "L MOMENT FR",
+  "RATIO + YOU FELL OFF",
+  "GYAT DAMN YOU BAD",
+  "FANUM TAX ON YOUR SKILLS",
+  "OHIO MOMENT",
+  "SIGMA GRINDSET FAIL"
 ];
 
-// Celebration message
-p5.text("NICE SHOT FR FR", p5.width / 2, p5.height / 2 + 50);
-p5.text("no cap, that was bussin", p5.width / 2, p5.height / 2 + 90);
+// Celebration with GIF integration
+if (this.showCelebration) {
+  // Draw semi-transparent overlay
+  p5.fill(0, 0, 0, 150);
+  p5.rect(0, 0, p5.width, p5.height);
+
+  // Draw meme if loaded
+  if (this.memeLoaded && this.memeImage) {
+    const memeSize = 200;
+    p5.image(
+      this.memeImage,
+      p5.width/2 - memeSize/2,
+      p5.height/2 - memeSize/2 - 100,
+      memeSize,
+      memeSize
+    );
+  }
+
+  // Draw text
+  p5.text("NICE SHOT FR FR", p5.width / 2, p5.height / 2 + 50);
+  p5.text("no cap, that was bussin", p5.width / 2, p5.height / 2 + 90);
+}
 ```
 
-The game uses contemporary internet slang for feedback.
-
-### 5. Game State Management
-
-The game tracks multiple states and conditions:
-
-```javascript
-let shotsRemaining = 10;
-let successfulShots = 0;
-let gameOver = false;
-let showMissMessage = false;
-let missMessage = "";
-let missMessageTimer = 0;
-let lastShotSuccessful = false;
-```
-
-This creates a complete game loop with progression and feedback.
+The game uses contemporary internet slang and integrates GIFs for celebration feedback.
 
 ## Generative Art Features
 
@@ -234,9 +278,10 @@ The game provides:
 
 The system offers:
 - **Intuitive controls**: Drag-to-shoot mechanics
+- **Dynamic targets**: Moving goals add challenge
 - **Progressive difficulty**: Limited shots create challenge
 - **Immediate feedback**: Visual and textual responses
-- **Replayability**: Random cup positioning
+- **Replayability**: Random cup positioning and movement
 
 ### Visual Feedback
 
@@ -244,15 +289,16 @@ The game includes:
 - **Aiming preview**: Visual drag indicator
 - **Shot counter**: Remaining shots display
 - **Success/failure messages**: Humorous feedback
-- **Celebration effects**: Meme integration
+- **Celebration effects**: Meme integration with GIFs
+- **Moving target visualization**: Clear indication of goal movement
 
 ### Cultural Integration
 
 The piece demonstrates:
-- **Contemporary humor**: Internet meme references
-- **Accessible language**: Popular internet slang
-- **Engaging feedback**: Motivational and humorous messages
-- **Cultural relevance**: Connects with modern gaming culture
+- **Contemporary relevance**: Uses current internet culture
+- **Humor integration**: Meme references and GIFs
+- **Accessible language**: Internet slang for broad appeal
+- **Celebration mechanics**: Rewards success with cultural references
 
 ## Building Your Own
 
@@ -260,42 +306,42 @@ To create a similar physics-based game:
 
 1. **Implement physics engine**: Use velocity, acceleration, and forces
 2. **Add collision detection**: Use continuous detection for accuracy
-3. **Create interactive controls**: Design intuitive input systems
-4. **Include game mechanics**: Add scoring, progression, and feedback
-5. **Optimize performance**: Use efficient collision detection
+3. **Create interactive controls**: Implement drag-to-shoot mechanics
+4. **Add dynamic elements**: Moving targets and obstacles
+5. **Integrate cultural elements**: Use relevant humor and references
 
 ## Related Techniques and Examples
 
 - **Physics Games**: Similar to [Angry Birds](https://www.angrybirds.com/) and [Cut the Rope](https://www.cuttherope.net/)
-- **Collision Detection**: Explore [Real-Time Collision Detection](https://www.realtimerendering.com/intersections.html)
-- **Game Development**: Check out [Unity's physics tutorials](https://unity.com/learn/tutorials)
-- **Interactive Art**: Similar to [Casey Reas's "Process" series](https://reas.com/)
+- **Collision Detection**: Explore [Keith Peters's "Making Things Move"](https://www.apress.com/gp/book/9781430216650)
+- **Interactive Art**: Check out [Casey Reas's "Process" series](https://reas.com/)
+- **Meme Culture**: Similar to [Know Your Meme](https://knowyourmeme.com/) and contemporary internet culture
 
 ## Technical Challenges and Solutions
 
 ### Challenge: Accurate Collision Detection
-**Solution**: Use continuous collision detection with previous position tracking
+**Solution**: Use continuous collision detection and store previous positions
 
-### Challenge: Realistic Physics
-**Solution**: Implement proper velocity, gravity, and damping systems
+### Challenge: Moving Target Physics
+**Solution**: Implement smooth oscillation with sine wave movement
 
-### Challenge: Smooth Controls
-**Solution**: Use drag-based aiming with power calculation
+### Challenge: Cultural Relevance
+**Solution**: Stay current with internet culture and use accessible language
 
 ### Challenge: Performance Optimization
-**Solution**: Efficient collision detection and state management
+**Solution**: Use efficient physics calculations and minimal rendering
 
 ## Conclusion
 
-Trickshot demonstrates how physics simulation can create engaging, interactive experiences. By combining accurate physics with contemporary culture and intuitive controls, we can create games that are both technically impressive and culturally relevant.
+Trickshot demonstrates how physics-based systems can create engaging, culturally relevant art. By combining realistic physics simulation with contemporary internet culture, we can create pieces that feel both technically sophisticated and culturally accessible.
 
 The key insights are:
-- **Physics creates realism**: Accurate simulation makes interactions feel natural
-- **Collision detection matters**: Continuous detection prevents visual glitches
-- **Culture creates connection**: Contemporary references make the piece relatable
-- **Feedback drives engagement**: Immediate responses keep players involved
+- **Physics creates engagement**: Realistic movement makes the game feel responsive
+- **Culture creates connection**: Meme integration makes the piece relatable
+- **Interaction creates immersion**: Drag-to-shoot mechanics feel natural
+- **Challenge creates replayability**: Moving targets and limited shots encourage practice
 
-This approach can be extended to create many other types of physics-based games, from puzzle games to sports simulations to educational tools.
+This approach can be extended to create many other types of interactive games and experiences, from puzzle games to educational tools to pure entertainment.
 
 ---
 

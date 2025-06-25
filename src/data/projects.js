@@ -59,6 +59,76 @@ export const projects = [
     blog: "blog/smoke-trails.md"
   },
   {
+    type: "gen2",
+    slug: "smoke-trails-gen2",
+    title: "Smoke Trails Gen2",
+    description: "Multi-particle system with fire, steam, and environmental conditions",
+    sketch: "SmokeTrailsGen2",
+    tags: ["p5.js", "generative", "interactive", "particles", "smoke", "fire", "steam", "environment"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen2.md"
+  },
+  {
+    type: "gen3",
+    slug: "smoke-trails-gen3",
+    title: "Smoke Trails Gen3",
+    description: "Particle interactions, flocking behavior, and chemical reactions",
+    sketch: "SmokeTrailsGen3",
+    tags: ["p5.js", "generative", "interactive", "particles", "flocking", "chemistry", "plasma", "ash"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen3.md"
+  },
+  {
+    type: "gen4",
+    slug: "smoke-trails-gen4",
+    title: "Smoke Trails Gen4",
+    description: "3D space, narrative storytelling, and environmental drama",
+    sketch: "SmokeTrailsGen4",
+    tags: ["p5.js", "generative", "interactive", "particles", "3D", "narrative", "storytelling", "light", "void"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen4.md"
+  },
+  {
+    type: "gen5",
+    slug: "smoke-trails-gen5",
+    title: "Smoke Trails Gen5",
+    description: "Street art aerosol techniques, stencils, and urban art aesthetics",
+    sketch: "SmokeTrailsGen5",
+    tags: ["p5.js", "generative", "interactive", "particles", "street-art", "aerosol", "stencil", "graffiti"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen5.md"
+  },
+  {
+    type: "gen6",
+    slug: "smoke-trails-gen6",
+    title: "Smoke Trails Gen6",
+    description: "Large-scale murals, collaborative art spaces, and urban installations",
+    sketch: "SmokeTrailsGen6",
+    tags: ["p5.js", "generative", "interactive", "particles", "mural", "collaborative", "installation", "urban-art"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen6.md"
+  },
+  {
+    type: "gen7",
+    slug: "smoke-trails-gen7",
+    title: "Smoke Trails Gen7",
+    description: "Digital ecosystems, cellular automata, and emergent life behaviors",
+    sketch: "SmokeTrailsGen7",
+    tags: ["p5.js", "generative", "interactive", "particles", "ecosystem", "digital-life", "evolution", "cellular-automata"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen7.md"
+  },
+  {
+    type: "gen8",
+    slug: "smoke-trails-gen8",
+    title: "Smoke Trails Gen8",
+    description: "Quantum fields, wave functions, and particle physics simulation",
+    sketch: "SmokeTrailsGen8",
+    tags: ["p5.js", "generative", "interactive", "particles", "quantum", "wave-function", "entanglement", "superposition"],
+    date: "2025-01-15",
+    blog: "blog/smoke-trails-gen8.md"
+  },
+  {
     type: "gen1",
     slug: "split-flap",
     title: "Split Flap", 

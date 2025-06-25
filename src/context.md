@@ -6,4 +6,15 @@ First generation sketch - If we are working on a first generation sketch, this c
 
 Subsequent generation sketch - If we are working on a subsequent generation sketch, I would like you to make some decisions on what you think would be cool to add or what direction to head for that generation.  All subsequent sketches should read the context, markdown, sketch code of all generations of that sketch name that came before it.  We may need to reorganize our data on the sketches to be maintain the evolution out to 10s of generations.
 
+generationOptions in Home.jsx also needs to be updated if we create a new generation.
+markdowns should go into public/blog/{generationVersion}
+
 Your role will be the creative visionary of the evolutionary concepts.  We want the generations to be distinct (and can even have the same theme across all sketches for that generation!) and make substantive additions to the prior generation.  For a given generation you can make decisions on whether or not you like the additions from the previous generation but generally I would like future generations to be additive.
+
+Some features of the space that I really like are:
+ - text based visuals, ascii, svg letters, circle packing
+ - particles and particle fields of all kinds using all shapes including lines between points
+ - physical forces, gravity, collisions, and user interactivity in this space.
+ - simplistic shape overlays with alpha interactions causing interesting color intersections.
+
+Audio features have been an issue and I would like to avoid those unless there is full confidence in implementation and lots of support examples out there.

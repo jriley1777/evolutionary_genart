@@ -55,13 +55,25 @@ const Home = () => {
   // Generation options with display names and emojis
   const generationOptions = [
     { value: 'gen1', label: '🎮 Gen1', emoji: '⚡' },
-    { value: 'gen2', label: '🎯 Gen2', emoji: '🎯' }
+    { value: 'gen2', label: '🎯 Gen2', emoji: '🎯' },
+    { value: 'gen3', label: '🌟 Gen3', emoji: '🌟' },
+    { value: 'gen4', label: '🌌 Gen4', emoji: '🌌' },
+    { value: 'gen5', label: '🎨 Gen5', emoji: '🎨' },
+    { value: 'gen6', label: '🏙️ Gen6', emoji: '🏙️' },
+    { value: 'gen7', label: '🌱 Gen7', emoji: '🌱' },
+    { value: 'gen8', label: '⚛️ Gen8', emoji: '⚛️' }
   ];
 
   // Type-specific emojis for project items
   const typeEmojis = {
     gen1: "⚡",
-    gen2: "🎯"
+    gen2: "🎯",
+    gen3: "🌟",
+    gen4: "🌌",
+    gen5: "🎨",
+    gen6: "🏙️",
+    gen7: "🌱",
+    gen8: "⚛️"
   };
 
   return (

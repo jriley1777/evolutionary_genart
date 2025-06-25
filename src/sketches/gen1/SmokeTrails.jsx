@@ -135,6 +135,10 @@ const SmokeTrails = ({ isFullscreen = false }) => {
     starterSmokeActive = false;
   };
 
+  const windowResized = (p5) => {
+    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+  };
+
   return (
     <Sketch 
       setup={setup} 
@@ -142,6 +146,7 @@ const SmokeTrails = ({ isFullscreen = false }) => {
       mousePressed={mousePressed}
       mouseReleased={mouseReleased}
       mouseMoved={mouseMoved}
+      windowResized={windowResized}
     />
   );
 };

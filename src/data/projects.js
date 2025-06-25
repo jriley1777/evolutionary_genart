@@ -29,6 +29,36 @@ export const projects = [
     blog: "blog/gen-flower-1.md"
   },
   {
+    type: "gen2",
+    slug: "gen-flower-2",
+    title: "Generative Flower 2",
+    description: "Tropical rainforest canopy with hanging vines, floating pollen, and bioluminescent elements",
+    sketch: "GenFlower2",
+    tags: ["p5.js", "generative", "interactive", "rainforest", "vines", "pollen", "bioluminescent"],
+    date: "2025-01-15",
+    blog: "blog/gen-flower-2.md"
+  },
+  {
+    type: "gen3",
+    slug: "gen-flower-3",
+    title: "Generative Flower 3",
+    description: "3D terrain travel with flying camera perspective over rolling hills and dynamic lighting",
+    sketch: "GenFlower3",
+    tags: ["p5.js", "generative", "interactive", "3D", "terrain", "camera", "flight"],
+    date: "2025-01-15",
+    blog: "blog/gen-flower-3.md"
+  },
+  {
+    type: "gen4",
+    slug: "gen-flower-4",
+    title: "Generative Flower 4",
+    description: "Magical night scene with glowing fireflies, stars, and atmospheric lighting effects",
+    sketch: "GenFlower4",
+    tags: ["p5.js", "generative", "interactive", "fireflies", "night", "stars", "lighting"],
+    date: "2025-01-15",
+    blog: "blog/gen-flower-4.md"
+  },
+  {
     type: "gen1",
     slug: "particle-flow",
     title: "Particle Flow",

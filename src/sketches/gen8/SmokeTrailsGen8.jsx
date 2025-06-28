@@ -236,11 +236,6 @@ const SmokeTrailsGen8 = ({ isFullscreen = false }) => {
       }
       
       // Entanglement effects
-      if (this.entangled && this.entanglementPartner) {
-        this.applyEntanglementEffects(p5);
-      }
-      
-      // Measurement effects
       if (measurementActive && p5.random() < 0.01) {
         this.measure(p5);
       }
@@ -749,16 +744,14 @@ const SmokeTrailsGen8 = ({ isFullscreen = false }) => {
   };
 
   return (
-    <div className="sketch-container">
-      <Sketch
-        setup={setup}
-        draw={draw}
-        mousePressed={mousePressed}
-        mouseReleased={mouseReleased}
-        mouseMoved={mouseMoved}
-        windowResized={windowResized}
-      />
-    </div>
+    <Sketch
+      setup={setup}
+      draw={draw}
+      mousePressed={mousePressed}
+      mouseReleased={mouseReleased}
+      mouseMoved={mouseMoved}
+      windowResized={windowResized}
+    />
   );
 };
 

@@ -613,15 +613,13 @@ const GenFlower4 = ({ isFullscreen = false }) => {
   };
 
   return (
-    <div className="sketch-container">
-      <Sketch
-        setup={setup}
-        draw={draw}
-        mousePressed={mousePressed}
-        mouseMoved={mouseMoved}
-        windowResized={windowResized}
-      />
-    </div>
+    <Sketch
+      setup={setup}
+      draw={draw}
+      mousePressed={mousePressed}
+      mouseMoved={mouseMoved}
+      windowResized={windowResized}
+    />
   );
 };
 

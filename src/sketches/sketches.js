@@ -1,6 +1,7 @@
 import SineWavePuddle from "./gen1/SineWavePuddle";
 import SplitFlap from "./gen1/SplitFlap";
 import GenFlower1 from "./gen1/GenFlower1";
+import Kaleidoscope1 from "./gen1/Kaleidoscope1";
 import Hiroshi1 from "./gen1/Hiroshi1";
 import Trickshot from "./gen1/Trickshot";
 import ParticleFlow from "./gen1/ParticleFlow";
@@ -17,11 +18,16 @@ import SmokeTrailsGen5 from "./gen5/SmokeTrailsGen5";
 import SmokeTrailsGen6 from "./gen6/SmokeTrailsGen6";
 import SmokeTrailsGen7 from "./gen7/SmokeTrailsGen7";
 import SmokeTrailsGen8 from "./gen8/SmokeTrailsGen8";
+import Kaleidoscope2 from "./gen2/Kaleidoscope2";
+import Kaleidoscope3 from "./gen3/Kaleidoscope3";
+import Kaleidoscope4 from "./gen4/Kaleidoscope4";
+import Kaleidoscope5 from "./gen5/Kaleidoscope5";
 
 const sketches = {
     SineWavePuddle,
     SplitFlap,
     GenFlower1,
+    Kaleidoscope1,
     Hiroshi1,
     Trickshot,
     ParticleFlow,
@@ -37,7 +43,11 @@ const sketches = {
     SmokeTrailsGen5,
     SmokeTrailsGen6,
     SmokeTrailsGen7,
-    SmokeTrailsGen8
+    SmokeTrailsGen8,
+    Kaleidoscope2,
+    Kaleidoscope3,
+    Kaleidoscope4,
+    Kaleidoscope5
 };
 
 export default {...sketches};

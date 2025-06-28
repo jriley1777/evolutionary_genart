@@ -2,7 +2,7 @@ The overall goal of this app is to create an evolutionary series of generative a
 
 Each generated sketch should contain both a sketch and markdown file and we want to keep those organized.  These are currently maintained via projects.js and sketches.js which should also be updated.  Markdown files live in public/blog by generation.  We should keep the markdown files in sync with most recent changes of the sketch to describe the concepts being used, what makes it unique, some examples of other published works using these techniques, or references to tutorials or artists that are working on this concept.  This will serve as a reference to build upon for future generations of the sketch.  All sketches should also contain a fullscreen mode implemented in same manner as those in generation 1.
 
-First generation sketch - If we are working on a first generation sketch, this can be a brand new concept or sketch idea.  
+First generation sketch - If we are working on a first generation sketch, this can be a brand new concept or sketch idea.  It should exist in /sketches/gen1/ and it should have a markdown created in public/blog/gen1.  Updates should be made to import the sketch and markdown into the app.
 
 Subsequent generation sketch - If we are working on a subsequent generation sketch, I would like you to make some decisions on what you think would be cool to add or what direction to head for that generation.  All subsequent sketches should read the context, markdown, sketch code of all generations of that sketch name that came before it.  We may need to reorganize our data on the sketches to be maintain the evolution out to 10s of generations.
 

@@ -627,16 +627,14 @@ const SmokeTrailsGen7 = ({ isFullscreen = false }) => {
   };
 
   return (
-    <div className="sketch-container">
-      <Sketch
-        setup={setup}
-        draw={draw}
-        mousePressed={mousePressed}
-        mouseReleased={mouseReleased}
-        mouseMoved={mouseMoved}
-        windowResized={windowResized}
-      />
-    </div>
+    <Sketch
+      setup={setup}
+      draw={draw}
+      mousePressed={mousePressed}
+      mouseReleased={mouseReleased}
+      mouseMoved={mouseMoved}
+      windowResized={windowResized}
+    />
   );
 };
 

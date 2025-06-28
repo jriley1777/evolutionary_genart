@@ -29,6 +29,16 @@ export const projects = [
     blog: "blog/gen-flower-1.md"
   },
   {
+    type: "gen1",
+    slug: "kaleidoscope-1",
+    title: "Kaleidoscope 1",
+    description: "A mesmerizing kaleidoscope pattern with light refraction effects and triangular prism designs",
+    sketch: "Kaleidoscope1",
+    tags: ["p5.js", "generative", "interactive", "kaleidoscope", "refraction", "prism"],
+    date: "2025-01-15",
+    blog: "blog/kaleidoscope-1.md"
+  },
+  {
     type: "gen2",
     slug: "gen-flower-2",
     title: "Generative Flower 2",
@@ -187,5 +197,45 @@ export const projects = [
     tags: ["trickshot", "game"],
     date: "2025-06-14",
     blog: "blog/trickshot.md"
+  },
+  {
+    type: "gen2",
+    slug: "kaleidoscope-2",
+    title: "Kaleidoscope 2",
+    description: "Fluid, morphing, and psychedelic kaleidoscope with liquid and fractal effects.",
+    sketch: "Kaleidoscope2",
+    tags: ["p5.js", "generative", "psychedelic", "fluid", "kaleidoscope"],
+    date: "2025-01-16",
+    blog: "blog/gen2/kaleidoscope-2.md"
+  },
+  {
+    type: "gen3",
+    slug: "kaleidoscope-3",
+    title: "Kaleidoscope 3",
+    description: "DNA spirals, neural overlays, and intense color cycling in a living kaleidoscope.",
+    sketch: "Kaleidoscope3",
+    tags: ["p5.js", "generative", "psychedelic", "biological", "kaleidoscope"],
+    date: "2025-01-17",
+    blog: "blog/gen3/kaleidoscope-3.md"
+  },
+  {
+    type: "gen4",
+    slug: "kaleidoscope-4",
+    title: "Kaleidoscope 4",
+    description: "Extreme reality distortion, cosmic consciousness, and multidimensional overlays.",
+    sketch: "Kaleidoscope4",
+    tags: ["p5.js", "generative", "psychedelic", "cosmic", "kaleidoscope"],
+    date: "2025-01-18",
+    blog: "blog/gen4/kaleidoscope-4.md"
+  },
+  {
+    type: "gen5",
+    slug: "kaleidoscope-5",
+    title: "Kaleidoscope 5",
+    description: "Recursive fractals, infinite zoom, liquid glass, and ego dissolution visuals.",
+    sketch: "Kaleidoscope5",
+    tags: ["p5.js", "generative", "psychedelic", "fractal", "kaleidoscope"],
+    date: "2025-01-19",
+    blog: "blog/gen5/kaleidoscope-5.md"
   }
 ];

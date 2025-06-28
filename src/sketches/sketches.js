@@ -22,6 +22,7 @@ import Kaleidoscope2 from "./gen2/Kaleidoscope2";
 import Kaleidoscope3 from "./gen3/Kaleidoscope3";
 import Kaleidoscope4 from "./gen4/Kaleidoscope4";
 import Kaleidoscope5 from "./gen5/Kaleidoscope5";
+import Kaleidoscope6 from "./gen6/Kaleidoscope6";
 
 const sketches = {
     SineWavePuddle,
@@ -47,7 +48,8 @@ const sketches = {
     Kaleidoscope2,
     Kaleidoscope3,
     Kaleidoscope4,
-    Kaleidoscope5
+    Kaleidoscope5,
+    Kaleidoscope6
 };
 
 export default {...sketches};

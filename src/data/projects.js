@@ -237,5 +237,15 @@ export const projects = [
     tags: ["p5.js", "generative", "psychedelic", "fractal", "kaleidoscope"],
     date: "2025-01-19",
     blog: "blog/gen5/kaleidoscope-5.md"
+  },
+  {
+    type: "gen6",
+    slug: "kaleidoscope-6",
+    title: "Kaleidoscope 6",
+    description: "Wireframe fractal consciousness with colored lines revealing geometric structure.",
+    sketch: "Kaleidoscope6",
+    tags: ["p5.js", "generative", "psychedelic", "wireframe", "kaleidoscope"],
+    date: "2025-01-20",
+    blog: "blog/gen6/kaleidoscope-6.md"
   }
 ];

@@ -247,5 +247,15 @@ export const projects = [
     tags: ["p5.js", "generative", "psychedelic", "wireframe", "kaleidoscope"],
     date: "2025-01-20",
     blog: "blog/gen6/kaleidoscope-6.md"
+  },
+  {
+    type: "gen7",
+    slug: "kaleidoscope-7",
+    title: "Kaleidoscope 7",
+    description: "Image-based kaleidoscope featuring Shrek's face with color distortion and recursive patterns.",
+    sketch: "Kaleidoscope7",
+    tags: ["p5.js", "generative", "psychedelic", "image", "kaleidoscope", "shrek"],
+    date: "2025-01-21",
+    blog: "blog/gen7/kaleidoscope-7.md"
   }
 ];

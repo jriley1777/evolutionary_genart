@@ -89,6 +89,16 @@ export const projects = [
     blog: "blog/particle-flow-gen2.md"
   },
   {
+    type: "gen3",
+    slug: "particle-flow-gen3",
+    title: "Particle Flow Gen3",
+    description: "Magnetic field system with attractors, repellers, and electromagnetic particle interactions",
+    sketch: "ParticleFlowGen3",
+    tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
+    date: "2025-01-23",
+    blog: "blog/gen3/particle-flow-gen3.md"
+  },
+  {
     type: "gen1",
     slug: "smoke-trails",
     title: "Smoke Trails",

@@ -171,6 +171,7 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
     
     p5.background(0);
     p5.colorMode(p5.RGB);
+    p5.frameRate(40);
     
     centerX = p5.width / 2;
     centerY = p5.height / 2;
@@ -233,16 +234,16 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
   };
 
   const draw = (p5) => {
-    time += 0.03;
-    rotationAngle += rotationSpeed;
-    pulsePhase += 0.04;
-    colorShift += 2;
-    acidLevel = p5.sin(time * 0.3) * 0.5 + 0.5;
-    morphingFactor += 0.03;
-    dnaSpiral += 0.1;
-    organicGrowth += 0.02;
-    cellDivision += 0.01;
-    trippyMode = p5.sin(time * 0.4) * 0.5 + 0.5;
+    time += 0.015;
+    rotationAngle += rotationSpeed * 0.5;
+    pulsePhase += 0.02;
+    colorShift += 1;
+    acidLevel = p5.sin(time * 0.15) * 0.5 + 0.5;
+    morphingFactor += 0.015;
+    dnaSpiral += 0.05;
+    organicGrowth += 0.01;
+    cellDivision += 0.005;
+    trippyMode = p5.sin(time * 0.2) * 0.5 + 0.5;
     
     mouseX = p5.mouseX - centerX;
     mouseY = p5.mouseY - centerY;
@@ -477,10 +478,6 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
     p5.push();
     p5.translate(centerX, centerY);
     p5.rotate(time * 3);
-    
-    // Outer consciousness ring
-    p5.fill(coreColor.r, coreColor.g, coreColor.b, 30);
-    p5.circle(0, 0, coreSize * 6);
     
     // Inner consciousness layers
     for (let i = 0; i < 12; i++) {

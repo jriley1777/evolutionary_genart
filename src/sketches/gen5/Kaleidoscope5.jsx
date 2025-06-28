@@ -21,90 +21,6 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
   let glassWarp = 0;
   let recursionDepth = 4;
   let infiniteZoom = 0;
-  
-  // Particle system for liquid glass effects
-  let glassParticles = [];
-  let maxParticles = 200;
-  let glassField = [];
-
-  class GlassParticle {
-    constructor(p5) {
-      this.pos = p5.createVector(
-        p5.random(-p5.width/2, p5.width/2),
-        p5.random(-p5.height/2, p5.height/2)
-      );
-      this.vel = p5.createVector(
-        p5.random(-4, 4),
-        p5.random(-4, 4)
-      );
-      this.life = 255;
-      this.decay = p5.random(0.2, 5);
-      this.size = p5.random(1, 25);
-      this.phase = p5.random(p5.TWO_PI);
-      this.frequency = p5.random(0.1, 6);
-      this.amplitude = p5.random(10, 120);
-    }
-
-    update(p5) {
-      // Apply glass field forces
-      const fieldX = Math.floor((this.pos.x + p5.width/2) / 18);
-      const fieldY = Math.floor((this.pos.y + p5.height/2) / 18);
-      
-      if (fieldX >= 0 && fieldX < glassField.length && 
-          fieldY >= 0 && fieldY < glassField[0].length) {
-        const fieldForce = glassField[fieldX][fieldY];
-        this.vel.add(fieldForce);
-      }
-      
-      // Add liquid glass movement
-      this.vel.x += p5.sin(this.phase + time * this.frequency) * 0.7;
-      this.vel.y += p5.cos(this.phase + time * this.frequency) * 0.7;
-      
-      // Ego dissolution effect
-      this.vel.x += p5.sin(egoDissolution + this.pos.y * 0.03) * 1.2;
-      this.vel.y += p5.cos(egoDissolution + this.pos.x * 0.03) * 1.2;
-      
-      this.vel.limit(8);
-      this.pos.add(this.vel);
-      this.life -= this.decay;
-      
-      // Wrap around screen
-      if (this.pos.x < -p5.width/2) this.pos.x = p5.width/2;
-      if (this.pos.x > p5.width/2) this.pos.x = -p5.width/2;
-      if (this.pos.y < -p5.height/2) this.pos.y = p5.height/2;
-      if (this.pos.y > p5.height/2) this.pos.y = -p5.height/2;
-    }
-
-    show(p5) {
-      if (this.life > 0) {
-        const alpha = p5.map(this.life, 0, 255, 0, 255);
-        const size = this.size + p5.sin(this.phase + time * 4) * 6;
-        
-        p5.push();
-        p5.translate(this.pos.x, this.pos.y);
-        p5.rotate(this.phase + time * 2);
-        
-        // Draw liquid glass droplet
-        const hue = (colorShift + this.phase * 120) % 360;
-        const color = hslToRgb(p5, hue, 100, 90);
-        p5.fill(color.r, color.g, color.b, alpha * 0.7);
-        p5.noStroke();
-        p5.beginShape();
-        for (let i = 0; i < 10; i++) {
-          const angle = (i / 10) * p5.TWO_PI;
-          const radius = size + p5.sin(glassWarp + angle * 7) * 8;
-          p5.vertex(p5.cos(angle) * radius, p5.sin(angle) * radius);
-        }
-        p5.endShape(p5.CLOSE);
-        
-        p5.pop();
-      }
-    }
-
-    isDead() {
-      return this.life <= 0;
-    }
-  }
 
   const setup = (p5, canvasParentRef) => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
@@ -118,69 +34,25 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
     
     p5.background(0);
     p5.colorMode(p5.RGB);
+    p5.frameRate(40); // Set to 40 fps for optimal motion
     
     centerX = p5.width / 2;
     centerY = p5.height / 2;
-    
-    // Initialize glass field
-    initializeGlassField(p5);
-    
-    // Initialize glass particles
-    for (let i = 0; i < maxParticles; i++) {
-      glassParticles.push(new GlassParticle(p5));
-    }
-  };
-
-  const initializeGlassField = (p5) => {
-    const cols = Math.floor(p5.width / 18);
-    const rows = Math.floor(p5.height / 18);
-    
-    glassField = [];
-    for (let x = 0; x < cols; x++) {
-      glassField[x] = [];
-      for (let y = 0; y < rows; y++) {
-        glassField[x][y] = p5.createVector(0, 0);
-      }
-    }
-  };
-
-  const updateGlassField = (p5) => {
-    const cols = glassField.length;
-    const rows = glassField[0].length;
-    
-    for (let x = 0; x < cols; x++) {
-      for (let y = 0; y < rows; y++) {
-        const worldX = (x - cols/2) * 18;
-        const worldY = (y - rows/2) * 18;
-        
-        // Create glass warp patterns
-        const angle = p5.noise(worldX * 0.01, worldY * 0.01, time * 0.2) * p5.TWO_PI * 16;
-        const force = p5.noise(worldX * 0.02, worldY * 0.02, time * 0.1) * glassWarp;
-        
-        glassField[x][y] = p5.createVector(
-          p5.cos(angle) * force,
-          p5.sin(angle) * force
-        );
-      }
-    }
   };
 
   const draw = (p5) => {
-    time += 0.05;
-    rotationAngle += rotationSpeed;
-    pulsePhase += 0.06;
-    colorShift += 4;
-    glassWarp = p5.sin(time * 0.25) * 1.2 + 0.8;
-    egoDissolution += 0.04;
-    infiniteZoom += 0.01 * zoomDirection;
+    time += 0.008;
+    rotationAngle += rotationSpeed * 0.15;
+    pulsePhase += 0.015;
+    colorShift += 0.6;
+    glassWarp = p5.sin(time * 0.05) * 0.5 + 0.8;
+    egoDissolution += 0.008;
+    infiniteZoom += 0.002 * zoomDirection;
     if (infiniteZoom > 2 || infiniteZoom < 0.5) zoomDirection *= -1;
-    fractalZoom = 1 + p5.sin(infiniteZoom) * 0.7;
+    fractalZoom = 1 + p5.sin(infiniteZoom) * 0.2;
     
     mouseX = p5.mouseX - centerX;
     mouseY = p5.mouseY - centerY;
-    
-    // Update glass field
-    updateGlassField(p5);
     
     // Clear background with glass fade
     p5.fill(0, 0, 0, 6);
@@ -188,17 +60,6 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
     
     // Draw recursive fractal kaleidoscope
     drawRecursiveKaleidoscope(p5, recursionDepth, fractalZoom);
-    
-    // Update and draw glass particles
-    glassParticles = glassParticles.filter(particle => {
-      particle.update(p5);
-      particle.show(p5);
-      return !particle.isDead();
-    });
-    
-    while (glassParticles.length < maxParticles) {
-      glassParticles.push(new GlassParticle(p5));
-    }
     
     // Draw central ego dissolution core
     drawEgoDissolutionCore(p5);
@@ -253,7 +114,7 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
       // Fractal highlights
       if (layer % 4 === 0) {
         const highlightColor = hslToRgb(p5, (colorShift + 180) % 360, 100, 95);
-        p5.fill(highlightColor.r, highlightColor.g, highlightColor.b, 120);
+        p5.fill(highlightColor.r, highlightColor.g, highlightColor.b, 180);
         p5.beginShape();
         for (let j = 0; j <= numPoints/4; j++) {
           const angle = (j / (numPoints/4)) * (p5.PI / segments);
@@ -268,33 +129,20 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
   };
 
   const drawEgoDissolutionCore = (p5) => {
-    const coreSize = 100 + p5.sin(pulsePhase) * 50;
-    const coreColor = hslToRgb(p5, colorShift % 360, 100, 98);
+    const coreSize = 100 + p5.sin(pulsePhase) * 30;
     p5.push();
     p5.translate(centerX, centerY);
-    p5.rotate(time * 5);
-    // Outer core
-    p5.fill(coreColor.r, coreColor.g, coreColor.b, 18);
-    p5.circle(0, 0, coreSize * 10);
-    // Inner core
+    p5.rotate(time * 2);
+    // Inner core - colorful orbiting circles
     for (let i = 0; i < 20; i++) {
-      const angle = (i / 20) * p5.TWO_PI + time * 3;
+      const angle = (i / 20) * p5.TWO_PI + time * 1.5;
       const radius = coreSize * 2.8;
       const x = p5.cos(angle) * radius;
       const y = p5.sin(angle) * radius;
       const coreHighlight = hslToRgb(p5, (colorShift + i * 18) % 360, 100, 90);
       p5.fill(coreHighlight.r, coreHighlight.g, coreHighlight.b, 210);
-      p5.circle(x, y, 14 + p5.sin(time * 4 + i) * 7);
+      p5.circle(x, y, 14 + p5.sin(time * 2 + i) * 5);
     }
-    // Central core
-    p5.fill(coreColor.r, coreColor.g, coreColor.b, 255);
-    p5.beginShape();
-    for (let i = 0; i < 24; i++) {
-      const angle = (i / 24) * p5.TWO_PI;
-      const radius = coreSize + p5.sin(angle * 7 + time * 7) * 30;
-      p5.vertex(p5.cos(angle) * radius, p5.sin(angle) * radius);
-    }
-    p5.endShape(p5.CLOSE);
     p5.pop();
   };
 
@@ -334,7 +182,6 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
     p5.text(`Fractal Zoom: ${fractalZoom.toFixed(2)}`, 10, 20);
     p5.text(`Ego Dissolution: ${egoDissolution.toFixed(2)}`, 10, 40);
     p5.text(`Glass Warp: ${glassWarp.toFixed(2)}`, 10, 60);
-    p5.text(`Glass Particles: ${glassParticles.length}`, 10, 80);
     p5.text(`Recursion Depth: ${recursionDepth}`, 10, 100);
   };
 
@@ -351,7 +198,6 @@ const Kaleidoscope5 = ({ isFullscreen = false }) => {
     p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
     centerX = p5.width / 2;
     centerY = p5.height / 2;
-    initializeGlassField(p5);
   };
 
   return (

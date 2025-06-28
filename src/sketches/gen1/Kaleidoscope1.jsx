@@ -94,6 +94,7 @@ const Kaleidoscope1 = ({ isFullscreen = false }) => {
     
     p5.background(0);
     p5.colorMode(p5.RGB);
+    p5.frameRate(40); // Set to 40 fps for optimal motion
     
     // Initialize center position
     centerX = p5.width / 2;

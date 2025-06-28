@@ -137,6 +137,7 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
     
     p5.background(0);
     p5.colorMode(p5.RGB);
+    p5.frameRate(40);
     
     centerX = p5.width / 2;
     centerY = p5.height / 2;
@@ -354,10 +355,6 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
     p5.push();
     p5.translate(centerX, centerY);
     p5.rotate(time * 2);
-    
-    // Outer fluid ring
-    p5.fill(coreColor.r, coreColor.g, coreColor.b, 50);
-    p5.circle(0, 0, coreSize * 4);
     
     // Inner fluid shapes
     for (let i = 0; i < 8; i++) {

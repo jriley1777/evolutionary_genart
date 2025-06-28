@@ -205,6 +205,7 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
     
     p5.background(0);
     p5.colorMode(p5.RGB);
+    p5.frameRate(40); // Set to 40 fps for optimal motion
     
     centerX = p5.width / 2;
     centerY = p5.height / 2;
@@ -217,7 +218,7 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
       quantumEntanglement.push({
         x: p5.random(-p5.width/2, p5.width/2),
         y: p5.random(-p5.height/2, p5.height/2),
-        entangled: Math.floor(p5.random(maxEntangled)),
+        partner: null,
         phase: p5.random(p5.TWO_PI)
       });
     }
@@ -279,15 +280,15 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
   };
 
   const draw = (p5) => {
-    time += 0.04;
-    rotationAngle += rotationSpeed;
-    pulsePhase += 0.05;
-    colorShift += 3;
-    realityDistortion = p5.sin(time * 0.2) * 0.8 + 0.2;
-    timeDilation = p5.sin(time * 0.15) * 0.5 + 0.5;
-    cosmicConsciousness += 0.02;
-    egoDissolution += 0.03;
-    dimensionalShift += 0.01;
+    time += 0.02;
+    rotationAngle += rotationSpeed * 0.4;
+    pulsePhase += 0.025;
+    colorShift += 1.5;
+    realityDistortion = p5.sin(time * 0.1) * 0.8 + 0.2;
+    timeDilation = p5.sin(time * 0.075) * 0.5 + 0.5;
+    cosmicConsciousness += 0.01;
+    egoDissolution += 0.015;
+    dimensionalShift += 0.005;
     
     mouseX = p5.mouseX - centerX;
     mouseY = p5.mouseY - centerY;
@@ -570,10 +571,6 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
     p5.push();
     p5.translate(centerX, centerY);
     p5.rotate(time * 4);
-    
-    // Outer cosmic ring
-    p5.fill(coreColor.r, coreColor.g, coreColor.b, 20);
-    p5.circle(0, 0, coreSize * 8);
     
     // Inner cosmic layers
     for (let i = 0; i < 16; i++) {

@@ -55,7 +55,8 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
       const fieldX = Math.floor((this.pos.x + p5.width/2) / 30);
       const fieldY = Math.floor((this.pos.y + p5.height/2) / 30);
       
-      if (fieldX >= 0 && fieldX < energyField.length && 
+      if (energyField && energyField.length > 0 && energyField[0] && 
+          fieldX >= 0 && fieldX < energyField.length && 
           fieldY >= 0 && fieldY < energyField[0].length) {
         const fieldForce = energyField[fieldX][fieldY];
         this.vel.add(fieldForce);
@@ -206,6 +207,11 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
   };
 
   const updateEnergyField = (p5) => {
+    if (!energyField || energyField.length === 0 || !energyField[0]) {
+      initializeEnergyField(p5);
+      return;
+    }
+    
     const cols = energyField.length;
     const rows = energyField[0].length;
     
@@ -214,9 +220,9 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
         const worldX = (x - cols/2) * 30;
         const worldY = (y - rows/2) * 30;
         
-        // Create psychedelic energy patterns
-        const angle = p5.noise(worldX * 0.005, worldY * 0.005, time * 0.3) * p5.TWO_PI * 8;
-        const force = p5.noise(worldX * 0.01, worldY * 0.01, time * 0.2) * acidLevel;
+        // Create psychedelic energy flow
+        const angle = p5.noise(worldX * 0.02, worldY * 0.02, time * 0.3) * p5.TWO_PI * 6;
+        const force = p5.noise(worldX * 0.01, worldY * 0.01, time * 0.2) * 0.8;
         
         energyField[x][y] = p5.createVector(
           p5.cos(angle) * force,
@@ -302,6 +308,12 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
       const morphing = p5.sin(morphingFactor + layer * 0.3) * 0.5;
       const organic = p5.sin(organicGrowth + layer * 0.2) * 20;
       
+      // Calculate intense psychedelic colors for this layer
+      const hue = (colorShift + segmentIndex * 60 + layer * 15) % 360;
+      const saturation = 100;
+      const lightness = 50 + p5.sin(time * 2 + layer) * 30;
+      const color = hslToRgb(p5, hue, saturation, lightness);
+      
       // Create organic shape
       p5.beginShape();
       
@@ -318,13 +330,6 @@ const Kaleidoscope3 = ({ isFullscreen = false }) => {
         const dnaEffect = p5.sin(dnaSpiral + angle * 6) * 5;
         const finalX = x + ripple * p5.cos(angle) + dnaEffect;
         const finalY = y + ripple * p5.sin(angle) + dnaEffect;
-        
-        // Calculate intense psychedelic colors
-        const hue = (colorShift + segmentIndex * 60 + layer * 15) % 360;
-        const saturation = 100;
-        const lightness = 50 + p5.sin(time * 2 + layer) * 30;
-        
-        const color = hslToRgb(p5, hue, saturation, lightness);
         
         if (j === 0) {
           p5.fill(color.r, color.g, color.b, 200);

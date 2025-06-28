@@ -57,7 +57,8 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
       const fieldX = Math.floor((this.pos.x + p5.width/2) / 25);
       const fieldY = Math.floor((this.pos.y + p5.height/2) / 25);
       
-      if (fieldX >= 0 && fieldX < realityField.length && 
+      if (realityField && realityField.length > 0 && realityField[0] && 
+          fieldX >= 0 && fieldX < realityField.length && 
           fieldY >= 0 && fieldY < realityField[0].length) {
         const fieldForce = realityField[fieldX][fieldY];
         this.vel.add(fieldForce);
@@ -252,6 +253,11 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
   };
 
   const updateRealityField = (p5) => {
+    if (!realityField || realityField.length === 0 || !realityField[0]) {
+      initializeRealityField(p5);
+      return;
+    }
+    
     const cols = realityField.length;
     const rows = realityField[0].length;
     
@@ -260,9 +266,9 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
         const worldX = (x - cols/2) * 25;
         const worldY = (y - rows/2) * 25;
         
-        // Create reality distortion patterns
-        const angle = p5.noise(worldX * 0.003, worldY * 0.003, time * 0.2) * p5.TWO_PI * 12;
-        const force = p5.noise(worldX * 0.008, worldY * 0.008, time * 0.1) * realityDistortion;
+        // Create reality distortion field
+        const angle = p5.noise(worldX * 0.03, worldY * 0.03, time * 0.2) * p5.TWO_PI * 8;
+        const force = p5.noise(worldX * 0.015, worldY * 0.015, time * 0.1) * 1.2;
         
         realityField[x][y] = p5.createVector(
           p5.cos(angle) * force,
@@ -379,6 +385,12 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
       const consciousness = p5.sin(cosmicConsciousness + layer * 0.3) * 30;
       const ego = p5.sin(egoDissolution + layer * 0.2) * 25;
       
+      // Calculate extreme psychedelic colors for this layer
+      const hue = (colorShift + segmentIndex * 45 + layer * 12) % 360;
+      const saturation = 100;
+      const lightness = 40 + p5.sin(time * 3 + layer) * 40;
+      const color = hslToRgb(p5, hue, saturation, lightness);
+      
       // Create extreme shape
       p5.beginShape();
       
@@ -396,13 +408,6 @@ const Kaleidoscope4 = ({ isFullscreen = false }) => {
         const consciousnessEffect = p5.sin(cosmicConsciousness + angle * 12) * 8;
         const finalX = x + realityRipple * p5.cos(angle) + timeEffect + consciousnessEffect;
         const finalY = y + realityRipple * p5.sin(angle) + timeEffect + consciousnessEffect;
-        
-        // Calculate extreme psychedelic colors
-        const hue = (colorShift + segmentIndex * 45 + layer * 12) % 360;
-        const saturation = 100;
-        const lightness = 40 + p5.sin(time * 3 + layer) * 40;
-        
-        const color = hslToRgb(p5, hue, saturation, lightness);
         
         if (j === 0) {
           p5.fill(color.r, color.g, color.b, 220);

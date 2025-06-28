@@ -56,7 +56,8 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
       const fieldX = Math.floor((this.pos.x + p5.width/2) / 20);
       const fieldY = Math.floor((this.pos.y + p5.height/2) / 20);
       
-      if (fieldX >= 0 && fieldX < fluidField.length && 
+      if (fluidField && fluidField.length > 0 && fluidField[0] && 
+          fieldX >= 0 && fieldX < fluidField.length && 
           fieldY >= 0 && fieldY < fluidField[0].length) {
         const fieldForce = fluidField[fieldX][fieldY];
         this.acc.add(fieldForce);
@@ -163,6 +164,11 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
   };
 
   const updateFluidField = (p5) => {
+    if (!fluidField || fluidField.length === 0 || !fluidField[0]) {
+      initializeFluidField(p5);
+      return;
+    }
+    
     const cols = fluidField.length;
     const rows = fluidField[0].length;
     
@@ -254,6 +260,12 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
       const morphing = p5.sin(morphingFactor + layer * 0.2) * 0.3;
       const wave = p5.sin(layerRadius * waveFrequency + time) * waveAmplitude;
       
+      // Calculate psychedelic colors for this layer
+      const hue = (colorShift + segmentIndex * 45 + layer * 20) % 360;
+      const saturation = 80 + trippyMode * 20;
+      const lightness = 60 + p5.sin(time + layer) * 20;
+      const color = hslToRgb(p5, hue, saturation, lightness);
+      
       // Create liquid shape
       p5.beginShape();
       
@@ -269,13 +281,6 @@ const Kaleidoscope2 = ({ isFullscreen = false }) => {
         const ripple = p5.sin(angle * 8 + time * 3) * 5;
         const finalX = x + ripple * p5.cos(angle);
         const finalY = y + ripple * p5.sin(angle);
-        
-        // Calculate psychedelic colors
-        const hue = (colorShift + segmentIndex * 45 + layer * 20) % 360;
-        const saturation = 80 + trippyMode * 20;
-        const lightness = 60 + p5.sin(time + layer) * 20;
-        
-        const color = hslToRgb(p5, hue, saturation, lightness);
         
         if (j === 0) {
           p5.fill(color.r, color.g, color.b, 180);

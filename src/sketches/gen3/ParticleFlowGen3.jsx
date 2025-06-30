@@ -27,7 +27,7 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
       this.acc = p5.createVector(0, 0);
       this.maxSpeed = p5.random(2, 5);
       this.prevPos = this.pos.copy();
-      this.life = .33;
+      this.life = 1.0;
       this.age = 0;
       this.maxAge = p5.random(400, 600);
       this.evolutionStage = 1;

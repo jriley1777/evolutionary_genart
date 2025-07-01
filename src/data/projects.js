@@ -209,6 +209,36 @@ export const projects = [
     blog: "blog/trickshot.md"
   },
   {
+    type: "gen1",
+    slug: "synth-spirograph",
+    title: "SynthSpirograph",
+    description: "Animated stencil spirograph with synthwave aesthetics and real-time drawing",
+    sketch: "SynthSpirograph",
+    tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "mathematical"],
+    date: "2025-01-24",
+    blog: "blog/gen1/synth-spirograph.md"
+  },
+  {
+    type: "gen2",
+    slug: "synth-spirograph-2",
+    title: "SynthSpirograph2",
+    description: "Multi-layered spirograph with depth effects and harmonic complexity",
+    sketch: "SynthSpirograph2",
+    tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "layered", "depth"],
+    date: "2025-01-25",
+    blog: "blog/gen2/synth-spirograph-2.md"
+  },
+  {
+    type: "gen3",
+    slug: "synth-spirograph-3",
+    title: "SynthSpirograph3",
+    description: "Interactive physics-based spirograph with dynamic user-responsive behavior",
+    sketch: "SynthSpirograph3",
+    tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "physics", "dynamic"],
+    date: "2025-01-26",
+    blog: "blog/gen3/synth-spirograph-3.md"
+  },
+  {
     type: "gen2",
     slug: "kaleidoscope-2",
     title: "Kaleidoscope 2",

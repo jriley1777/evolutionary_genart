@@ -6,6 +6,9 @@ import Hiroshi1 from "./gen1/Hiroshi1";
 import Trickshot from "./gen1/Trickshot";
 import ParticleFlow from "./gen1/ParticleFlow";
 import SmokeTrails from "./gen1/SmokeTrails";
+import SynthSpirograph from "./gen1/SynthSpirograph";
+import SynthSpirograph2 from "./gen2/SynthSpirograph2";
+import SynthSpirograph3 from "./gen3/SynthSpirograph3";
 import ParticleFlowGen2 from "./gen2/ParticleFlowGen2";
 import ParticleFlowGen3 from "./gen3/ParticleFlowGen3";
 import SineWavePuddleGen2 from "./gen2/SineWavePuddleGen2";
@@ -35,6 +38,9 @@ const sketches = {
     Trickshot,
     ParticleFlow,
     SmokeTrails,
+    SynthSpirograph,
+    SynthSpirograph2,
+    SynthSpirograph3,
     ParticleFlowGen2,
     ParticleFlowGen3,
     SineWavePuddleGen2,

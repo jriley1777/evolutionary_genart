@@ -53,7 +53,7 @@ Update these shared project files as needed:
 
 ## 🎨 Generative Art Topics & Dimensions of Randomness
 
-Below are key topics and creative directions to explore. Each includes example variables or randomness types to play with.
+Below are key topics and creative directions to explore. Each includes example variables or randomness types to play with, as well as artists, tutorials, or reference materials.
 
 ---
 
@@ -67,6 +67,12 @@ ASCII art, typography grids, generative letterforms
   * SVG letter distortion
   * Placement grid noise
   * Text input-based seeds
+* **Artists & References:**
+
+  * [LIA](https://www.liaworks.com/) – generative poetry and visual language
+  * [Yuri Vishnevsky (Silk)](https://weavesilk.com/)
+  * [Rune Madsen's Printing Code](http://printingcode.runemadsen.com/)
+  * Daniel Shiffman – [Coding Train - Text Effects](https://www.youtube.com/watch?v=ZiYdOwOrGyc)
 
 ---
 
@@ -80,6 +86,12 @@ Swarming systems, bouncing particles, attraction/repulsion
   * Shape (circle, triangle, emoji, etc.)
   * Force type: gravity, spring, magnetic
   * Dynamic user forces (mouse, keyboard)
+* **Artists & References:**
+
+  * [Reza Ali](http://www.syedrezaali.com/)
+  * [Memo Akten](https://www.memo.tv/)
+  * [OpenProcessing Particle Systems](https://www.openprocessing.org/sketch/1123696)
+  * Shiffman – [Coding Train - Particle Systems](https://www.youtube.com/watch?v=UcdigVaIYAk)
 
 ---
 
@@ -93,6 +105,12 @@ Gravity simulations, collisions, soft-body interactions
   * Constraints between bodies
   * Force vectors over time
   * User interactions toggling world rules
+* **Libraries & References:**
+
+  * [matter.js](https://brm.io/matter-js/)
+  * [toxiclibs.js](https://github.com/hapticdata/toxiclibsjs)
+  * [Andreas Gysin](https://www.gysin-vanetti.com/)
+  * [Traer Physics in Processing](https://www.cs.princeton.edu/~traer/physics/)
 
 ---
 
@@ -106,6 +124,12 @@ Transparent shapes revealing new palettes through blending
   * Blend mode (multiply, screen, etc.)
   * Color harmonies (complementary, triadic)
   * Movement algorithms (circular, Perlin, noise loops)
+* **Artists & Inspiration:**
+
+  * [Georg Nees](https://en.wikipedia.org/wiki/Georg_Nees)
+  * [Casey Reas](https://reas.com/)
+  * [Generative Design Book](https://www.generative-gestaltung.de/2/)
+  * [SVG Blending Modes Tutorial](https://css-tricks.com/svg-compositing-goes-blending/)
 
 ---
 
@@ -118,6 +142,11 @@ Circle packing, Voronoi, lattice structures
   * Packing radius, collision rule
   * Grid density/spacing
   * Hybrid organic-mechanical layout rules
+* **References & Tools:**
+
+  * [Mike Bostock - D3 Voronoi](https://observablehq.com/@d3/d3-voronoi)
+  * [Circle Packing - OpenProcessing](https://openprocessing.org/sketch/1000196)
+  * [RedBlobGames - Spatial Algorithms](https://www.redblobgames.com/)
 
 ---
 
@@ -131,6 +160,11 @@ Fractals, L-systems, nested subdivisions
   * Recursion depth
   * Angle offsets, scale decay
   * Mutation of rules over generations
+* **Resources:**
+
+  * [The Nature of Code - Recursion](https://natureofcode.com/book/chapter-8-fractals/)
+  * [Lindenmayer Systems Tutorial](https://www.youtube.com/watch?v=E1B4UoSQMF4)
+  * [Complexity Explorables](https://www.complexity-explorables.org/)
 
 ---
 
@@ -144,6 +178,11 @@ Use input to affect visuals directly
   * Interaction response style (smooth, elastic, delayed)
   * Time-based or event-driven state changes
   * Reveal/hide states depending on input
+* **Reference Projects:**
+
+  * [p5.js Input Examples](https://p5js.org/examples/interaction.html)
+  * [Joshua Davis](https://www.joshuadavis.com/) – interactive generative design
+  * [Zach Lieberman](https://zachlieberman.net/)
 
 ---
 
@@ -157,6 +196,11 @@ Non-looping systems, generative timelines
   * Noise modulation over time
   * Discrete vs continuous evolution
   * “Aging” of forms or color palettes
+* **Tutorials & Concepts:**
+
+  * [Noise Walk - Coding Train](https://www.youtube.com/watch?v=nmXMgqjQzls)
+  * [p5.js FrameCount Guide](https://p5js.org/reference/#/p5/frameCount)
+  * [OpenRNDR Timelines](https://openrndr.org/)
 
 ---
 
@@ -170,6 +214,45 @@ Self-modifying sketches across generations
   * Structural evolution (new layers added)
   * Visual DNA that determines traits
   * History-informed randomness (e.g., inherit half from gen-2, half from gen-3)
+* **Inspiration & Tools:**
+
+  * [Galanter's Taxonomy of Generative Art](https://www.philipgalanter.com/downloads/ga2003_paper.pdf)
+  * [NEAT - Neuroevolution](http://nn.cs.utexas.edu/?neat)
+  * [Genetic Algorithm Visualizations](https://rednuht.org/genetic_walkers/)
+
+---
+
+### 10. **Constraint Systems & Rule-Based Play**
+
+Emergence through structured limits and simple rules
+
+* **Randomization Ideas:**
+
+  * Toggle constraints per generation
+  * Enforce local symmetry, repetition, or mirroring
+  * Apply Turing patterns or tile rules
+* **References:**
+
+  * [Wave Function Collapse Algorithm](https://www.boristhebrave.com/2020/04/13/wave-function-collapse-explained/)
+  * [Rulesets in Generative Design](https://tylerxhobbs.com/essays/2020/generative-mechanism-design)
+  * [PixSort & Glitch Art](https://github.com/satyarth/pixsort)
+
+---
+
+### 11. **Generative Collage & Image Deconstruction**
+
+Mixing found imagery, scanned materials, or hand drawings with generative overlays
+
+* **Randomization Ideas:**
+
+  * Crop, pixel sort, edge detect
+  * Layer composition order
+  * Palette swaps, masking
+* **Artists & Ideas:**
+
+  * [Mario Klingemann](https://quasimondo.com/)
+  * [Sofia Crespo](https://www.sofiacrespo.com/)
+  * [Photomosh](https://photomosh.com/) for glitch aesthetic
 
 ---
 

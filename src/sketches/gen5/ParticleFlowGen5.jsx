@@ -8,33 +8,79 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
   let mouseX = 0;
   let mouseY = 0;
   let time = 0;
-  let layers = [];
-  let layerCount = 5;
+  let evolutionTimer = 0;
+  let mutationRate = 0.001;
+  let generation = 0;
 
-  class LayeredParticle {
-    constructor(p5, layerIndex) {
-      this.pos = p5.createVector(p5.random(p5.width), p5.random(p5.height));
+  // Visual DNA system - particles inherit and mutate traits
+  class VisualDNA {
+    constructor(p5, parentDNA = null) {
+      if (parentDNA) {
+        // Inherit from parent with mutation
+        this.shapeType = this.mutateValue(parentDNA.shapeType, ['circle', 'square', 'triangle', 'star', 'cross']);
+        this.colorHue = this.mutateRange(parentDNA.colorHue, 0, 360, 20);
+        this.size = this.mutateRange(parentDNA.size, 0.5, 8, 0.5);
+        this.speed = this.mutateRange(parentDNA.speed, 0.5, 4, 0.3);
+        this.lifespan = this.mutateRange(parentDNA.lifespan, 100, 600, 50);
+        this.behavior = this.mutateValue(parentDNA.behavior, ['flow', 'swarm', 'orbit', 'pulse', 'spiral']);
+        this.specialAbility = this.mutateValue(parentDNA.specialAbility, ['none', 'attract', 'repel', 'multiply', 'transform']);
+      } else {
+        // Random initial DNA
+        this.shapeType = p5.random(['circle', 'square', 'triangle', 'star', 'cross']);
+        this.colorHue = p5.random(360);
+        this.size = p5.random(0.5, 8);
+        this.speed = p5.random(0.5, 4);
+        this.lifespan = p5.random(100, 600);
+        this.behavior = p5.random(['flow', 'swarm', 'orbit', 'pulse', 'spiral']);
+        this.specialAbility = p5.random(['none', 'attract', 'repel', 'multiply', 'transform']);
+      }
+    }
+
+    mutateValue(value, options) {
+      if (Math.random() < mutationRate) {
+        return options[Math.floor(Math.random() * options.length)];
+      }
+      return value;
+    }
+
+    mutateRange(value, min, max, range) {
+      if (Math.random() < mutationRate) {
+        return Math.max(min, Math.min(max, value + (Math.random() - 0.5) * range));
+      }
+      return value;
+    }
+  }
+
+  class EvolvingParticle {
+    constructor(p5, x, y, parentDNA = null) {
+      this.pos = p5.createVector(x || p5.random(p5.width), y || p5.random(p5.height));
       this.vel = p5.createVector(0, 0);
       this.acc = p5.createVector(0, 0);
-      this.maxSpeed = p5.random(1, 4);
       this.prevPos = this.pos.copy();
-      this.life = 1.0;
-      this.age = 0;
-      this.maxAge = p5.random(200, 400);
-      this.evolutionStage = 0;
-      this.temperature = p5.random(0, 1);
-      this.noiseOffset = p5.random(1000);
-      this.layerIndex = layerIndex;
-      this.layerOpacity = 1.0 - (layerIndex / layerCount);
-      this.lineCount = p5.random(3, 8);
-      this.lineLength = p5.random(5, 15);
-      this.rotation = p5.random(p5.TWO_PI);
-      this.rotationSpeed = p5.random(-0.05, 0.05);
       
-      // Evolution parameters
-      this.originalMaxSpeed = this.maxSpeed;
-      this.originalSize = p5.random(0.5, 2);
-      this.size = this.originalSize;
+      // Visual DNA determines particle traits
+      this.dna = new VisualDNA(p5, parentDNA);
+      this.maxSpeed = this.dna.speed;
+      this.maxAge = this.dna.lifespan;
+      
+      // Evolution tracking
+      this.age = 0;
+      this.life = 1.0;
+      this.evolutionStage = 0;
+      this.generation = generation;
+      this.mutationCount = 0;
+      this.offspringCount = 0;
+      
+      // Behavior-specific properties
+      this.phase = p5.random(p5.TWO_PI);
+      this.orbitRadius = p5.random(20, 100);
+      this.pulseFrequency = p5.random(0.02, 0.1);
+      this.spiralAngle = 0;
+      
+      // Special ability cooldowns
+      this.abilityCooldown = 0;
+      this.attractionRadius = 50;
+      this.repulsionRadius = 30;
     }
 
     update(p5) {
@@ -43,25 +89,21 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
       
       // Evolution stages
       if (this.age < this.maxAge * 0.3) {
-        this.evolutionStage = 0; // Young - growing
-        this.size = this.originalSize + (this.age / (this.maxAge * 0.3)) * 1;
+        this.evolutionStage = 0; // Young - learning
       } else if (this.age < this.maxAge * 0.7) {
-        this.evolutionStage = 1; // Mature - stable
-        this.size = this.originalSize + 1;
+        this.evolutionStage = 1; // Mature - reproducing
       } else {
-        this.evolutionStage = 2; // Old - shrinking
-        this.size = this.originalSize + 1 - ((this.age - this.maxAge * 0.7) / (this.maxAge * 0.3)) * 1;
+        this.evolutionStage = 2; // Old - passing on knowledge
       }
 
-      // Update temperature based on velocity
-      const speed = this.vel.mag();
-      this.temperature = p5.constrain(
-        this.temperature + (speed * 0.01),
-        0, 1
-      );
-
+      // Apply behavior-specific movement
+      this.applyBehavior(p5);
+      
       // Apply flow field forces
       this.applyFlowField(p5);
+      
+      // Apply special abilities
+      this.applySpecialAbility(p5);
 
       // Update physics
       this.vel.add(this.acc);
@@ -69,29 +111,100 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
       this.pos.add(this.vel);
       this.acc.mult(0);
 
-      // Update rotation
-      this.rotation += this.rotationSpeed;
-
-      // Update noise offset
-      this.noiseOffset += 0.01;
+      // Update behavior-specific properties
+      this.phase += this.pulseFrequency;
+      this.spiralAngle += 0.1;
 
       // Wrap around edges
-      if (this.pos.x > p5.width) {
-        this.pos.x = 0;
-        this.prevPos.x = 0;
+      if (this.pos.x > p5.width) this.pos.x = 0;
+      if (this.pos.x < 0) this.pos.x = p5.width;
+      if (this.pos.y > p5.height) this.pos.y = 0;
+      if (this.pos.y < 0) this.pos.y = p5.height;
+
+      // Reduce ability cooldown
+      if (this.abilityCooldown > 0) this.abilityCooldown--;
+
+      // Reproduction chance (mature particles)
+      if (this.evolutionStage === 1 && this.offspringCount < 3 && Math.random() < 0.001) {
+        this.reproduce(p5);
       }
-      if (this.pos.x < 0) {
-        this.pos.x = p5.width;
-        this.prevPos.x = p5.width;
+    }
+
+    applyBehavior(p5) {
+      switch (this.dna.behavior) {
+        case 'flow':
+          // Standard flow field behavior
+          break;
+        case 'swarm':
+          // Swarm towards nearby particles
+          this.swarmBehavior(p5);
+          break;
+        case 'orbit':
+          // Orbit around a central point
+          this.orbitBehavior(p5);
+          break;
+        case 'pulse':
+          // Pulsing movement
+          this.pulseBehavior(p5);
+          break;
+        case 'spiral':
+          // Spiral outward movement
+          this.spiralBehavior(p5);
+          break;
       }
-      if (this.pos.y > p5.height) {
-        this.pos.y = 0;
-        this.prevPos.y = 0;
+    }
+
+    swarmBehavior(p5) {
+      let centerX = 0, centerY = 0, count = 0;
+      particles.forEach(other => {
+        if (other !== this && p5.dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y) < 100) {
+          centerX += other.pos.x;
+          centerY += other.pos.y;
+          count++;
+        }
+      });
+      if (count > 0) {
+        centerX /= count;
+        centerY /= count;
+        const desired = p5.createVector(centerX - this.pos.x, centerY - this.pos.y);
+        desired.normalize();
+        desired.mult(0.5);
+        this.acc.add(desired);
       }
-      if (this.pos.y < 0) {
-        this.pos.y = p5.height;
-        this.prevPos.y = p5.height;
+    }
+
+    orbitBehavior(p5) {
+      const center = p5.createVector(p5.width / 2, p5.height / 2);
+      const toCenter = p5.createVector(center.x - this.pos.x, center.y - this.pos.y);
+      const distance = toCenter.mag();
+      const desiredDistance = this.orbitRadius;
+      
+      if (Math.abs(distance - desiredDistance) > 10) {
+        toCenter.normalize();
+        toCenter.mult(distance > desiredDistance ? 0.5 : -0.5);
+        this.acc.add(toCenter);
       }
+      
+      // Add perpendicular force for orbital motion
+      const perpendicular = p5.createVector(-toCenter.y, toCenter.x);
+      perpendicular.mult(0.3);
+      this.acc.add(perpendicular);
+    }
+
+    pulseBehavior(p5) {
+      const pulse = p5.sin(this.phase) * 2;
+      const pulseVector = p5.createVector(p5.cos(this.phase), p5.sin(this.phase));
+      pulseVector.mult(pulse);
+      this.acc.add(pulseVector);
+    }
+
+    spiralBehavior(p5) {
+      const spiralRadius = 20 + this.spiralAngle * 0.5;
+      const spiralX = p5.cos(this.spiralAngle) * spiralRadius;
+      const spiralY = p5.sin(this.spiralAngle) * spiralRadius;
+      const spiralVector = p5.createVector(spiralX, spiralY);
+      spiralVector.mult(0.1);
+      this.acc.add(spiralVector);
     }
 
     applyFlowField(p5) {
@@ -101,56 +214,169 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
       
       if (index >= 0 && index < flowField.length) {
         const force = flowField[index];
-        this.applyForce(force);
+        this.acc.add(force);
       }
     }
 
-    applyForce(force) {
-      this.acc.add(force);
+    applySpecialAbility(p5) {
+      if (this.abilityCooldown > 0) return;
+
+      switch (this.dna.specialAbility) {
+        case 'attract':
+          this.attractNearby(p5);
+          break;
+        case 'repel':
+          this.repelNearby(p5);
+          break;
+        case 'multiply':
+          if (Math.random() < 0.01) this.multiply(p5);
+          break;
+        case 'transform':
+          if (Math.random() < 0.005) this.transform(p5);
+          break;
+      }
+    }
+
+    attractNearby(p5) {
+      particles.forEach(other => {
+        if (other !== this && p5.dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y) < this.attractionRadius) {
+          const force = p5.createVector(this.pos.x - other.pos.x, this.pos.y - other.pos.y);
+          force.normalize();
+          force.mult(0.2);
+          other.acc.add(force);
+        }
+      });
+      this.abilityCooldown = 30;
+    }
+
+    repelNearby(p5) {
+      particles.forEach(other => {
+        if (other !== this && p5.dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y) < this.repulsionRadius) {
+          const force = p5.createVector(other.pos.x - this.pos.x, other.pos.y - this.pos.y);
+          force.normalize();
+          force.mult(0.3);
+          other.acc.add(force);
+        }
+      });
+      this.abilityCooldown = 20;
+    }
+
+    multiply(p5) {
+      if (particles.length < 200) {
+        const offspring = new EvolvingParticle(p5, this.pos.x, this.pos.y, this.dna);
+        offspring.mutationCount = this.mutationCount + 1;
+        particles.push(offspring);
+        this.offspringCount++;
+        this.abilityCooldown = 60;
+      }
+    }
+
+    transform(p5) {
+      // Randomly change one DNA trait
+      const traits = ['shapeType', 'colorHue', 'size', 'speed', 'behavior', 'specialAbility'];
+      const trait = traits[Math.floor(Math.random() * traits.length)];
+      
+      switch (trait) {
+        case 'shapeType':
+          this.dna.shapeType = p5.random(['circle', 'square', 'triangle', 'star', 'cross']);
+          break;
+        case 'colorHue':
+          this.dna.colorHue = p5.random(360);
+          break;
+        case 'size':
+          this.dna.size = p5.random(0.5, 8);
+          break;
+        case 'speed':
+          this.dna.speed = p5.random(0.5, 4);
+          this.maxSpeed = this.dna.speed;
+          break;
+        case 'behavior':
+          this.dna.behavior = p5.random(['flow', 'swarm', 'orbit', 'pulse', 'spiral']);
+          break;
+        case 'specialAbility':
+          this.dna.specialAbility = p5.random(['none', 'attract', 'repel', 'multiply', 'transform']);
+          break;
+      }
+      this.abilityCooldown = 120;
+    }
+
+    reproduce(p5) {
+      if (particles.length < 200) {
+        const offspring = new EvolvingParticle(p5, this.pos.x, this.pos.y, this.dna);
+        particles.push(offspring);
+        this.offspringCount++;
+      }
     }
 
     show(p5) {
-      // Calculate color based on temperature and evolution stage
-      let hue, saturation, brightness;
+      // Calculate color based on DNA and evolution stage
+      let hue = this.dna.colorHue;
+      let saturation = 80;
+      let brightness = 90;
       
+      // Evolution stage affects color
       if (this.evolutionStage === 0) {
-        // Young - cool blues to greens
-        hue = p5.lerp(180, 120, this.temperature);
-        saturation = 80;
-        brightness = 90;
-      } else if (this.evolutionStage === 1) {
-        // Mature - warm yellows to oranges
-        hue = p5.lerp(60, 30, this.temperature);
-        saturation = 90;
+        // Young - brighter
         brightness = 95;
+      } else if (this.evolutionStage === 1) {
+        // Mature - saturated
+        saturation = 90;
       } else {
-        // Old - deep reds to purples
-        hue = p5.lerp(0, 280, this.temperature);
-        saturation = 70;
-        brightness = 80;
+        // Old - darker
+        brightness = 70;
       }
 
-      // Draw multiple small lines with opacity layering
+      // Special abilities add visual effects
+      if (this.dna.specialAbility !== 'none') {
+        saturation = Math.min(100, saturation + 10);
+        brightness = Math.min(100, brightness + 5);
+      }
+
       p5.push();
       p5.translate(this.pos.x, this.pos.y);
-      p5.rotate(this.rotation);
       
-      for (let i = 0; i < this.lineCount; i++) {
-        const angle = (i / this.lineCount) * p5.TWO_PI;
-        const opacity = this.layerOpacity * this.life * (1 - i / this.lineCount);
-        
-        p5.stroke(hue, saturation, brightness, opacity * 255);
-        p5.strokeWeight(this.size);
-        
-        const startX = p5.cos(angle) * 2;
-        const startY = p5.sin(angle) * 2;
-        const endX = p5.cos(angle) * this.lineLength;
-        const endY = p5.sin(angle) * this.lineLength;
-        
-        p5.line(startX, startY, endX, endY);
+      // Draw shape based on DNA
+      p5.fill(hue, saturation, brightness, this.life * 255);
+      p5.noStroke();
+      
+      switch (this.dna.shapeType) {
+        case 'circle':
+          p5.circle(0, 0, this.dna.size * 2);
+          break;
+        case 'square':
+          p5.rect(-this.dna.size, -this.dna.size, this.dna.size * 2, this.dna.size * 2);
+          break;
+        case 'triangle':
+          p5.triangle(-this.dna.size, this.dna.size, this.dna.size, this.dna.size, 0, -this.dna.size);
+          break;
+        case 'star':
+          this.drawStar(p5, 0, 0, this.dna.size, this.dna.size * 0.5, 5);
+          break;
+        case 'cross':
+          p5.rect(-this.dna.size * 0.3, -this.dna.size, this.dna.size * 0.6, this.dna.size * 2);
+          p5.rect(-this.dna.size, -this.dna.size * 0.3, this.dna.size * 2, this.dna.size * 0.6);
+          break;
+      }
+      
+      // Draw evolution indicator
+      if (this.evolutionStage === 1) {
+        p5.fill(hue, saturation, brightness + 10, this.life * 100);
+        p5.circle(0, 0, this.dna.size * 3);
       }
       
       p5.pop();
+    }
+
+    drawStar(p5, x, y, outerRadius, innerRadius, points) {
+      p5.beginShape();
+      for (let i = 0; i < points * 2; i++) {
+        const angle = (i * p5.PI) / points;
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        const px = x + p5.cos(angle) * radius;
+        const py = y + p5.sin(angle) * radius;
+        p5.vertex(px, py);
+      }
+      p5.endShape(p5.CLOSE);
     }
 
     isDead() {
@@ -171,30 +397,25 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
     p5.colorMode(p5.HSB, 360, 100, 100, 1);
     p5.background(0);
     
-    // Initialize layered particles
-    initializeLayeredParticles(p5);
+    initializeEcosystem(p5);
   };
 
-  const initializeLayeredParticles = (p5) => {
+  const initializeEcosystem = (p5) => {
     particles = [];
-    const particleCount = p5.floor((p5.width * p5.height) / 1000);
+    const initialCount = 50;
     
-    for (let i = 0; i < particleCount; i++) {
-      const layerIndex = p5.floor(p5.random(layerCount));
-      particles.push(new LayeredParticle(p5, layerIndex));
+    for (let i = 0; i < initialCount; i++) {
+      particles.push(new EvolvingParticle(p5));
     }
   };
 
   const draw = (p5) => {
-    // Fade background with different opacity for each layer
-    for (let layer = 0; layer < layerCount; layer++) {
-      const layerOpacity = 0.05 - (layer * 0.01);
-      p5.fill(0, 0, 0, layerOpacity);
-      p5.noStroke();
-      p5.rect(0, 0, p5.width, p5.height);
-    }
+    // Fade background
+    p5.fill(0, 0, 0, 0.1);
+    p5.noStroke();
+    p5.rect(0, 0, p5.width, p5.height);
 
-    // Update flow field with layer-specific variations
+    // Update flow field
     const cols = p5.floor(p5.width / 20);
     const rows = p5.floor(p5.height / 20);
     flowField = new Array(cols * rows);
@@ -224,31 +445,33 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
       }
     }
 
-    // Update and show particles by layer
-    for (let layer = 0; layer < layerCount; layer++) {
-      const layerParticles = particles.filter(p => p.layerIndex === layer);
+    // Update and show particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update(p5);
+      particles[i].show(p5);
       
-      for (let i = layerParticles.length - 1; i >= 0; i--) {
-        layerParticles[i].update(p5);
-        layerParticles[i].show(p5);
-        
-        // Remove dead particles and add new ones
-        if (layerParticles[i].isDead()) {
-          const index = particles.indexOf(layerParticles[i]);
-          if (index > -1) {
-            particles.splice(index, 1);
-            addNewLayeredParticle(p5, layer);
-          }
-        }
+      // Remove dead particles
+      if (particles[i].isDead()) {
+        particles.splice(i, 1);
+      }
+    }
+
+    // Evolution timer
+    evolutionTimer++;
+    if (evolutionTimer > 600) { // Every 10 seconds
+      evolutionTimer = 0;
+      generation++;
+      mutationRate = Math.min(0.01, mutationRate + 0.0001); // Increase mutation rate over time
+    }
+
+    // Add new particles if population is low
+    if (particles.length < 30) {
+      for (let i = 0; i < 5; i++) {
+        particles.push(new EvolvingParticle(p5));
       }
     }
 
     time += 0.02;
-  };
-
-  const addNewLayeredParticle = (p5, layerIndex) => {
-    const particle = new LayeredParticle(p5, layerIndex);
-    particles.push(particle);
   };
 
   const mouseMoved = (p5) => {
@@ -256,7 +479,26 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
     mouseY = p5.mouseY;
   };
 
-  return <Sketch setup={setup} draw={draw} mouseMoved={mouseMoved} />;
+  const mousePressed = (p5) => {
+    // Click to add new particle with random DNA
+    particles.push(new EvolvingParticle(p5, p5.mouseX, p5.mouseY));
+  };
+
+  const windowResized = (p5) => {
+    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    p5.background(0);
+    initializeEcosystem(p5);
+  };
+
+  return (
+    <Sketch 
+      setup={setup} 
+      draw={draw} 
+      mouseMoved={mouseMoved}
+      mousePressed={mousePressed}
+      windowResized={windowResized}
+    />
+  );
 };
 
 export default ParticleFlowGen5; 

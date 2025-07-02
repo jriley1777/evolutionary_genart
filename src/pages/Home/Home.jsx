@@ -79,7 +79,7 @@ const Home = () => {
       {/* Title Bar */}
       <header className="title-bar">
         <div className="title-content">
-          <h1>Evolutionary Generative Art</h1>
+          <h1>Playtesting - Evolutionary Generative Art</h1>
         </div>
       </header>
 

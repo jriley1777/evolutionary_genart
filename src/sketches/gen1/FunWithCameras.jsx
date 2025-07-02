@@ -55,7 +55,7 @@ const FunWithCameras = ({ isFullscreen = false }) => {
       // Apply different blend modes based on frame age
       if (i === 0) {
         // Current frame - bright normal
-        p5.blendMode(p5.SCREEN);
+        p5.blendMode(p5.OVERLAY);
         p5.tint(255, 255, 255, intensity * 255);
         p5.image(trailFrames[i], 0, 0);
 

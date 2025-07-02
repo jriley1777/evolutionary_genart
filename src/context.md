@@ -1,22 +1,206 @@
-The overall goal of this app is to create an evolutionary series of generative art based sketches where each sketch in generation 1 can be a new concept, but it can have a lineage that spawns which adjusts concepts, adds new features or techniques, changes the artistic direction, or adds interactivity and user controls to tweak some parameters of the sketch.  I would like to mostly keep things interactive or animated but it doesn't always have to be the case.  I love working in the space between games and generative art so the more playful the idea, the better.
+# 🎨 Generative Sketch Evolution System – Prompt for AI Coding Assistant
 
-Each generated sketch should contain both a sketch and markdown file and we want to keep those organized.  These are currently maintained via projects.js and sketches.js which should also be updated.  Markdown files live in public/blog by generation.  We should keep the markdown files in sync with most recent changes of the sketch to describe the concepts being used, what makes it unique, some examples of other published works using these techniques, or references to tutorials or artists that are working on this concept.  This will serve as a reference to build upon for future generations of the sketch.  On these posts, there is no need to be overly technical in providing many code blocks but it should be dense with descriptions, artistic direction, techniques, unique features, source material, and examples of this type of work.
+## 🦮 Project Goal
 
-All sketches should also contain a fullscreen mode implemented in same manner as those in generation 1.
+Develop an evolving ecosystem of generative art sketches, where:
 
-First generation sketch - If we are working on a first generation sketch, this can be a brand new concept or sketch idea.  It should exist in /sketches/gen1/ and it should have a markdown created in public/blog/gen1.  Updates should be made to import the sketch and markdown into the app.
+* **Generation 1** sketches introduce brand new creative ideas.
+* **Subsequent generations** evolve prior sketches by:
 
-Subsequent generation sketch - If we are working on a subsequent generation sketch, I would like you to make some decisions on what you think would be cool to add or what direction to head for that generation.  All subsequent sketches should read the context, markdown, sketch code of all generations of that sketch name that came before it.  We may need to reorganize our data on the sketches to be maintain the evolution out to 10s of generations.
+  * Enhancing concepts
+  * Adding interactivity
+  * Modifying the artistic direction
+  * Layering in new features or playful mechanisms
 
-generationOptions in Home.jsx also needs to be updated if we create a new generation.
-markdowns should go into public/blog/{generationVersion}
+The experience should remain largely interactive or animated, though static visuals are allowed when intentional. We aim to explore the space between **generative art** and **playful game-like interaction**.
 
-Your role will be the creative visionary of the evolutionary concepts.  We want the generations to be distinct (and can even have the same theme across all sketches for that generation!) and make substantive additions to the prior generation.  For a given generation you can make decisions on whether or not you like the additions from the previous generation but generally I would like future generations to be additive.
+---
 
-Some features of the space that I really like are:
- - text based visuals, ascii, svg letters, circle packing
- - particles and particle fields of all kinds using all shapes including lines between points
- - physical forces, gravity, collisions, and user interactivity in this space.
- - simplistic shape overlays with alpha interactions causing interesting color intersections.
+## 📁 File & Project Structure
 
-Audio features have been an issue and I would like to avoid those unless there is full confidence in implementation and lots of support examples out there.
+Each sketch should include:
+
+* A `.jsx` or `.js` file for the sketch itself
+* A corresponding `.md` file containing rich documentation
+
+Update these shared project files as needed:
+
+* `projects.js` and `sketches.js` – for sketch tracking and routing
+* `Home.jsx` – update `generationOptions` with each new generation
+
+### 💂 Directory Guidelines
+
+| Generation Type | Sketch Directory  | Markdown Directory   |
+| --------------- | ----------------- | -------------------- |
+| Gen 1 Sketch    | `/sketches/gen1/` | `/public/blog/gen1/` |
+| Subsequent Gens | `/sketches/genN/` | `/public/blog/genN/` |
+
+> ℹ️ All markdown files should describe the concept, influences, artistic goals, and evolution. Avoid deep code dives—focus on art and design thinking.
+
+---
+
+## 🔄 Generational Evolution Logic
+
+* **Gen 1:** Original creative seed. Anything goes.
+* **Gen N:** Evolves from Gen N-1 and/or earlier versions:
+
+  * Reads and builds upon previous sketches and markdowns
+  * May selectively reject or refine earlier features
+  * Should make *substantive artistic, conceptual, or technical additions*
+* Fullscreen mode must be available in all sketches, like Gen 1.
+
+---
+
+## 🎨 Generative Art Topics & Dimensions of Randomness
+
+Below are key topics and creative directions to explore. Each includes example variables or randomness types to play with.
+
+---
+
+### 1. **Text-Based Visuals**
+
+ASCII art, typography grids, generative letterforms
+
+* **Randomization Ideas:**
+
+  * Font size, kerning, typeface
+  * SVG letter distortion
+  * Placement grid noise
+  * Text input-based seeds
+
+---
+
+### 2. **Particles & Particle Fields**
+
+Swarming systems, bouncing particles, attraction/repulsion
+
+* **Randomization Ideas:**
+
+  * Velocity, direction, lifespan
+  * Shape (circle, triangle, emoji, etc.)
+  * Force type: gravity, spring, magnetic
+  * Dynamic user forces (mouse, keyboard)
+
+---
+
+### 3. **Physics & Forces**
+
+Gravity simulations, collisions, soft-body interactions
+
+* **Randomization Ideas:**
+
+  * Mass, restitution, friction
+  * Constraints between bodies
+  * Force vectors over time
+  * User interactions toggling world rules
+
+---
+
+### 4. **Shape Overlay + Color Intersections**
+
+Transparent shapes revealing new palettes through blending
+
+* **Randomization Ideas:**
+
+  * Shape type (triangle, blob, bezier)
+  * Blend mode (multiply, screen, etc.)
+  * Color harmonies (complementary, triadic)
+  * Movement algorithms (circular, Perlin, noise loops)
+
+---
+
+### 5. **Grid + Packing Systems**
+
+Circle packing, Voronoi, lattice structures
+
+* **Randomization Ideas:**
+
+  * Packing radius, collision rule
+  * Grid density/spacing
+  * Hybrid organic-mechanical layout rules
+
+---
+
+### 6. **Topology + Recursive Structures**
+
+Fractals, L-systems, nested subdivisions
+
+* **Randomization Ideas:**
+
+  * Rule sets per generation
+  * Recursion depth
+  * Angle offsets, scale decay
+  * Mutation of rules over generations
+
+---
+
+### 7. **Interaction & Control**
+
+Use input to affect visuals directly
+
+* **Randomization Ideas:**
+
+  * Control mapping: mouse, keyboard, touch
+  * Interaction response style (smooth, elastic, delayed)
+  * Time-based or event-driven state changes
+  * Reveal/hide states depending on input
+
+---
+
+### 8. **Time-Based Animations**
+
+Non-looping systems, generative timelines
+
+* **Randomization Ideas:**
+
+  * Frame-based transitions
+  * Noise modulation over time
+  * Discrete vs continuous evolution
+  * “Aging” of forms or color palettes
+
+---
+
+### 9. **Mutation & Evolution**
+
+Self-modifying sketches across generations
+
+* **Randomization Ideas:**
+
+  * Parameter mutation functions
+  * Structural evolution (new layers added)
+  * Visual DNA that determines traits
+  * History-informed randomness (e.g., inherit half from gen-2, half from gen-3)
+
+---
+
+## ❌ Notes on Audio
+
+Please avoid audio-based features **unless**:
+
+* They use well-supported APIs (e.g., `p5.sound`, Web Audio API)
+* They have a known working example or tutorial
+* The mic input is reliable on both Mac and browser environments
+
+If unsure: skip audio.
+
+---
+
+## 💡 Assistant’s Creative Role
+
+You (the AI agent) are the **creative director** and **technical assistant** guiding this evolution.
+
+You should:
+
+* Invent distinct and compelling new sketches or traits per generation
+* Consider thematic coherence across a generation (e.g., all gen4 sketches could be about recursion or one-word prompts)
+* Keep markdown documentation up-to-date with the artistic and generative philosophy behind each piece
+
+---
+
+## 📌 Example Prompts You Can Use
+
+* “Create a gen1 sketch inspired by circle-packing with interactive repulsion.”
+* “Create a gen4 sketch that evolves from `glyph-field` and adds recursive layering + user control.”
+* “Mutate the particle sketch to incorporate color blending and fullscreen touch interactivity.”
+
+---

@@ -11,7 +11,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [activeProject, setActiveProject] = useState(param?.slug || 'sine-wave-puddle');
   const [selectedGeneration, setSelectedGeneration] = useState(param?.type || 'gen1');
-  const project = projects.find((p) => p.slug === activeProject);
+  const project = projects.findProjectBySlug(activeProject);
   const SketchComponent = project ? sketches.default[project.sketch] : null;
   const [blogContent, setBlogContent] = useState("");
   const [isBlogLoading, setIsBlogLoading] = useState(false);
@@ -37,112 +37,159 @@ const Home = () => {
           setIsBlogLoading(false);
         });
     }
-  }, [project.blog]); // Only depend on project slug
+  }, [project?.blog]);
 
-  // Handle project click - prevent navigation if it's the active project
+  // Handle project click
   const handleProjectClick = (e, projectSlug, projectType) => {
     if (projectSlug === activeProject) {
-      e.preventDefault(); // Prevent navigation
-      return; // Do nothing if clicking the same project
+      e.preventDefault();
+      return;
     }
-    // Navigate to the new project
     navigate(`/${projectType}/${projectSlug}`);
   };
 
-  // Filter projects by selected generation
-  const filteredProjects = projects.filter(project => project.type === selectedGeneration);
-
-  // Generation options with display names and emojis
-  const generationOptions = [
-    { value: 'gen1', label: '🎮 Gen1', emoji: '⚡' },
-    { value: 'gen2', label: '🎯 Gen2', emoji: '🎯' },
-    { value: 'gen3', label: '🌟 Gen3', emoji: '🌟' },
-    { value: 'gen4', label: '🌌 Gen4', emoji: '🌌' },
-    { value: 'gen5', label: '🎨 Gen5', emoji: '🎨' },
-    { value: 'gen6', label: '🏙️ Gen6', emoji: '🏙️' },
-    { value: 'gen7', label: '🌱 Gen7', emoji: '🌱' },
-    { value: 'gen8', label: '⚛️ Gen8', emoji: '⚛️' }
-  ];
-
-  // Type-specific emojis for project items
-  const typeEmojis = {
-    gen1: "⚡",
-    gen2: "🎯",
-    gen3: "🌟",
-    gen4: "🌌",
-    gen5: "🎨",
-    gen6: "🏙️",
-    gen7: "🌱",
-    gen8: "⚛️"
+  // Handle generation change
+  const handleGenerationChange = (generationId) => {
+    setSelectedGeneration(generationId);
+    // Find the project in the new generation for the same root
+    if (project) {
+      const projectRoot = projects.projectRoots.find(root => root.id === project.rootId);
+      if (projectRoot && projectRoot.generations[generationId]) {
+        const newProject = projectRoot.generations[generationId];
+        navigate(`/${generationId}/${newProject.slug}`);
+      }
+    }
   };
 
+  // Get available generations for the active project
+  const getAvailableGenerations = () => {
+    if (!project) return [];
+    
+    const projectRoot = projects.projectRoots.find(root => root.id === project.rootId);
+    if (!projectRoot) return [];
+    
+    return projects.generations.filter(gen => projectRoot.generations[gen.id]);
+  };
+
+  // Get all projects for navigation
+  const allProjects = projects.getAllProjects();
+
   return (
-    <>
-      <div className="home-container">
-        
-        <div className="projects-grid">
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth: '300px' }}>
-            {/* Generation Dropdown */}
-            <div className="generation-dropdown-container">
-              <select 
-                className="generation-dropdown"
-                value={selectedGeneration}
-                onChange={(e) => setSelectedGeneration(e.target.value)}
+    <div className="home-container">
+      {/* Title Bar */}
+      <header className="title-bar">
+        <div className="title-content">
+          <h1>Evolutionary Generative Art</h1>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="main-content">
+        {/* Left Panel - Project Navigation */}
+        <aside className="project-panel">
+          <div className="project-panel-header">
+            <h2>Projects</h2>
+          </div>
+          <div className="project-list">
+            {projects.getProjectsByGeneration(selectedGeneration).map((projectItem, index) => (
+              <Link
+                key={projectItem.slug}
+                to={`/${projectItem.type}/${projectItem.slug}`}
+                className={`project-card ${projectItem.slug === activeProject ? 'active' : ''}`}
+                onClick={(e) => handleProjectClick(e, projectItem.slug, projectItem.type)}
+                style={{ 
+                  '--item-index': index,
+                  animationDelay: `${index * 0.1}s`
+                }}
               >
-                {generationOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="project-list">
-              {filteredProjects.map((project, projectIndex) => (
-                <Link 
-                  to={`/${project.type}/${project.slug}`} 
-                  key={project.slug}
-                  className={`project-item ${project.slug === activeProject ? 'active' : ''}`}
-                  data-type={project.type}
-                  style={{ 
-                    '--item-index': projectIndex,
-                    animationDelay: `${projectIndex * 0.1}s`
-                  }}
-                  onClick={(e) => handleProjectClick(e, project.slug, project.type)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '1.2rem' }}>{typeEmojis[project.type]}</span>
-                    <div>
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
+                <div className="project-card-content">
+                  <div className="project-header">
+                    <span className="project-emoji">{projects.generations.find(g => g.id === projectItem.type)?.emoji}</span>
+                    <h3>{projectItem.title}</h3>
+                  </div>
+                  <p className="project-description">{projectItem.description}</p>
+                  <div className="project-meta">
+                    <span className="project-root">{projectItem.rootName}</span>
+                    <div className="project-tags">
+                      {projectItem.tags?.slice(0, 3).map((tag, tagIndex) => (
+                        <span key={tagIndex} className="tag">{tag}</span>
+                      ))}
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
-        <div className="sketch-preview">
-          {project ? <>
-            <div className="sketch-title" style={{ marginTop: "10px" }}>
-              <h1 style={{ margin: 0 }}>{project.title}</h1>
-              <p style={{ margin: 0 }}>{project.description}</p>
+        </aside>
+
+        {/* Right Panel - Split between Sketch and Markdown */}
+        <section className="content-panel">
+          {project ? (
+            <>
+              {/* Sketch Section */}
+              <div className="sketch-section">
+                <div className="sketch-header">
+                  <div className="sketch-title">
+                    <h2>{project.title}</h2>
+                    <p>{project.description}</p>
+                  </div>
+                  <div className="sketch-meta">
+                    <span className="project-root">Root: {project.rootName}</span>
+                    <span className="project-generation">Generation: {project.type}</span>
+                  </div>
+                </div>
+
+                {/* Generation Navigation */}
+                <div className="generation-nav">
+                  <div className="generation-nav-content">
+                    <span className="generation-nav-label">Available Generations:</span>
+                    <div className="generation-tabs">
+                      {getAvailableGenerations().map(gen => (
+                        <button
+                          key={gen.id}
+                          className={`generation-tab ${project.type === gen.id ? 'active' : ''}`}
+                          onClick={() => handleGenerationChange(gen.id)}
+                        >
+                          <span className="generation-label">{gen.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sketch-container">
+                  {isBlogLoading ? (
+                    <div className="loading">Loading sketch...</div>
+                  ) : (
+                    <SketchWithFullscreen 
+                      key={activeProject}
+                      SketchComponent={SketchComponent}
+                      title={project.title}
+                      description={project.description}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Markdown Section */}
+              <div className="markdown-section">
+                <div className="markdown-header">
+                  <h3>Documentation</h3>
+                </div>
+                <div className="markdown-content">
+                  <BlogPost markdownContent={blogContent} />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="no-project-selected">
+              <h2>Select a Project</h2>
+              <p>Choose a project from the left panel to view its sketch and documentation.</p>
             </div>
-            <div className="sketch-container">
-              {isBlogLoading ? <div>Loading...</div> : <SketchWithFullscreen 
-                key={activeProject} // Force re-render when project changes
-                SketchComponent={SketchComponent}
-                title={project.title}
-                description={project.description}
-              />}
-            </div>
-            <div>
-              <BlogPost markdownContent={blogContent} />
-            </div>
-          </> : null}
-        </div>
-      </div>
-    </>
+          )}
+        </section>
+      </main>
+    </div>
   );
 };
 

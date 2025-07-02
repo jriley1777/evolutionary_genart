@@ -8,6 +8,7 @@ import ParticleFlow from "./gen1/ParticleFlow";
 import SmokeTrails from "./gen1/SmokeTrails";
 import SynthSpirograph from "./gen1/SynthSpirograph";
 import FunWithCameras from "./gen1/FunWithCameras";
+import FunWithSounds from "./gen1/FunWithSounds";
 import SynthSpirograph2 from "./gen2/SynthSpirograph2";
 import SynthSpirograph3 from "./gen3/SynthSpirograph3";
 import ParticleFlowGen2 from "./gen2/ParticleFlowGen2";
@@ -44,6 +45,7 @@ const sketches = {
     SmokeTrails,
     SynthSpirograph,
     FunWithCameras,
+    FunWithSounds,
     SynthSpirograph2,
     SynthSpirograph3,
     ParticleFlowGen2,

@@ -377,6 +377,22 @@ export const projects = {
           blog: "blog/fun-with-cameras.md"
         }
       }
+    },
+    {
+      id: "fun-with-sounds",
+      name: "Fun With Sounds",
+      baseDescription: "Audio-reactive interactive shapes and rhythmically synchronized art",
+      generations: {
+        gen1: {
+          slug: "fun-with-sounds",
+          title: "Fun With Sounds",
+          description: "Interactive shapes that emit sounds when approached or clicked, with rhythmic beat synchronization",
+          sketch: "FunWithSounds",
+          tags: ["p5.js", "generative", "interactive", "audio", "sound", "rhythm", "p5.sound"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-sounds.md"
+        }
+      }
     }
   ],
 

@@ -361,6 +361,22 @@ export const projects = {
           blog: "blog/trickshot.md"
         }
       }
+    },
+    {
+      id: "fun-with-cameras",
+      name: "Fun With Cameras",
+      baseDescription: "Camera-based interactive effects and visual processing",
+      generations: {
+        gen1: {
+          slug: "fun-with-cameras",
+          title: "Fun With Cameras",
+          description: "Real-time camera capture with mirrored display for interactive effects",
+          sketch: "FunWithCameras",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "mirror"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras.md"
+        }
+      }
     }
   ],
 

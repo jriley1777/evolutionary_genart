@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-const FullscreenOverlay = ({ children, isFullscreen, onToggleFullscreen }) => {
+const FullscreenOverlay = ({ 
+  children, 
+  isFullscreen, 
+  onToggleFullscreen, 
+  availableGenerations = [], 
+  currentGeneration = '', 
+  onGenerationChange = null 
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -12,6 +19,32 @@ const FullscreenOverlay = ({ children, isFullscreen, onToggleFullscreen }) => {
       return () => clearTimeout(timer);
     }
   }, [isFullscreen]);
+
+  // Navigation functions
+  const navigateToPreviousGeneration = () => {
+    if (!onGenerationChange || availableGenerations.length === 0) return;
+    
+    const currentIndex = availableGenerations.findIndex(gen => gen.id === currentGeneration);
+    if (currentIndex > 0) {
+      const previousGeneration = availableGenerations[currentIndex - 1];
+      onGenerationChange(previousGeneration.id);
+    }
+  };
+
+  const navigateToNextGeneration = () => {
+    if (!onGenerationChange || availableGenerations.length === 0) return;
+    
+    const currentIndex = availableGenerations.findIndex(gen => gen.id === currentGeneration);
+    if (currentIndex < availableGenerations.length - 1) {
+      const nextGeneration = availableGenerations[currentIndex + 1];
+      onGenerationChange(nextGeneration.id);
+    }
+  };
+
+  // Check if navigation is available
+  const currentIndex = availableGenerations.findIndex(gen => gen.id === currentGeneration);
+  const canNavigatePrevious = currentIndex > 0;
+  const canNavigateNext = currentIndex < availableGenerations.length - 1;
 
   if (!isVisible) return null;
 
@@ -34,6 +67,83 @@ const FullscreenOverlay = ({ children, isFullscreen, onToggleFullscreen }) => {
         opacity: isFullscreen ? 1 : 0,
       }}
     >
+      {/* Navigation buttons */}
+      {availableGenerations.length > 1 && (
+        <>
+          {/* Previous generation button */}
+          <button
+            onClick={navigateToPreviousGeneration}
+            disabled={!canNavigatePrevious}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '140px',
+              background: canNavigatePrevious ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+              width: '50px',
+              height: '50px',
+              color: canNavigatePrevious ? 'white' : 'rgba(255, 255, 255, 0.3)',
+              fontSize: '20px',
+              cursor: canNavigatePrevious ? 'pointer' : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              zIndex: 1000000,
+              border: 'none',
+              borderRadius: '4px',
+            }}
+            onMouseEnter={(e) => {
+              if (canNavigatePrevious) {
+                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canNavigatePrevious) {
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              }
+            }}
+          >
+            ←
+          </button>
+
+          {/* Next generation button */}
+          <button
+            onClick={navigateToNextGeneration}
+            disabled={!canNavigateNext}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '80px',
+              background: canNavigateNext ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+              width: '50px',
+              height: '50px',
+              color: canNavigateNext ? 'white' : 'rgba(255, 255, 255, 0.3)',
+              fontSize: '20px',
+              cursor: canNavigateNext ? 'pointer' : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              zIndex: 1000000,
+              border: 'none',
+              borderRadius: '4px',
+            }}
+            onMouseEnter={(e) => {
+              if (canNavigateNext) {
+                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canNavigateNext) {
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              }
+            }}
+          >
+            →
+          </button>
+        </>
+      )}
+
       {/* Close button */}
       <button
         onClick={onToggleFullscreen}

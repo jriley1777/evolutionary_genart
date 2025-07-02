@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import FullscreenOverlay from '../FullscreenOverlay/FullscreenOverlay';
 import { getFullscreenState, addFullscreenToUrl, removeFullscreenFromUrl } from '../../utils/urlUtils';
 
-const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
+const SketchWithFullscreen = ({ 
+  SketchComponent, 
+  title, 
+  description, 
+  availableGenerations = [], 
+  currentGeneration = '', 
+  onGenerationChange = null,
+  project = null,
+  forceFullscreen = null
+}) => {
   const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
   const [sketchKey, setSketchKey] = useState(0);
 
@@ -86,16 +95,57 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
     };
   }, [isFullscreen]);
 
+  // Helper function to check if browser is in fullscreen
+  const isBrowserInFullscreen = () => {
+    return !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement
+    );
+  };
+
+  // Handle forceFullscreen prop changes
+  useEffect(() => {
+    if (forceFullscreen !== null && forceFullscreen !== isFullscreen) {
+      if (forceFullscreen) {
+        // If we're forcing fullscreen and browser is already in fullscreen, just update state
+        if (isBrowserInFullscreen()) {
+          setIsFullscreen(true);
+        } else {
+          enterFullscreenMode();
+        }
+      } else {
+        exitFullscreenMode();
+      }
+    }
+  }, [forceFullscreen]);
+
+  // Method to programmatically enter fullscreen
+  const enterFullscreenMode = async () => {
+    setIsFullscreen(true);
+    
+    // Only enter browser fullscreen if it's not already active
+    if (!isBrowserInFullscreen()) {
+      await enterBrowserFullscreen();
+    }
+  };
+
+  // Method to programmatically exit fullscreen
+  const exitFullscreenMode = async () => {
+    setSketchKey(prev => prev + 1);
+    setIsFullscreen(false);
+    
+    // Check if browser fullscreen is active and exit it
+    if (isBrowserInFullscreen()) {
+      await exitBrowserFullscreen();
+    }
+  };
+
   const toggleFullscreen = async () => {
     if (isFullscreen) {
-      // When minimizing from fullscreen, force a reload and exit browser fullscreen
-      setSketchKey(prev => prev + 1);
-      setIsFullscreen(false);
-      await exitBrowserFullscreen();
+      await exitFullscreenMode();
     } else {
-      // When entering fullscreen, set our state and enter browser fullscreen
-      setIsFullscreen(true);
-      await enterBrowserFullscreen();
+      await enterFullscreenMode();
     }
   };
 
@@ -103,7 +153,7 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
     <>
       {/* Regular view with fullscreen button */}
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <div key={sketchKey}>
+        <div key={project ? `${project.type}-${project.slug}` : 'default'}>
           <SketchComponent isFullscreen={isFullscreen} />
         </div>
         
@@ -146,6 +196,9 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
       <FullscreenOverlay 
         isFullscreen={isFullscreen} 
         onToggleFullscreen={toggleFullscreen}
+        availableGenerations={availableGenerations}
+        currentGeneration={currentGeneration}
+        onGenerationChange={(generationId) => onGenerationChange(generationId, true)}
       >
         <div style={{ 
           width: '100%', 
@@ -155,18 +208,28 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          {/* Title in fullscreen */}
-          {title && (
+          {/* Title and generation info in fullscreen */}
+          {project && (
             <div style={{
               position: 'absolute',
               top: '20px',
               left: '20px',
               color: 'white',
               fontFamily: 'Press Start 2P, monospace',
-              fontSize: '16px',
               zIndex: 1000001,
             }}>
-              {title}
+              <div style={{ fontSize: '16px', marginBottom: '4px' }}>
+                {project.title}
+              </div>
+              {project.type && (
+                <div style={{ 
+                  fontSize: '12px', 
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}>
+                  Generation: {project.type}
+                </div>
+              )}
             </div>
           )}
           
@@ -178,7 +241,7 @@ const SketchWithFullscreen = ({ SketchComponent, title, description }) => {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <div key={`fullscreen-${sketchKey}`}>
+            <div key={project ? `fullscreen-${project.type}-${project.slug}` : 'fullscreen-default'}>
               <SketchComponent isFullscreen={isFullscreen} />
             </div>
           </div>

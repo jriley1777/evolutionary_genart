@@ -37,7 +37,7 @@ const Home = () => {
           setIsBlogLoading(false);
         });
     }
-  }, [project?.blog]);
+  }, [project?.type, project?.slug]);
 
   // Handle project click
   const handleProjectClick = (e, projectSlug, projectType) => {
@@ -49,14 +49,22 @@ const Home = () => {
   };
 
   // Handle generation change
-  const handleGenerationChange = (generationId) => {
+  const handleGenerationChange = (generationId, fromFullscreen = false) => {
     setSelectedGeneration(generationId);
     // Find the project in the new generation for the same root
     if (project) {
       const projectRoot = projects.projectRoots.find(root => root.id === project.rootId);
       if (projectRoot && projectRoot.generations[generationId]) {
         const newProject = projectRoot.generations[generationId];
-        navigate(`/${generationId}/${newProject.slug}`);
+        setActiveProject(newProject.slug);
+        
+        if (fromFullscreen) {
+          // Update URL with fullscreen parameter to maintain fullscreen state
+          window.history.replaceState({}, '', `/${generationId}/${newProject.slug}?sz=fullscreen`);
+        } else {
+          // Regular navigation
+          navigate(`/${generationId}/${newProject.slug}`);
+        }
       }
     }
   };
@@ -99,8 +107,7 @@ const Home = () => {
                 onClick={(e) => handleProjectClick(e, projectItem.slug, projectItem.type)}
                 style={{ 
                   '--item-index': index,
-                  animationDelay: `${index * 0.1}s`
-                }}
+                  animationDelay: `${index * 0.1}s`                }}
               >
                 <div className="project-card-content">
                   <div className="project-header">
@@ -148,7 +155,7 @@ const Home = () => {
                         <button
                           key={gen.id}
                           className={`generation-tab ${project.type === gen.id ? 'active' : ''}`}
-                          onClick={() => handleGenerationChange(gen.id)}
+                          onClick={() => handleGenerationChange(gen.id, false)}
                         >
                           <span className="generation-label">{gen.label}</span>
                         </button>
@@ -162,10 +169,13 @@ const Home = () => {
                     <div className="loading">Loading sketch...</div>
                   ) : (
                     <SketchWithFullscreen 
-                      key={activeProject}
                       SketchComponent={SketchComponent}
                       title={project.title}
                       description={project.description}
+                      availableGenerations={getAvailableGenerations()}
+                      currentGeneration={selectedGeneration}
+                      onGenerationChange={handleGenerationChange}
+                      project={project}
                     />
                   )}
                 </div>

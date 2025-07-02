@@ -171,6 +171,33 @@ export const projects = {
           tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
           date: "2025-01-23",
           blog: "blog/gen3/particle-flow-gen3.md"
+        },
+        gen4: {
+          slug: "particle-flow-gen4",
+          title: "Particle Flow Gen4",
+          description: "Text-based animation with letters as particles and dynamic typography",
+          sketch: "ParticleFlowGen4",
+          tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "animation"],
+          date: "2025-01-29",
+          blog: "blog/gen4/particle-flow-gen4.md"
+        },
+        gen5: {
+          slug: "particle-flow-gen5",
+          title: "Particle Flow Gen5",
+          description: "Opacity layering with multiple small lines and depth effects",
+          sketch: "ParticleFlowGen5",
+          tags: ["p5.js", "generative", "interactive", "particles", "layering", "opacity", "depth"],
+          date: "2025-01-30",
+          blog: "blog/gen5/particle-flow-gen5.md"
+        },
+        gen6: {
+          slug: "particle-flow-gen6",
+          title: "Particle Flow Gen6",
+          description: "Non-square grids with hexagonal, triangular, and circular patterns",
+          sketch: "ParticleFlowGen6",
+          tags: ["p5.js", "generative", "interactive", "particles", "grid", "hexagonal", "triangular", "circular"],
+          date: "2025-01-31",
+          blog: "blog/gen6/particle-flow-gen6.md"
         }
       }
     },

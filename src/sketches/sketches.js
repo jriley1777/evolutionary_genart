@@ -11,6 +11,9 @@ import SynthSpirograph2 from "./gen2/SynthSpirograph2";
 import SynthSpirograph3 from "./gen3/SynthSpirograph3";
 import ParticleFlowGen2 from "./gen2/ParticleFlowGen2";
 import ParticleFlowGen3 from "./gen3/ParticleFlowGen3";
+import ParticleFlowGen4 from "./gen4/ParticleFlowGen4";
+import ParticleFlowGen5 from "./gen5/ParticleFlowGen5";
+import ParticleFlowGen6 from "./gen6/ParticleFlowGen6";
 import SineWavePuddleGen2 from "./gen2/SineWavePuddleGen2";
 import SmokeTrailsGen2 from "./gen2/SmokeTrailsGen2";
 import GenFlower2 from "./gen2/GenFlower2";
@@ -43,6 +46,9 @@ const sketches = {
     SynthSpirograph3,
     ParticleFlowGen2,
     ParticleFlowGen3,
+    ParticleFlowGen4,
+    ParticleFlowGen5,
+    ParticleFlowGen6,
     SineWavePuddleGen2,
     SmokeTrailsGen2,
     GenFlower2,

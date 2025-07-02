@@ -58,22 +58,13 @@ const FunWithCameras = ({ isFullscreen = false }) => {
         p5.blendMode(p5.SCREEN);
         p5.tint(255, 255, 255, intensity * 255);
         p5.image(trailFrames[i], 0, 0);
+
       } else if (i < 5) {
         // Recent frames - bright color burn effect
         p5.blendMode(p5.MULTIPLY);
         p5.tint(255, 255, 220, intensity * 255); // Brighter warm tint
         p5.image(trailFrames[i], 0, 0);
         
-        // Add bright overlay
-        p5.blendMode(p5.SCREEN);
-        p5.tint(255, 255, 200, intensity * 150); // Bright overlay
-        p5.image(trailFrames[i], 0, 0);
-      } else if (i < 10) {
-        // Add bright overlay
-        p5.blendMode(p5.OVERLAY);
-        p5.tint(255, 255, 200, intensity * 150); // Bright overlay
-        p5.image(trailFrames[i], 0, 0);
-
         // Add bright overlay
         p5.blendMode(p5.SCREEN);
         p5.tint(255, 255, 200, intensity * 150); // Bright overlay

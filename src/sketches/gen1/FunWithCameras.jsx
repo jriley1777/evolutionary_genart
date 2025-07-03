@@ -84,7 +84,7 @@ const FunWithCameras = ({ isFullscreen = false }) => {
     }
     
     // Reset blend mode and tint
-    p5.blendMode(p5.NORMAL);
+    p5.blendMode(p5.BLEND);
     p5.noTint();
   };
 

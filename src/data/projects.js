@@ -137,6 +137,15 @@ export const projects = {
           tags: ["p5.js", "generative", "psychedelic", "image", "kaleidoscope", "shrek"],
           date: "2025-01-21",
           blog: "blog/gen7/kaleidoscope-7.md"
+        },
+        gen8: {
+          slug: "kaleidoscope-8",
+          title: "Kaleidoscope 8",
+          description: "Real-time camera feed integration with live kaleidoscope effects and environmental interaction.",
+          sketch: "Kaleidoscope8",
+          tags: ["p5.js", "generative", "interactive", "camera", "kaleidoscope", "real-time", "video"],
+          date: "2025-01-22",
+          blog: "blog/gen8/kaleidoscope8.md"
         }
       }
     },

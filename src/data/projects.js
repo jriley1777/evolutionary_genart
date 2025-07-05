@@ -384,6 +384,15 @@ export const projects = {
           tags: ["p5.js", "generative", "interactive", "camera", "video", "mirror"],
           date: "2025-01-31",
           blog: "blog/fun-with-cameras.md"
+        },
+        gen2: {
+          slug: "fun-with-cameras-2",
+          title: "Fun With Cameras 2",
+          description: "Camera feed split into vertical slices creating a barcode-like effect with interactive controls",
+          sketch: "FunWithCameras2",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "barcode", "slices"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras-2.md"
         }
       }
     },

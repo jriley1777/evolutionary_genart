@@ -9,10 +9,10 @@ const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
   let maxTrailLength = 9; // Number of frames to keep in trail
   let video = null;
 
-  // Photo mode utilities
+  // Photo mode utilities - use time-based capture (150ms intervals)
   const { photoModeManager } = usePhotoMode({
     maxPanels: 12,
-    captureInterval: 15,
+    captureInterval: 300, // 150ms per panel
     gridCols: 4,
     gridRows: 3
   }, photoMode);
@@ -40,13 +40,61 @@ const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
     }
   };
 
-  // Main draw function for the camera trail effect
+  // Pure function for photo mode - doesn't modify shared state
+  const drawCameraTrailPure = (p5, panelParams = {}) => {
+    // Clear background
+    p5.background(0);
+    
+    // Only process video if it's available and p5 is properly initialized
+    if (video && p5 && p5.width && p5.height) {
+      // Draw trail frames with color burn and brightening effects
+      for (let i = 0; i < trailFrames.length; i++) {
+        let intensity = p5.map(i, 0, trailFrames.length - 1, 3.0, 0.3);
+        
+        // Apply different blend modes based on frame age
+        if (i === 0) {
+          // Current frame - bright normal
+          p5.blendMode(p5.SCREEN);
+          p5.tint(255, 255, 255, intensity * 555);
+          p5.image(trailFrames[i], 0, 0);
+
+        } else if (i < 5) {
+
+          p5.blendMode(p5.SCREEN);
+          p5.tint(255, 255, 255, intensity * 555);
+          p5.image(trailFrames[i], 0, 0);
+
+          // Recent frames - bright color burn effect
+          p5.blendMode(p5.LIGHTEST);
+          p5.tint(255, 255, 220, intensity * 255); // Brighter warm tint
+          p5.image(trailFrames[i], 0, 0);
+          
+          // Add bright overlay
+          p5.blendMode(p5.BURN);
+          p5.tint(255, 255, 200, intensity * 550); // Bright overlay
+          p5.image(trailFrames[i], 0, 0);
+
+        } else {
+          // Old frames - bright overlay with color distortion
+          p5.blendMode(p5.HARD_LIGHT);
+          p5.tint(255, 220, 255, intensity * 255); // Bright purple tint
+          p5.image(trailFrames[i], 0, 0);
+        }
+      }
+    }
+    
+    // Reset blend mode and tint
+    p5.blendMode(p5.BLEND);
+    p5.noTint();
+  };
+
+  // Main draw function for the camera trail effect (modifies shared state)
   const drawCameraTrail = (p5, panelParams = {}) => {
     // Clear background
     p5.background(0);
     
-    // Only process video if it's available
-    if (video) {
+    // Only process video if it's available and p5 is properly initialized
+    if (video && p5 && p5.width && p5.height) {
       // Shift trail frames (remove oldest, add new)
       trailFrames.shift();
       let newFrame = p5.createGraphics(p5.width, p5.height);
@@ -61,44 +109,8 @@ const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
       trailFrames.push(newFrame);
     }
     
-    // Always draw trail frames with color burn and brightening effects
-    for (let i = 0; i < trailFrames.length; i++) {
-      let intensity = p5.map(i, 0, trailFrames.length - 1, 3.0, 0.3);
-      
-      // Apply different blend modes based on frame age
-      if (i === 0) {
-        // Current frame - bright normal
-        p5.blendMode(p5.SCREEN);
-        p5.tint(255, 255, 255, intensity * 555);
-        p5.image(trailFrames[i], 0, 0);
-
-      } else if (i < 5) {
-
-        p5.blendMode(p5.SCREEN);
-        p5.tint(255, 255, 255, intensity * 555);
-        p5.image(trailFrames[i], 0, 0);
-
-        // Recent frames - bright color burn effect
-        p5.blendMode(p5.LIGHTEST);
-        p5.tint(255, 255, 220, intensity * 255); // Brighter warm tint
-        p5.image(trailFrames[i], 0, 0);
-        
-        // Add bright overlay
-        p5.blendMode(p5.BURN);
-        p5.tint(255, 255, 200, intensity * 550); // Bright overlay
-        p5.image(trailFrames[i], 0, 0);
-
-      } else {
-        // Old frames - bright overlay with color distortion
-        p5.blendMode(p5.HARD_LIGHT);
-        p5.tint(255, 220, 255, intensity * 255); // Bright purple tint
-        p5.image(trailFrames[i], 0, 0);
-      }
-    }
-    
-    // Reset blend mode and tint
-    p5.blendMode(p5.BLEND);
-    p5.noTint();
+    // Draw the trail effect (pure function)
+    drawCameraTrailPure(p5, panelParams);
   };
 
   const draw = (p5) => {
@@ -113,8 +125,8 @@ const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
           // Draw live preview while capturing
           drawCameraTrail(p5);
           
-          // Update photo mode with camera ready state
-          photoModeManager.update(p5, drawCameraTrail, cameraReady);
+          // Update photo mode with pure function (doesn't modify shared state)
+          photoModeManager.update(p5, drawCameraTrailPure, cameraReady);
           
           // Show capture progress
           photoModeManager.drawCaptureProgress(p5);

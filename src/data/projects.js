@@ -227,6 +227,26 @@ export const projects = {
           date: "2025-01-31",
           blog: "blog/gen6/particle-flow-gen6.md",
           showPhotoMode: false
+        },
+        gen7: {
+          slug: "particle-flow-gen7",
+          title: "Particle Flow Gen7",
+          description: "Fractal grid systems with recursive subdivision and self-similar patterns",
+          sketch: "ParticleFlowGen7",
+          tags: ["p5.js", "generative", "interactive", "particles", "fractal", "recursive", "self-similar", "subdivision"],
+          date: "2025-02-01",
+          blog: "blog/gen7/particle-flow-gen7.md",
+          showPhotoMode: false
+        },
+        gen8: {
+          slug: "particle-flow-gen8",
+          title: "Particle Flow Gen8",
+          description: "Quantum grid with superposition states, entanglement, and wave function collapse",
+          sketch: "ParticleFlowGen8",
+          tags: ["p5.js", "generative", "interactive", "particles", "quantum", "superposition", "entanglement", "wave-function"],
+          date: "2025-02-01",
+          blog: "blog/gen8/particle-flow-gen8.md",
+          showPhotoMode: false
         }
       }
     },

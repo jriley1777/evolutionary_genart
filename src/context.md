@@ -48,6 +48,7 @@ Update these shared project files as needed:
   * May selectively reject or refine earlier features
   * Should make *substantive artistic, conceptual, or technical additions*
 * Fullscreen mode must be available in all sketches, like Gen 1.
+* PhotoMode should be available in those projects where showPhotoMode is true, like in FunWithCameras series
 
 ---
 

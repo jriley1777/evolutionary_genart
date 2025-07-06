@@ -2,10 +2,17 @@ import React from "react";
 import Sketch from "react-p5";
 import "../Sketch.css";
 import "p5.sound";
+import soundManager from "../../utils/soundManager";
 
 const FunWithSounds = ({ isFullscreen = false }) => {
-  let audioContext = null;
-  let gainNode = null;
+  // Audio state from persistent manager
+  const [audioState, setAudioState] = React.useState({
+    audioContext: null,
+    gainNode: null,
+    isConnected: false,
+    hasError: false
+  });
+  
   let playing = false;
   let time = 0;
   let lastBeatTime = 0;
@@ -29,10 +36,10 @@ const FunWithSounds = ({ isFullscreen = false }) => {
   let snareAnim = null;
   let hihatAnim = null;
 
-  // Dance floor and zombies
-  let danceFloor = [];
-  let zombies = [];
-  let floorNoiseOffset = 0;
+  // Dance floor and zombies - use refs to persist across re-renders
+  const danceFloorRef = React.useRef([]);
+  const zombiesRef = React.useRef([]);
+  const floorNoiseOffsetRef = React.useRef(0);
 
   class SpriteAnimation {
     constructor(spriteSheet, totalFrames, frameWidth, frameHeight, gridCols = 4, gridRows = 3) {
@@ -133,8 +140,8 @@ const FunWithSounds = ({ isFullscreen = false }) => {
       this.noiseOffset += 0.01; // Slower animation
     }
 
-    draw(p5) {
-      if (!playing) {
+    draw(p5, isPlaying = false) {
+      if (!isPlaying) {
         // Static dark colors when not playing
         p5.fill(0, 0, 20);
       } else {
@@ -173,13 +180,23 @@ const FunWithSounds = ({ isFullscreen = false }) => {
     p5.colorMode(p5.HSB, 360, 100, 100, 1);
     p5.background(0);
     
-    // Initialize audio context
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Create gain node for volume control
-    gainNode = audioContext.createGain();
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.connect(audioContext.destination);
+    // Initialize audio using persistent manager
+    soundManager.initializeAudio(p5).then((success) => {
+      if (success) {
+        const state = soundManager.getState();
+        // Create gain node for volume control
+        const gainNode = state.audioContext.createGain();
+        gainNode.gain.setValueAtTime(0.3, state.audioContext.currentTime);
+        gainNode.connect(state.audioContext.destination);
+        
+        setAudioState({
+          audioContext: state.audioContext,
+          gainNode: gainNode,
+          isConnected: state.isConnected,
+          hasError: state.hasError
+        });
+      }
+    });
 
     // Load sprite sheets (placeholder images for now)
     loadSpriteSheets(p5);
@@ -189,7 +206,7 @@ const FunWithSounds = ({ isFullscreen = false }) => {
   };
 
   const createDanceFloor = (p5) => {
-    danceFloor = [];
+    danceFloorRef.current = [];
     const tileSize = 40; // Larger tiles
     const gridWidth = Math.ceil(p5.width / tileSize);
     const gridHeight = Math.ceil(p5.height / tileSize);
@@ -198,24 +215,24 @@ const FunWithSounds = ({ isFullscreen = false }) => {
       for (let j = 0; j < gridHeight; j++) {
         const x = i * tileSize;
         const y = j * tileSize;
-        danceFloor.push(new DanceFloorTile(p5, x, y, tileSize, i, j));
+        danceFloorRef.current.push(new DanceFloorTile(p5, x, y, tileSize, i, j));
       }
     }
   };
 
   const createZombies = (p5, spriteSheet, frameWidth, frameHeight) => {
-    zombies = [];
+    zombiesRef.current = [];
     
     // Add the three main zombies (kick, snare, hihat)
-    zombies.push(new Zombie(p5, p5.width/4, p5.height/2, spriteSheet, frameWidth, frameHeight));
-    zombies.push(new Zombie(p5, p5.width/2, p5.height/2, spriteSheet, frameWidth, frameHeight));
-    zombies.push(new Zombie(p5, 3*p5.width/4, p5.height/2, spriteSheet, frameWidth, frameHeight));
+    zombiesRef.current.push(new Zombie(p5, p5.width/4, p5.height/2, spriteSheet, frameWidth, frameHeight));
+    zombiesRef.current.push(new Zombie(p5, p5.width/2, p5.height/2, spriteSheet, frameWidth, frameHeight));
+    zombiesRef.current.push(new Zombie(p5, 3*p5.width/4, p5.height/2, spriteSheet, frameWidth, frameHeight));
     
     // Add 10 more random zombies across the full canvas
     for (let i = 0; i < 10; i++) {
       const x = p5.random(50, p5.width - 50);
       const y = p5.random(50, p5.height - 50);
-      zombies.push(new Zombie(p5, x, y, spriteSheet, frameWidth, frameHeight));
+      zombiesRef.current.push(new Zombie(p5, x, y, spriteSheet, frameWidth, frameHeight));
     }
   };
 
@@ -325,32 +342,34 @@ const FunWithSounds = ({ isFullscreen = false }) => {
   };
 
   const createDrumSound = (type, frequency, duration, volume = 0.5) => {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    if (!audioState.audioContext) return;
+    
+    const oscillator = audioState.audioContext.createOscillator();
+    const gainNode = audioState.audioContext.createGain();
     
     oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    oscillator.frequency.setValueAtTime(frequency, audioState.audioContext.currentTime);
     
     // Create envelope
-    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+    gainNode.gain.setValueAtTime(0, audioState.audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(volume, audioState.audioContext.currentTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioState.audioContext.currentTime + duration);
     
     oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    gainNode.connect(audioState.audioContext.destination);
     
     oscillator.start();
-    oscillator.stop(audioContext.currentTime + duration);
+    oscillator.stop(audioState.audioContext.currentTime + duration);
   };
 
   const playKick = () => {
     createDrumSound('sine', 60, 0.1);
     if (kickAnim) kickAnim.advanceFrame();
-    // Make some random zombies dance
-    for (let i = 0; i < 3; i++) {
-      const randomZombie = zombies[Math.floor(Math.random() * zombies.length)];
-      if (randomZombie) randomZombie.triggerDance();
-    }
+          // Make some random zombies dance
+      for (let i = 0; i < 3; i++) {
+        const randomZombie = zombiesRef.current[Math.floor(Math.random() * zombiesRef.current.length)];
+        if (randomZombie) randomZombie.triggerDance();
+      }
   };
 
   const playSnare = () => {
@@ -358,7 +377,7 @@ const FunWithSounds = ({ isFullscreen = false }) => {
     if (snareAnim) snareAnim.advanceFrame();
     // Make some random zombies dance
     for (let i = 0; i < 2; i++) {
-      const randomZombie = zombies[Math.floor(Math.random() * zombies.length)];
+      const randomZombie = zombiesRef.current[Math.floor(Math.random() * zombiesRef.current.length)];
       if (randomZombie) randomZombie.triggerDance();
     }
   };
@@ -368,7 +387,7 @@ const FunWithSounds = ({ isFullscreen = false }) => {
     if (hihatAnim) hihatAnim.advanceFrame();
     // Make some random zombies dance
     for (let i = 0; i < 1; i++) {
-      const randomZombie = zombies[Math.floor(Math.random() * zombies.length)];
+      const randomZombie = zombiesRef.current[Math.floor(Math.random() * zombiesRef.current.length)];
       if (randomZombie) randomZombie.triggerDance();
     }
   };
@@ -376,15 +395,26 @@ const FunWithSounds = ({ isFullscreen = false }) => {
   const draw = (p5) => {
     time += 1/60; // Assuming 60fps
     
+    // Update audio state from manager
+    const currentState = soundManager.getState();
+    if (currentState.isConnected !== audioState.isConnected || 
+        currentState.hasError !== audioState.hasError) {
+      setAudioState(prevState => ({
+        ...prevState,
+        isConnected: currentState.isConnected,
+        hasError: currentState.hasError
+      }));
+    }
+    
     // Fade background
     p5.fill(0, 0, 0, 0.1);
     p5.noStroke();
     p5.rect(0, 0, p5.width, p5.height);
     
     // Update dance floor
-    danceFloor.forEach(tile => {
+    danceFloorRef.current.forEach(tile => {
       tile.update(p5);
-      tile.draw(p5);
+      tile.draw(p5, playing);
     });
     
     // Beat detection and playback
@@ -419,7 +449,7 @@ const FunWithSounds = ({ isFullscreen = false }) => {
     if (hihatAnim) hihatAnim.update();
     
     // Update and draw zombies
-    zombies.forEach(zombie => {
+    zombiesRef.current.forEach(zombie => {
       zombie.update();
       zombie.draw(p5);
     });
@@ -435,7 +465,7 @@ const FunWithSounds = ({ isFullscreen = false }) => {
     p5.textSize(14);
     p5.text('Click to start/stop zombie dance party', 20, 20);
     p5.text(`BPM: ${bpm}`, 20, 40);
-    p5.text(`Zombies: ${zombies.length}`, 20, 60);
+    p5.text(`Zombies: ${zombiesRef.current.length}`, 20, 60);
   };
 
   const mousePressed = (p5) => {
@@ -443,8 +473,8 @@ const FunWithSounds = ({ isFullscreen = false }) => {
       playing = false;
     } else {
       // Resume audio context if suspended
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
+      if (audioState.audioContext && audioState.audioContext.state === 'suspended') {
+        audioState.audioContext.resume();
       }
       
       playing = true;

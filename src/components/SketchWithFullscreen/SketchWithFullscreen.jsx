@@ -13,6 +13,7 @@ const SketchWithFullscreen = ({
   forceFullscreen = null
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
+  const [isPhotoMode, setIsPhotoMode] = useState(false);
   const [sketchKey, setSketchKey] = useState(0);
 
   // Helper function to enter browser fullscreen
@@ -149,13 +150,56 @@ const SketchWithFullscreen = ({
     }
   };
 
+  const togglePhotoMode = () => {
+    setIsPhotoMode(!isPhotoMode);
+  };
+
+  // Create a unique key that changes when fullscreen mode changes
+  const uniqueSketchKey = `${project ? `${project.type}-${project.slug}` : 'default'}-${isFullscreen ? 'fullscreen' : 'normal'}-${sketchKey}`;
+
   return (
     <>
-      {/* Regular view with fullscreen button */}
+      {/* Regular view with fullscreen and photo mode buttons */}
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <div key={project ? `${project.type}-${project.slug}` : 'default'}>
-          <SketchComponent isFullscreen={isFullscreen} />
+        <div key={uniqueSketchKey}>
+          <SketchComponent isFullscreen={isFullscreen} photoMode={isPhotoMode} />
         </div>
+        
+        {/* Photo Mode button */}
+        {project && project.showPhotoMode === true && (
+          <button
+            onClick={togglePhotoMode}
+            style={{
+              position: 'absolute',
+              bottom: '40px',
+              right: '140px',
+              background: isPhotoMode ? 'rgba(255, 255, 0, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+              border: '2px solid rgba(255, 255, 255, 0.5)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              color: isPhotoMode ? 'black' : 'white',
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s ease',
+              zIndex: 1000,
+              fontFamily: 'Press Start 2P, monospace',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = isPhotoMode ? 'rgba(255, 255, 0, 0.9)' : 'rgba(0, 0, 0, 0.9)';
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = isPhotoMode ? 'rgba(255, 255, 0, 0.7)' : 'rgba(0, 0, 0, 0.7)';
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>📸</span>
+            {isPhotoMode ? 'Photo Mode ON' : 'Photo Mode'}
+          </button>
+        )}
         
         {/* Fullscreen button */}
         <button
@@ -199,6 +243,9 @@ const SketchWithFullscreen = ({
         availableGenerations={availableGenerations}
         currentGeneration={currentGeneration}
         onGenerationChange={(generationId) => onGenerationChange(generationId, true)}
+        photoMode={isPhotoMode}
+        onTogglePhotoMode={togglePhotoMode}
+        showPhotoMode={project && project.showPhotoMode === true}
       >
         <div style={{ 
           width: '100%', 
@@ -241,8 +288,8 @@ const SketchWithFullscreen = ({
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <div key={project ? `fullscreen-${project.type}-${project.slug}` : 'fullscreen-default'}>
-              <SketchComponent isFullscreen={isFullscreen} />
+            <div key={uniqueSketchKey}>
+              <SketchComponent isFullscreen={isFullscreen} photoMode={isPhotoMode} />
             </div>
           </div>
         </div>

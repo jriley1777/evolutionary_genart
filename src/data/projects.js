@@ -14,7 +14,8 @@ export const projects = {
           sketch: "SineWavePuddle",
           date: "2025-06-07",
           blog: "sine-wave-puddle.md",
-          tags: ["p5.js", "generative", "interactive", "waves", "polar"]
+          tags: ["p5.js", "generative", "interactive", "waves", "polar"],
+          showPhotoMode: false
         },
         gen2: {
           slug: "sine-wave-puddle-gen2",
@@ -23,7 +24,8 @@ export const projects = {
           sketch: "SineWavePuddleGen2",
           tags: ["p5.js", "generative", "interactive", "waves", "interference", "fractals"],
           date: "2025-01-15",
-          blog: "sine-wave-puddle-gen2.md"
+          blog: "sine-wave-puddle-gen2.md",
+          showPhotoMode: false
         }
       }
     },
@@ -39,7 +41,8 @@ export const projects = {
           sketch: "GenFlower1",
           tags: ["p5.js", "generative", "interactive"],
           date: "2025-06-07",
-          blog: "blog/gen-flower-1.md"
+          blog: "blog/gen-flower-1.md",
+          showPhotoMode: false
         },
         gen2: {
           slug: "gen-flower-2",
@@ -48,7 +51,8 @@ export const projects = {
           sketch: "GenFlower2",
           tags: ["p5.js", "generative", "interactive", "rainforest", "vines", "pollen", "bioluminescent"],
           date: "2025-01-15",
-          blog: "blog/gen-flower-2.md"
+          blog: "blog/gen-flower-2.md",
+          showPhotoMode: false
         },
         gen3: {
           slug: "gen-flower-3",
@@ -57,7 +61,8 @@ export const projects = {
           sketch: "GenFlower3",
           tags: ["p5.js", "generative", "interactive", "3D", "terrain", "camera", "flight"],
           date: "2025-01-15",
-          blog: "blog/gen-flower-3.md"
+          blog: "blog/gen-flower-3.md",
+          showPhotoMode: false
         },
         gen4: {
           slug: "gen-flower-4",
@@ -66,7 +71,8 @@ export const projects = {
           sketch: "GenFlower4",
           tags: ["p5.js", "generative", "interactive", "fireflies", "night", "stars", "lighting"],
           date: "2025-01-15",
-          blog: "blog/gen-flower-4.md"
+          blog: "blog/gen-flower-4.md",
+          showPhotoMode: false
         }
       }
     },
@@ -82,7 +88,8 @@ export const projects = {
           sketch: "Kaleidoscope1",
           tags: ["p5.js", "generative", "interactive", "kaleidoscope", "refraction", "prism"],
           date: "2025-01-15",
-          blog: "blog/kaleidoscope-1.md"
+          blog: "blog/kaleidoscope-1.md",
+          showPhotoMode: false
         },
         gen2: {
           slug: "kaleidoscope-2",
@@ -91,7 +98,8 @@ export const projects = {
           sketch: "Kaleidoscope2",
           tags: ["p5.js", "generative", "psychedelic", "fluid", "kaleidoscope"],
           date: "2025-01-16",
-          blog: "blog/gen2/kaleidoscope-2.md"
+          blog: "blog/gen2/kaleidoscope-2.md",
+          showPhotoMode: false
         },
         gen3: {
           slug: "kaleidoscope-3",
@@ -100,7 +108,8 @@ export const projects = {
           sketch: "Kaleidoscope3",
           tags: ["p5.js", "generative", "psychedelic", "biological", "kaleidoscope"],
           date: "2025-01-17",
-          blog: "blog/gen3/kaleidoscope-3.md"
+          blog: "blog/gen3/kaleidoscope-3.md",
+          showPhotoMode: false
         },
         gen4: {
           slug: "kaleidoscope-4",
@@ -109,7 +118,8 @@ export const projects = {
           sketch: "Kaleidoscope4",
           tags: ["p5.js", "generative", "psychedelic", "cosmic", "kaleidoscope"],
           date: "2025-01-18",
-          blog: "blog/gen4/kaleidoscope-4.md"
+          blog: "blog/gen4/kaleidoscope-4.md",
+          showPhotoMode: false
         },
         gen5: {
           slug: "kaleidoscope-5",
@@ -118,7 +128,8 @@ export const projects = {
           sketch: "Kaleidoscope5",
           tags: ["p5.js", "generative", "psychedelic", "fractal", "kaleidoscope"],
           date: "2025-01-19",
-          blog: "blog/gen5/kaleidoscope-5.md"
+          blog: "blog/gen5/kaleidoscope-5.md",
+          showPhotoMode: false
         },
         gen6: {
           slug: "kaleidoscope-6",
@@ -127,7 +138,8 @@ export const projects = {
           sketch: "Kaleidoscope6",
           tags: ["p5.js", "generative", "psychedelic", "wireframe", "kaleidoscope"],
           date: "2025-01-20",
-          blog: "blog/gen6/kaleidoscope-6.md"
+          blog: "blog/gen6/kaleidoscope-6.md",
+          showPhotoMode: false
         },
         gen7: {
           slug: "kaleidoscope-7",
@@ -136,7 +148,8 @@ export const projects = {
           sketch: "Kaleidoscope7",
           tags: ["p5.js", "generative", "psychedelic", "image", "kaleidoscope", "shrek"],
           date: "2025-01-21",
-          blog: "blog/gen7/kaleidoscope-7.md"
+          blog: "blog/gen7/kaleidoscope-7.md",
+          showPhotoMode: false
         },
         gen8: {
           slug: "kaleidoscope-8",
@@ -145,7 +158,8 @@ export const projects = {
           sketch: "Kaleidoscope8",
           tags: ["p5.js", "generative", "interactive", "camera", "kaleidoscope", "real-time", "video"],
           date: "2025-01-22",
-          blog: "blog/gen8/kaleidoscope8.md"
+          blog: "blog/gen8/kaleidoscope8.md",
+          showPhotoMode: false
         }
       }
     },
@@ -161,7 +175,8 @@ export const projects = {
           sketch: "ParticleFlow",
           tags: ["p5.js", "generative", "interactive", "particles"],
           date: "2025-06-07",
-          blog: "blog/particle-flow.md"
+          blog: "blog/particle-flow.md",
+          showPhotoMode: false
         },
         gen2: {
           slug: "particle-flow-gen2",
@@ -170,7 +185,8 @@ export const projects = {
           sketch: "ParticleFlowGen2",
           tags: ["p5.js", "generative", "interactive", "particles", "audio", "evolution"],
           date: "2025-01-15",
-          blog: "blog/particle-flow-gen2.md"
+          blog: "blog/particle-flow-gen2.md",
+          showPhotoMode: false
         },
         gen3: {
           slug: "particle-flow-gen3",
@@ -179,7 +195,8 @@ export const projects = {
           sketch: "ParticleFlowGen3",
           tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
           date: "2025-01-23",
-          blog: "blog/gen3/particle-flow-gen3.md"
+          blog: "blog/gen3/particle-flow-gen3.md",
+          showPhotoMode: false
         },
         gen4: {
           slug: "particle-flow-gen4",
@@ -188,7 +205,8 @@ export const projects = {
           sketch: "ParticleFlowGen4",
           tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "animation"],
           date: "2025-01-29",
-          blog: "blog/gen4/particle-flow-gen4.md"
+          blog: "blog/gen4/particle-flow-gen4.md",
+          showPhotoMode: false
         },
         gen5: {
           slug: "particle-flow-gen5",
@@ -197,7 +215,8 @@ export const projects = {
           sketch: "ParticleFlowGen5",
           tags: ["p5.js", "generative", "interactive", "particles", "layering", "opacity", "depth"],
           date: "2025-01-30",
-          blog: "blog/gen5/particle-flow-gen5.md"
+          blog: "blog/gen5/particle-flow-gen5.md",
+          showPhotoMode: false
         },
         gen6: {
           slug: "particle-flow-gen6",
@@ -206,7 +225,8 @@ export const projects = {
           sketch: "ParticleFlowGen6",
           tags: ["p5.js", "generative", "interactive", "particles", "grid", "hexagonal", "triangular", "circular"],
           date: "2025-01-31",
-          blog: "blog/gen6/particle-flow-gen6.md"
+          blog: "blog/gen6/particle-flow-gen6.md",
+          showPhotoMode: false
         }
       }
     },
@@ -222,7 +242,8 @@ export const projects = {
           sketch: "SmokeTrails",
           tags: ["p5.js", "generative", "interactive", "particles", "smoke"],
           date: "2025-06-07",
-          blog: "blog/smoke-trails.md"
+          blog: "blog/smoke-trails.md",
+          showPhotoMode: false
         },
         gen2: {
           slug: "smoke-trails-gen2",
@@ -231,7 +252,8 @@ export const projects = {
           sketch: "SmokeTrailsGen2",
           tags: ["p5.js", "generative", "interactive", "particles", "smoke", "fire", "steam", "environment"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen2.md"
+          blog: "blog/smoke-trails-gen2.md",
+          showPhotoMode: false
         },
         gen3: {
           slug: "smoke-trails-gen3",
@@ -240,7 +262,8 @@ export const projects = {
           sketch: "SmokeTrailsGen3",
           tags: ["p5.js", "generative", "interactive", "particles", "flocking", "chemistry", "plasma", "ash"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen3.md"
+          blog: "blog/smoke-trails-gen3.md",
+          showPhotoMode: false
         },
         gen4: {
           slug: "smoke-trails-gen4",
@@ -249,7 +272,8 @@ export const projects = {
           sketch: "SmokeTrailsGen4",
           tags: ["p5.js", "generative", "interactive", "particles", "3D", "narrative", "storytelling", "light", "void"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen4.md"
+          blog: "blog/smoke-trails-gen4.md",
+          showPhotoMode: false
         },
         gen5: {
           slug: "smoke-trails-gen5",
@@ -258,7 +282,8 @@ export const projects = {
           sketch: "SmokeTrailsGen5",
           tags: ["p5.js", "generative", "interactive", "particles", "street-art", "aerosol", "stencil", "graffiti"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen5.md"
+          blog: "blog/smoke-trails-gen5.md",
+          showPhotoMode: false
         },
         gen6: {
           slug: "smoke-trails-gen6",
@@ -267,7 +292,8 @@ export const projects = {
           sketch: "SmokeTrailsGen6",
           tags: ["p5.js", "generative", "interactive", "particles", "mural", "collaborative", "installation", "urban-art"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen6.md"
+          blog: "blog/smoke-trails-gen6.md",
+          showPhotoMode: false
         },
         gen7: {
           slug: "smoke-trails-gen7",
@@ -276,7 +302,8 @@ export const projects = {
           sketch: "SmokeTrailsGen7",
           tags: ["p5.js", "generative", "interactive", "particles", "ecosystem", "digital-life", "evolution", "cellular-automata"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen7.md"
+          blog: "blog/smoke-trails-gen7.md",
+          showPhotoMode: false
         },
         gen8: {
           slug: "smoke-trails-gen8",
@@ -285,7 +312,8 @@ export const projects = {
           sketch: "SmokeTrailsGen8",
           tags: ["p5.js", "generative", "interactive", "particles", "quantum", "wave-function", "entanglement", "superposition"],
           date: "2025-01-15",
-          blog: "blog/smoke-trails-gen8.md"
+          blog: "blog/smoke-trails-gen8.md",
+          showPhotoMode: false
         }
       }
     },
@@ -301,7 +329,8 @@ export const projects = {
           sketch: "SynthSpirograph",
           tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "mathematical"],
           date: "2025-01-24",
-          blog: "blog/gen1/synth-spirograph.md"
+          blog: "blog/gen1/synth-spirograph.md",
+          showPhotoMode: false
         },
         gen2: {
           slug: "synth-spirograph-2",
@@ -310,7 +339,8 @@ export const projects = {
           sketch: "SynthSpirograph2",
           tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "layered", "depth"],
           date: "2025-01-25",
-          blog: "blog/gen2/synth-spirograph-2.md"
+          blog: "blog/gen2/synth-spirograph-2.md",
+          showPhotoMode: false
         },
         gen3: {
           slug: "synth-spirograph-3",
@@ -319,7 +349,8 @@ export const projects = {
           sketch: "SynthSpirograph3",
           tags: ["p5.js", "generative", "interactive", "spirograph", "synthwave", "physics", "dynamic"],
           date: "2025-01-26",
-          blog: "blog/gen3/synth-spirograph-3.md"
+          blog: "blog/gen3/synth-spirograph-3.md",
+          showPhotoMode: false
         }
       }
     },
@@ -335,7 +366,8 @@ export const projects = {
           sketch: "SplitFlap",
           tags: ["generative", "split flap", "user input"],
           date: "2025-06-07",
-          blog: "blog/split-flap.md"
+          blog: "blog/split-flap.md",
+          showPhotoMode: false
         }
       }
     },
@@ -351,7 +383,8 @@ export const projects = {
           sketch: "Hiroshi1",
           tags: ["generative", "house", "palm tree"],
           date: "2025-06-12",
-          blog: "blog/hiroshi-1.md"
+          blog: "blog/hiroshi-1.md",
+          showPhotoMode: false
         }
       }
     },
@@ -367,7 +400,8 @@ export const projects = {
           sketch: "Trickshot",
           tags: ["trickshot", "game"],
           date: "2025-06-14",
-          blog: "blog/trickshot.md"
+          blog: "blog/trickshot.md",
+          showPhotoMode: false
         }
       }
     },
@@ -383,7 +417,8 @@ export const projects = {
           sketch: "FunWithCameras",
           tags: ["p5.js", "generative", "interactive", "camera", "video", "mirror"],
           date: "2025-01-31",
-          blog: "blog/fun-with-cameras.md"
+          blog: "blog/fun-with-cameras.md",
+          showPhotoMode: true
         },
         gen2: {
           slug: "fun-with-cameras-2",
@@ -392,7 +427,18 @@ export const projects = {
           sketch: "FunWithCameras2",
           tags: ["p5.js", "generative", "interactive", "camera", "video", "barcode", "slices"],
           date: "2025-01-31",
-          blog: "blog/fun-with-cameras-2.md"
+          blog: "blog/fun-with-cameras-2.md",
+          showPhotoMode: true
+        },
+        gen3: {
+          slug: "fun-with-cameras-3",
+          title: "Fun With Cameras 3",
+          description: "Basic camera initialization and display for testing camera connection stability",
+          sketch: "FunWithCameras3",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "basic", "test"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras-3.md",
+          showPhotoMode: false
         }
       }
     },
@@ -408,7 +454,8 @@ export const projects = {
           sketch: "FunWithSounds",
           tags: ["p5.js", "generative", "interactive", "audio", "sound", "rhythm", "p5.sound"],
           date: "2025-01-31",
-          blog: "blog/fun-with-sounds.md"
+          blog: "blog/fun-with-sounds.md",
+          showPhotoMode: false
         }
       }
     }

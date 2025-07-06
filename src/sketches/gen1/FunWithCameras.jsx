@@ -1,12 +1,21 @@
 import React from "react";
 import Sketch from "react-p5";
 import "../Sketch.css";
+import { usePhotoMode } from "../../components/PhotoModeWrapper/PhotoModeWrapper";
 
-const FunWithCameras = ({ isFullscreen = false }) => {
-  let video;
+const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
   let canvasRef = React.useRef();
   let trailFrames = []; // Array to store previous frames
   let maxTrailLength = 9; // Number of frames to keep in trail
+  let video = null;
+
+  // Photo mode utilities
+  const { photoModeManager } = usePhotoMode({
+    maxPanels: 12,
+    captureInterval: 15,
+    gridCols: 4,
+    gridRows: 3
+  }, photoMode);
 
   const setup = (p5, canvasParentRef) => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
@@ -20,10 +29,10 @@ const FunWithCameras = ({ isFullscreen = false }) => {
     
     p5.colorMode(p5.RGB);
     
-    // Create video capture
+    // Create camera capture directly
     video = p5.createCapture(p5.VIDEO);
-    video.size(p5.windowWidth, p5.windowHeight); // Set video to canvas size
-    video.hide(); // Hide the default video element
+    video.size(640, 480);
+    video.hide();
     
     // Initialize trail frames array
     for (let i = 0; i < maxTrailLength; i++) {
@@ -31,24 +40,28 @@ const FunWithCameras = ({ isFullscreen = false }) => {
     }
   };
 
-  const draw = (p5) => {
+  // Main draw function for the camera trail effect
+  const drawCameraTrail = (p5, panelParams = {}) => {
     // Clear background
     p5.background(0);
     
-    // Shift trail frames (remove oldest, add new)
-    trailFrames.shift();
-    let newFrame = p5.createGraphics(p5.width, p5.height);
+    // Only process video if it's available
+    if (video) {
+      // Shift trail frames (remove oldest, add new)
+      trailFrames.shift();
+      let newFrame = p5.createGraphics(p5.width, p5.height);
+      
+      // Draw current video frame to new graphics buffer (mirrored)
+      newFrame.push();
+      newFrame.translate(p5.width, 0);
+      newFrame.scale(-1, 1);
+      newFrame.image(video, 0, 0, p5.width, p5.height);
+      newFrame.pop();
+      
+      trailFrames.push(newFrame);
+    }
     
-    // Draw current video frame to new graphics buffer (mirrored)
-    newFrame.push();
-    newFrame.translate(p5.width, 0);
-    newFrame.scale(-1, 1);
-    newFrame.image(video, 0, 0, p5.width, p5.height);
-    newFrame.pop();
-    
-    trailFrames.push(newFrame);
-    
-    // Draw trail frames with color burn and brightening effects
+    // Always draw trail frames with color burn and brightening effects
     for (let i = 0; i < trailFrames.length; i++) {
       let intensity = p5.map(i, 0, trailFrames.length - 1, 3.0, 0.3);
       
@@ -88,11 +101,44 @@ const FunWithCameras = ({ isFullscreen = false }) => {
     p5.noTint();
   };
 
+  const draw = (p5) => {
+    // Check if camera is ready for photo mode
+    const cameraReady = video && video.width > 0 && video.height > 0;
+    
+    // Handle photo mode
+    if (photoMode) {
+      if (photoModeManager.isCapturingActive()) {
+        // Only draw and capture if camera is ready
+        if (cameraReady) {
+          // Draw live preview while capturing
+          drawCameraTrail(p5);
+          
+          // Update photo mode with camera ready state
+          photoModeManager.update(p5, drawCameraTrail, cameraReady);
+          
+          // Show capture progress
+          photoModeManager.drawCaptureProgress(p5);
+        } else {
+          // Show loading message while camera is not ready
+          p5.background(0);
+          p5.fill(255);
+          p5.noStroke();
+          p5.textAlign(p5.CENTER, p5.CENTER);
+          p5.textSize(24);
+          p5.text('Loading Camera for Photo Mode...', p5.width / 2, p5.height / 2);
+        }
+      } else {
+        // Show static grid
+        photoModeManager.drawPhotoGrid(p5);
+      }
+    } else {
+      // Normal mode - always run the trail effect
+      drawCameraTrail(p5);
+    }
+  };
+
   const windowResized = (p5) => {
     p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
-    if (video) {
-      video.size(p5.windowWidth, p5.windowHeight); // Resize video to new canvas size
-    }
     
     // Recreate trail frames for new canvas size
     trailFrames = [];

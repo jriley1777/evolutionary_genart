@@ -6,7 +6,10 @@ const FullscreenOverlay = ({
   onToggleFullscreen, 
   availableGenerations = [], 
   currentGeneration = '', 
-  onGenerationChange = null 
+  onGenerationChange = null,
+  photoMode = false,
+  onTogglePhotoMode = null,
+  showPhotoMode = false
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -67,6 +70,39 @@ const FullscreenOverlay = ({
         opacity: isFullscreen ? 1 : 0,
       }}
     >
+      {/* Photo Mode button */}
+      {showPhotoMode && onTogglePhotoMode && (
+        <button
+          onClick={onTogglePhotoMode}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '200px',
+            background: photoMode ? 'rgba(255, 255, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+            width: '50px',
+            height: '50px',
+            color: photoMode ? 'black' : 'white',
+            fontSize: '20px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease',
+            zIndex: 1000000,
+            border: 'none',
+            borderRadius: '4px',
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = photoMode ? 'rgba(255, 255, 0, 0.3)' : 'rgba(255, 255, 255, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = photoMode ? 'rgba(255, 255, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+          }}
+        >
+          📸
+        </button>
+      )}
+
       {/* Navigation buttons */}
       {availableGenerations.length > 1 && (
         <>

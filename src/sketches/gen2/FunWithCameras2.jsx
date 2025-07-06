@@ -92,12 +92,14 @@ const FunWithCameras2 = ({ isFullscreen = false, photoMode = false }) => {
     p5.background(0);
     
     // Check if camera is ready for photo mode
-    const cameraReady = video && video.width > 0 && video.height > 0;
+    let cameraReady = video && video.width > 0 && video.height > 0;
+    console.log('cameraReady', cameraReady);
     
     // Handle photo mode
     if (photoMode) {
       if (photoModeManager.isCapturingActive()) {
         // Only draw and capture if camera is ready
+        console.log('cameraReady', cameraReady);
         if (cameraReady) {
           // Draw live preview while capturing
           drawBarcodeEffect(p5);

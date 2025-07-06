@@ -151,7 +151,13 @@ const SketchWithFullscreen = ({
   };
 
   const togglePhotoMode = () => {
-    setIsPhotoMode(!isPhotoMode);
+    if (isFullscreen) {
+      setSketchKey(prev => prev + 1);
+      setIsPhotoMode(!isPhotoMode);
+    } else {
+      setSketchKey(prev => prev + 1);
+      setIsPhotoMode(!isPhotoMode);
+    }
   };
 
   // Create a unique key that changes when fullscreen mode changes

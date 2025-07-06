@@ -12,7 +12,7 @@ const FunWithCameras = ({ isFullscreen = false, photoMode = false }) => {
   // Photo mode utilities - use time-based capture (150ms intervals)
   const { photoModeManager } = usePhotoMode({
     maxPanels: 12,
-    captureInterval: 300, // 150ms per panel
+    captureInterval: 750, // 150ms per panel
     gridCols: 4,
     gridRows: 3
   }, photoMode);

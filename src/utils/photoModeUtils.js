@@ -8,13 +8,13 @@
 export class PhotoModeManager {
   constructor(options = {}) {
     this.maxPanels = options.maxPanels || 12;
-    this.captureInterval = options.captureInterval || 10;
+    this.captureInterval = options.captureInterval || 150; // Time in milliseconds
     this.gridCols = options.gridCols || 4;
     this.gridRows = options.gridRows || 3;
     this.panelGap = options.panelGap || 15;
     
     this.panelSketches = [];
-    this.frameCount = 0;
+    this.lastCaptureTime = 0;
     this.panelsCreated = 0;
     this.isCapturing = true;
     this.isPhotoMode = false;
@@ -27,7 +27,7 @@ export class PhotoModeManager {
     this.isPhotoMode = true;
     this.isCapturing = true;
     this.panelsCreated = 0;
-    this.frameCount = 0;
+    this.lastCaptureTime = 0;
     this.panelSketches = [];
   }
 
@@ -57,8 +57,7 @@ export class PhotoModeManager {
     // Store the panel sketch with metadata
     this.panelSketches.push({
       buffer: panelBuffer,
-      frameCount: p5.frameCount,
-      timestamp: Date.now(),
+      timestamp: p5.millis(),
       panelIndex: this.panelsCreated,
       params: panelParams
     });
@@ -96,12 +95,14 @@ export class PhotoModeManager {
     }
     
     if (this.isCapturing && this.panelsCreated < this.maxPanels) {
-      // Create panel at intervals
-      this.frameCount++;
+      const currentTime = p5.millis();
       
-      if (this.frameCount % this.captureInterval === 0) {
+      // Check if enough time has passed since last capture
+      if (currentTime - this.lastCaptureTime >= this.captureInterval) {
         const panelParams = this.generatePanelParams(this.panelsCreated);
         this.createPanelSketch(p5, sketchDrawFunction, panelParams);
+        
+        this.lastCaptureTime = currentTime;
         
         if (this.panelsCreated >= this.maxPanels) {
           this.isCapturing = false;
@@ -190,7 +191,7 @@ export class PhotoModeManager {
       isCapturing: this.isCapturing,
       panelsCreated: this.panelsCreated,
       maxPanels: this.maxPanels,
-      frameCount: this.frameCount
+      lastCaptureTime: this.lastCaptureTime
     };
   }
 }
@@ -209,7 +210,7 @@ export const createPhotoModeManager = (options = {}) => {
  */
 export const DEFAULT_PHOTO_MODE_CONFIG = {
   maxPanels: 12,
-  captureInterval: 10,
+  captureInterval: 150,
   gridCols: 4,
   gridRows: 3,
   panelGap: 15

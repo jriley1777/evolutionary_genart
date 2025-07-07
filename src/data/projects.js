@@ -10,19 +10,19 @@ export const projects = {
         gen1: {
           slug: "sine-wave-puddle",
           title: "Sine Wave Puddle",
-          description: "Polar coordinates, sine waves, and Perlin noise.",
+          description: "Animated polar wave patterns with moving center, sine wave distortion, and Perlin noise",
           sketch: "SineWavePuddle",
           date: "2025-06-07",
           blog: "sine-wave-puddle.md",
-          tags: ["p5.js", "generative", "interactive", "waves", "polar"],
+          tags: ["p5.js", "generative", "interactive", "waves", "polar", "animation"],
           showPhotoMode: false
         },
         gen2: {
           slug: "sine-wave-puddle-gen2",
           title: "Sine Wave Puddle Gen2",
-          description: "Multi-center wave interference with fractal decomposition and interactive sources",
+          description: "Interactive walker system with organic movement, wave centers, and fractal decomposition",
           sketch: "SineWavePuddleGen2",
-          tags: ["p5.js", "generative", "interactive", "waves", "interference", "fractals"],
+          tags: ["p5.js", "generative", "interactive", "waves", "walkers", "fractals", "organic"],
           date: "2025-01-15",
           blog: "sine-wave-puddle-gen2.md",
           showPhotoMode: false
@@ -84,9 +84,9 @@ export const projects = {
         gen1: {
           slug: "kaleidoscope-1",
           title: "Kaleidoscope 1",
-          description: "A mesmerizing kaleidoscope pattern with light refraction effects and triangular prism designs",
+          description: "8-segment kaleidoscope with light refraction effects, triangular prisms, and particle system",
           sketch: "Kaleidoscope1",
-          tags: ["p5.js", "generative", "interactive", "kaleidoscope", "refraction", "prism"],
+          tags: ["p5.js", "generative", "interactive", "kaleidoscope", "refraction", "prism", "particles"],
           date: "2025-01-15",
           blog: "blog/kaleidoscope-1.md",
           showPhotoMode: false
@@ -201,7 +201,7 @@ export const projects = {
         gen4: {
           slug: "static-line-art-4",
           title: "Static Line Art 4",
-          description: "Layered depth with multiple color palettes and subtle transparency effects",
+          description: "Layered depth with multiple color palettes (forest, desert, ocean) and subtle transparency effects",
           sketch: "StaticLineArt4",
           tags: ["p5.js", "generative", "static", "layers", "transparency", "depth", "palettes"],
           date: "2025-01-25",
@@ -211,9 +211,9 @@ export const projects = {
         gen5: {
           slug: "static-line-art-5",
           title: "Static Line Art 5",
-          description: "Geometric patterns with expanding/contracting sections and alternating symmetry",
+          description: "Diagonal flow from bottom-left to upper-right with varied row heights and multiple color palettes",
           sketch: "StaticLineArt5",
-          tags: ["p5.js", "generative", "static", "geometric", "patterns", "symmetry", "rhythm"],
+          tags: ["p5.js", "generative", "static", "diagonal", "flow", "varied-heights", "palettes"],
           date: "2025-01-25",
           blog: "blog/static-line-art-5.md",
           showPhotoMode: false
@@ -221,9 +221,9 @@ export const projects = {
         gen6: {
           slug: "static-line-art-6",
           title: "Static Line Art 6",
-          description: "Fractal-like subdivision with recursive patterns and nested geometric structures",
+          description: "Systematic progression with random variation - fixed row heights, colors at start, increasing panels",
           sketch: "StaticLineArt6",
-          tags: ["p5.js", "generative", "static", "fractal", "recursive", "subdivision", "nested"],
+          tags: ["p5.js", "generative", "static", "systematic", "random", "progression", "fixed-grid"],
           date: "2025-01-25",
           blog: "blog/static-line-art-6.md",
           showPhotoMode: false
@@ -238,9 +238,9 @@ export const projects = {
         gen1: {
           slug: "particle-flow",
           title: "Particle Flow",
-          description: "Interactive particle system that responds to mouse movement with flowing patterns",
+          description: "Flow field particle system with mouse-responsive forces and HSB color gradients",
           sketch: "ParticleFlow",
-          tags: ["p5.js", "generative", "interactive", "particles"],
+          tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "hsb"],
           date: "2025-06-07",
           blog: "blog/particle-flow.md",
           showPhotoMode: false
@@ -268,9 +268,9 @@ export const projects = {
         gen4: {
           slug: "particle-flow-gen4",
           title: "Particle Flow Gen4",
-          description: "Text-based animation with letters as particles and dynamic typography",
+          description: "Text-based particle system with word chains, letter evolution, and flow field forces",
           sketch: "ParticleFlowGen4",
-          tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "animation"],
+          tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "word-chains"],
           date: "2025-01-29",
           blog: "blog/gen4/particle-flow-gen4.md",
           showPhotoMode: false
@@ -278,9 +278,9 @@ export const projects = {
         gen5: {
           slug: "particle-flow-gen5",
           title: "Particle Flow Gen5",
-          description: "Opacity layering with multiple small lines and depth effects",
+          description: "Evolutionary particle system with visual DNA, genetic mutations, and behavioral diversity",
           sketch: "ParticleFlowGen5",
-          tags: ["p5.js", "generative", "interactive", "particles", "layering", "opacity", "depth"],
+          tags: ["p5.js", "generative", "interactive", "particles", "evolution", "dna", "genetics"],
           date: "2025-01-30",
           blog: "blog/gen5/particle-flow-gen5.md",
           showPhotoMode: false
@@ -288,9 +288,9 @@ export const projects = {
         gen6: {
           slug: "particle-flow-gen6",
           title: "Particle Flow Gen6",
-          description: "Non-square grids with hexagonal, triangular, and circular patterns",
+          description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",
           sketch: "ParticleFlowGen6",
-          tags: ["p5.js", "generative", "interactive", "particles", "grid", "hexagonal", "triangular", "circular"],
+          tags: ["p5.js", "generative", "interactive", "particles", "hexagonal", "synthwave", "neon", "illumination"],
           date: "2025-01-31",
           blog: "blog/gen6/particle-flow-gen6.md",
           showPhotoMode: false
@@ -298,9 +298,9 @@ export const projects = {
         gen7: {
           slug: "particle-flow-gen7",
           title: "Particle Flow Gen7",
-          description: "Fractal grid systems with recursive subdivision and self-similar patterns",
+          description: "Triangular mesh with invisible particles affecting triangle colors through flow field",
           sketch: "ParticleFlowGen7",
-          tags: ["p5.js", "generative", "interactive", "particles", "fractal", "recursive", "self-similar", "subdivision"],
+          tags: ["p5.js", "generative", "interactive", "particles", "triangular", "mesh", "invisible"],
           date: "2025-02-01",
           blog: "blog/gen7/particle-flow-gen7.md",
           showPhotoMode: false
@@ -308,9 +308,9 @@ export const projects = {
         gen8: {
           slug: "particle-flow-gen8",
           title: "Particle Flow Gen8",
-          description: "Quantum grid with superposition states, entanglement, and wave function collapse",
+          description: "Rectangle packing with particle-driven pattern changes and synthwave color transitions",
           sketch: "ParticleFlowGen8",
-          tags: ["p5.js", "generative", "interactive", "particles", "quantum", "superposition", "entanglement", "wave-function"],
+          tags: ["p5.js", "generative", "interactive", "particles", "rectangle", "packing", "synthwave", "patterns"],
           date: "2025-02-01",
           blog: "blog/gen8/particle-flow-gen8.md",
           showPhotoMode: false
@@ -325,9 +325,9 @@ export const projects = {
         gen1: {
           slug: "smoke-trails",
           title: "Smoke Trails",
-          description: "Interactive smoke simulation with drifting, expanding particles",
+          description: "Interactive smoke simulation with growing particles, turbulence, and starter smoke",
           sketch: "SmokeTrails",
-          tags: ["p5.js", "generative", "interactive", "particles", "smoke"],
+          tags: ["p5.js", "generative", "interactive", "particles", "smoke", "turbulence"],
           date: "2025-06-07",
           blog: "blog/smoke-trails.md",
           showPhotoMode: false
@@ -500,9 +500,9 @@ export const projects = {
         gen1: {
           slug: "fun-with-cameras",
           title: "Fun With Cameras",
-          description: "Real-time camera capture with mirrored display for interactive effects",
+          description: "Real-time camera capture with trail effects, blend modes, and temporal layering",
           sketch: "FunWithCameras",
-          tags: ["p5.js", "generative", "interactive", "camera", "video", "mirror"],
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "trail", "blend-modes"],
           date: "2025-01-31",
           blog: "blog/fun-with-cameras.md",
           showPhotoMode: true
@@ -510,9 +510,9 @@ export const projects = {
         gen2: {
           slug: "fun-with-cameras-2",
           title: "Fun With Cameras 2",
-          description: "Camera feed split into vertical slices creating a barcode-like effect with interactive controls",
+          description: "Camera feed sliced into 30 vertical strips with mathematical width variation and barcode aesthetic",
           sketch: "FunWithCameras2",
-          tags: ["p5.js", "generative", "interactive", "camera", "video", "barcode", "slices"],
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "barcode", "slices", "mathematical"],
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-2.md",
           showPhotoMode: true
@@ -520,9 +520,9 @@ export const projects = {
         gen3: {
           slug: "fun-with-cameras-3",
           title: "Fun With Cameras 3",
-          description: "Basic camera initialization and display for testing camera connection stability",
+          description: "Singleton camera manager with debug visualization and robust error handling",
           sketch: "FunWithCameras3",
-          tags: ["p5.js", "generative", "interactive", "camera", "video", "basic", "test"],
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "debug", "singleton"],
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-3.md",
           showPhotoMode: false

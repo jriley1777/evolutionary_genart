@@ -164,6 +164,43 @@ export const projects = {
       }
     },
     {
+      id: "static-line-art",
+      name: "Static Line Art",
+      baseDescription: "Static line art with columns and complementary colors",
+      generations: {
+        gen1: {
+          slug: "static-line-art-1",
+          title: "Static Line Art 1",
+          description: "Static line art with columns split into 4 pieces, using complementary colors and Perlin noise for variation",
+          sketch: "StaticLineArt1",
+          tags: ["p5.js", "generative", "static", "columns", "complementary-colors", "perlin-noise"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-1.md",
+          showPhotoMode: false
+        },
+        gen2: {
+          slug: "static-line-art-2",
+          title: "Static Line Art 2",
+          description: "Crescent-shaped columns with curved panels, evolving the static line art concept with organic flow",
+          sketch: "StaticLineArt2",
+          tags: ["p5.js", "generative", "static", "columns", "crescent", "curved", "organic"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-2.md",
+          showPhotoMode: false
+        },
+        gen3: {
+          slug: "static-line-art-3",
+          title: "Static Line Art 3",
+          description: "Polar coordinate S-curves radiating from upper left, transforming the linear pattern into radial distortion",
+          sketch: "StaticLineArt3",
+          tags: ["p5.js", "generative", "static", "columns", "polar", "radial", "distortion"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-3.md",
+          showPhotoMode: false
+        }
+      }
+    },
+    {
       id: "particle-flow",
       name: "Particle Flow",
       baseDescription: "Interactive particle systems with flowing patterns",

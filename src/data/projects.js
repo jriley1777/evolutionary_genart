@@ -197,6 +197,36 @@ export const projects = {
           date: "2025-01-25",
           blog: "blog/static-line-art-3.md",
           showPhotoMode: false
+        },
+        gen4: {
+          slug: "static-line-art-4",
+          title: "Static Line Art 4",
+          description: "Layered depth with multiple color palettes and subtle transparency effects",
+          sketch: "StaticLineArt4",
+          tags: ["p5.js", "generative", "static", "layers", "transparency", "depth", "palettes"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-4.md",
+          showPhotoMode: false
+        },
+        gen5: {
+          slug: "static-line-art-5",
+          title: "Static Line Art 5",
+          description: "Geometric patterns with expanding/contracting sections and alternating symmetry",
+          sketch: "StaticLineArt5",
+          tags: ["p5.js", "generative", "static", "geometric", "patterns", "symmetry", "rhythm"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-5.md",
+          showPhotoMode: false
+        },
+        gen6: {
+          slug: "static-line-art-6",
+          title: "Static Line Art 6",
+          description: "Fractal-like subdivision with recursive patterns and nested geometric structures",
+          sketch: "StaticLineArt6",
+          tags: ["p5.js", "generative", "static", "fractal", "recursive", "subdivision", "nested"],
+          date: "2025-01-25",
+          blog: "blog/static-line-art-6.md",
+          showPhotoMode: false
         }
       }
     },

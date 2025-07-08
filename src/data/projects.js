@@ -491,12 +491,12 @@ export const projects = {
         gen3: {
           slug: "fun-with-cameras-3",
           title: "Fun With Cameras 3",
-          description: "Singleton camera manager with debug visualization and robust error handling",
+          description: "Real-time fisheye lens effect with barrel distortion and high-resolution camera processing",
           sketch: "FunWithCameras3",
-          tags: ["p5.js", "generative", "interactive", "camera", "video", "debug", "singleton"],
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "fisheye", "distortion"],
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-3.md",
-          showPhotoMode: false
+          showPhotoMode: true
         }
       }
     },

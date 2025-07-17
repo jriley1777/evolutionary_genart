@@ -497,6 +497,16 @@ export const projects = {
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-3.md",
           showPhotoMode: true
+        },
+        gen4: {
+          slug: "fun-with-cameras-4",
+          title: "Fun With Cameras 4",
+          description: "Double fisheye effect creating 'eyes' at eye level with dual distortion zones and retro CRT overlay",
+          sketch: "FunWithCameras4",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "fisheye", "double-distortion", "eyes", "crt"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras-4.md",
+          showPhotoMode: true
         }
       }
     },

@@ -3,6 +3,9 @@ import SplitFlap from "./gen1/SplitFlap";
 import GenFlower1 from "./gen1/GenFlower1";
 import Kaleidoscope1 from "./gen1/Kaleidoscope1";
 import Hiroshi1 from "./gen1/Hiroshi1";
+import Hiroshi2 from "./gen2/Hiroshi2";
+import Hiroshi3 from "./gen3/Hiroshi3";
+import Hiroshi4 from "./gen4/Hiroshi4";
 import Trickshot from "./gen1/Trickshot";
 import ParticleFlow from "./gen1/ParticleFlow";
 import SmokeTrails from "./gen1/SmokeTrails";
@@ -50,6 +53,9 @@ const sketches = {
     GenFlower1,
     Kaleidoscope1,
     Hiroshi1,
+    Hiroshi2,
+    Hiroshi3,
+    Hiroshi4,
     Trickshot,
     ParticleFlow,
     SmokeTrails,

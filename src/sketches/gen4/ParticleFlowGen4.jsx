@@ -1,5 +1,5 @@
 import React from "react";
-import Sketch from "react-p5";
+import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "../Sketch.css";
 
 const ParticleFlowGen4 = ({ isFullscreen = false }) => {
@@ -294,107 +294,113 @@ const ParticleFlowGen4 = ({ isFullscreen = false }) => {
     }
   }
 
-  const setup = (p5, canvasParentRef) => {
-    const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-    
-    if (isFullscreen) {
-      canvas.class('canvas-container fullscreen');
-      canvas.elt.classList.add('fullscreen');
-    } else {
-      canvas.class('canvas-container');
-    }
-    
-    p5.colorMode(p5.RGB, 255, 255, 255, 1);
-    p5.background(255);
-    p5.textFont('Bitcount Grid Double');
-    
-    // Preload font for better performance
-    preloadFont();
-    
-    // Initialize word chains
-    initializeWordChains(p5);
-  };
+  const sketch = (p5) => {
+    p5.setup = () => {
+      const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      
+      if (isFullscreen) {
+        canvas.class('canvas-container fullscreen');
+        canvas.elt.classList.add('fullscreen');
+      } else {
+        canvas.class('canvas-container');
+      }
+      
+      p5.colorMode(p5.RGB, 255, 255, 255, 1);
+      p5.background(255);
+      p5.textFont('Bitcount Grid Double');
+      
+      // Preload font for better performance
+      preloadFont();
+      
+      // Initialize word chains
+      initializeWordChains(p5);
+    };
 
-  const initializeWordChains = (p5) => {
-    wordChains = [];
-    const words = currentText.split(' ');
-    
-    // Create initial word chains
-    for (let i = 0; i < 5; i++) {
-      const word = words[i % words.length];
+    const initializeWordChains = (p5) => {
+      wordChains = [];
+      const words = currentText.split(' ');
+      
+      // Create initial word chains
+      for (let i = 0; i < 5; i++) {
+        const word = words[i % words.length];
+        const startX = p5.random(p5.width);
+        const startY = p5.random(p5.height);
+        
+        const chain = new WordChain(p5, word, startX, startY);
+        wordChains.push(chain);
+      }
+    };
+
+    p5.draw = () => {
+      // Fade background
+      p5.fill(235, 235, 235, 0.2);
+      p5.noStroke();
+      p5.rect(0, 0, p5.width, p5.height);
+
+      // Update flow field less frequently for better performance
+      if (p5.frameCount % 3 === 0) {
+        const cols = p5.floor(p5.width / 90); // Match 90px font size
+        const rows = p5.floor(p5.height / 90);
+        flowField = new Array(cols * rows);
+
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const index = x + y * cols;
+            
+            // Simplified noise calculation for better performance
+            const angle = p5.noise(x * 0.05, y * 0.05, time * 0.005) * p5.TWO_PI;
+            
+            // Add mouse influence
+            const mouseDist = p5.dist(x * 90, y * 90, mouseX, mouseY);
+            const mouseInfluence = p5.map(mouseDist, 0, 200, p5.PI, 0, true);
+            
+            const finalAngle = angle + mouseInfluence;
+            
+            // Create force vector
+            const force = p5.createVector(p5.cos(finalAngle), p5.sin(finalAngle));
+            force.mult(0.4);
+            flowField[index] = force;
+          }
+        }
+      }
+
+      // Update and show word chains
+      for (let i = wordChains.length - 1; i >= 0; i--) {
+        wordChains[i].update(p5);
+        wordChains[i].show(p5);
+        
+        // Remove dead chains and add new ones
+        if (wordChains[i].isDead) {
+          wordChains.splice(i, 1);
+          addNewWordChain(p5);
+        }
+      }
+
+      time += 0.02;
+    };
+
+    const addNewWordChain = (p5) => {
+      const words = currentText.split(' ');
+      const word = words[wordIndex % words.length];
       const startX = p5.random(p5.width);
       const startY = p5.random(p5.height);
       
       const chain = new WordChain(p5, word, startX, startY);
       wordChains.push(chain);
+      wordIndex++;
+    };
+
+    p5.mouseMoved = () => {
+      mouseX = p5.mouseX;
+      mouseY = p5.mouseY;
+    };
+
+    p5.windowResized = () => {
+      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
     }
   };
 
-  const draw = (p5) => {
-    // Fade background
-    p5.fill(235, 235, 235, 0.2);
-    p5.noStroke();
-    p5.rect(0, 0, p5.width, p5.height);
-
-    // Update flow field less frequently for better performance
-    if (p5.frameCount % 3 === 0) {
-      const cols = p5.floor(p5.width / 90); // Match 90px font size
-      const rows = p5.floor(p5.height / 90);
-      flowField = new Array(cols * rows);
-
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const index = x + y * cols;
-          
-          // Simplified noise calculation for better performance
-          const angle = p5.noise(x * 0.05, y * 0.05, time * 0.005) * p5.TWO_PI;
-          
-          // Add mouse influence
-          const mouseDist = p5.dist(x * 90, y * 90, mouseX, mouseY);
-          const mouseInfluence = p5.map(mouseDist, 0, 200, p5.PI, 0, true);
-          
-          const finalAngle = angle + mouseInfluence;
-          
-          // Create force vector
-          const force = p5.createVector(p5.cos(finalAngle), p5.sin(finalAngle));
-          force.mult(0.4);
-          flowField[index] = force;
-        }
-      }
-    }
-
-    // Update and show word chains
-    for (let i = wordChains.length - 1; i >= 0; i--) {
-      wordChains[i].update(p5);
-      wordChains[i].show(p5);
-      
-      // Remove dead chains and add new ones
-      if (wordChains[i].isDead) {
-        wordChains.splice(i, 1);
-        addNewWordChain(p5);
-      }
-    }
-
-    time += 0.02;
-  };
-
-  const addNewWordChain = (p5) => {
-    const words = currentText.split(' ');
-    const word = words[wordIndex % words.length];
-    const startX = p5.random(p5.width);
-    const startY = p5.random(p5.height);
-    
-    const chain = new WordChain(p5, word, startX, startY);
-    wordChains.push(chain);
-    wordIndex++;
-  };
-
-  const mouseMoved = (p5) => {
-    mouseX = p5.mouseX;
-    mouseY = p5.mouseY;
-  };
-
-  return <Sketch setup={setup} draw={draw} mouseMoved={mouseMoved} />;
+  return <ReactP5Wrapper sketch={sketch} />;
 };
 
 export default ParticleFlowGen4; 

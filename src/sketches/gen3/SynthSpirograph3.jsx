@@ -1,5 +1,5 @@
 import React from 'react';
-import Sketch from "react-p5";
+import { ReactP5Wrapper } from "@p5-wrapper/react";
 
 const SynthSpirograph3 = ({ isFullscreen = false }) => {
   let spirographs = [];
@@ -236,47 +236,92 @@ const SynthSpirograph3 = ({ isFullscreen = false }) => {
     }
   }
 
-  const setup = (p5, canvasParentRef) => {
-    const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-    
-    // Add fullscreen class if in fullscreen mode
-    if (isFullscreen) {
-      canvas.class('canvas-container fullscreen');
-      canvas.elt.classList.add('fullscreen');
-    } else {
-      canvas.class('canvas-container');
-    }
-    
-    // Draw initial background gradient
-    p5.push();
-    p5.noFill();
-    p5.strokeWeight(2);
-    
-    // Create gradient background
-    for (let i = 0; i < p5.height; i++) {
-      const inter = p5.map(i, 0, p5.height, 0, 1);
-      const c = p5.lerpColor(
-        p5.color(10, 0, 20),   // Dark purple
-        p5.color(20, 0, 40),   // Slightly lighter purple
-        inter
-      );
-      p5.stroke(c);
-      p5.line(0, i, p5.width, i);
-    }
-    p5.pop();
-    
-    // Initialize multiple spirographs
-    spirographs = [];
-    for (let i = 0; i < layerCount; i++) {
-      spirographs.push(new Spirograph(p5, i));
-    }
-    startTime = Date.now(); // Initialize start time
-  };
+  const sketch = (p5) => {
+    p5.setup = () => {
+      const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      
+      // Add fullscreen class if in fullscreen mode
+      if (isFullscreen) {
+        canvas.class('canvas-container fullscreen');
+        canvas.elt.classList.add('fullscreen');
+      } else {
+        canvas.class('canvas-container');
+      }
+      
+      // Draw initial background gradient
+      p5.push();
+      p5.noFill();
+      p5.strokeWeight(2);
+      
+      // Create gradient background
+      for (let i = 0; i < p5.height; i++) {
+        const inter = p5.map(i, 0, p5.height, 0, 1);
+        const c = p5.lerpColor(
+          p5.color(10, 0, 20),   // Dark purple
+          p5.color(20, 0, 40),   // Slightly lighter purple
+          inter
+        );
+        p5.stroke(c);
+        p5.line(0, i, p5.width, i);
+      }
+      p5.pop();
+      
+      // Initialize multiple spirographs
+      spirographs = [];
+      for (let i = 0; i < layerCount; i++) {
+        spirographs.push(new Spirograph(p5, i));
+      }
+      startTime = Date.now(); // Initialize start time
+    };
 
-  const draw = (p5) => {
-    // Check if 2 minutes have passed
-    if (Date.now() - startTime > resetInterval) {
-      // Clear canvas and redraw background for new pattern
+    p5.draw = () => {
+      // Check if 2 minutes have passed
+      if (Date.now() - startTime > resetInterval) {
+        // Clear canvas and redraw background for new pattern
+        p5.push();
+        p5.noFill();
+        p5.strokeWeight(2);
+        
+        // Create gradient background
+        for (let i = 0; i < p5.height; i++) {
+          const inter = p5.map(i, 0, p5.height, 0, 1);
+          const c = p5.lerpColor(
+            p5.color(10, 0, 20),   // Dark purple
+            p5.color(20, 0, 40),   // Slightly lighter purple
+            inter
+          );
+          p5.stroke(c);
+          p5.line(0, i, p5.width, i);
+        }
+        p5.pop();
+        
+        // Reset all spirographs
+        spirographs.forEach(spirograph => spirograph.reset(p5));
+        startTime = Date.now(); // Reset timer
+      }
+      
+      // Update and draw all spirographs
+      spirographs.forEach(spirograph => {
+        spirograph.update(p5);
+        spirograph.draw(p5);
+      });
+      
+      // Add subtle glow effect for all layers
+      p5.push();
+      p5.blendMode(p5.ADD);
+      p5.noFill();
+      spirographs.forEach(spirograph => {
+        if (spirograph.prevX && spirograph.prevY) {
+          p5.stroke(255, 0, 255, 5);
+          p5.strokeWeight(2);
+          p5.circle(spirograph.prevX, spirograph.prevY, 15);
+        }
+      });
+      p5.pop();
+    };
+
+    p5.mouseClicked = () => {
+      // Clear canvas and redraw background
       p5.push();
       p5.noFill();
       p5.strokeWeight(2);
@@ -296,92 +341,40 @@ const SynthSpirograph3 = ({ isFullscreen = false }) => {
       
       // Reset all spirographs
       spirographs.forEach(spirograph => spirograph.reset(p5));
-      startTime = Date.now(); // Reset timer
-    }
-    
-    // Update and draw all spirographs
-    spirographs.forEach(spirograph => {
-      spirograph.update(p5);
-      spirograph.draw(p5);
-    });
-    
-    // Add subtle glow effect for all layers
-    p5.push();
-    p5.blendMode(p5.ADD);
-    p5.noFill();
-    spirographs.forEach(spirograph => {
-      if (spirograph.prevX && spirograph.prevY) {
-        p5.stroke(255, 0, 255, 5);
-        p5.strokeWeight(2);
-        p5.circle(spirograph.prevX, spirograph.prevY, 15);
+      startTime = Date.now(); // Reset timer on manual click
+    };
+
+    p5.keyPressed = () => {
+      if (p5.key === 'r' || p5.key === 'R') {
+        // Reset all spirographs
+        spirographs.forEach(spirograph => spirograph.reset(p5));
+        startTime = Date.now(); // Reset timer on R key press
+      } else if (p5.key === 'p' || p5.key === 'P') {
+        // Toggle physics
+        physicsEnabled = !physicsEnabled;
       }
-    });
-    p5.pop();
-  };
+    };
 
-  const mouseClicked = (p5) => {
-    // Clear canvas and redraw background
-    p5.push();
-    p5.noFill();
-    p5.strokeWeight(2);
-    
-    // Create gradient background
-    for (let i = 0; i < p5.height; i++) {
-      const inter = p5.map(i, 0, p5.height, 0, 1);
-      const c = p5.lerpColor(
-        p5.color(10, 0, 20),   // Dark purple
-        p5.color(20, 0, 40),   // Slightly lighter purple
-        inter
-      );
-      p5.stroke(c);
-      p5.line(0, i, p5.width, i);
-    }
-    p5.pop();
-    
-    // Reset all spirographs
-    spirographs.forEach(spirograph => spirograph.reset(p5));
-    startTime = Date.now(); // Reset timer on manual click
-  };
+    p5.mouseMoved = () => {
+      mouseX = p5.mouseX;
+      mouseY = p5.mouseY;
+    };
 
-  const keyPressed = (p5) => {
-    if (p5.key === 'r' || p5.key === 'R') {
-      // Reset all spirographs
-      spirographs.forEach(spirograph => spirograph.reset(p5));
-      startTime = Date.now(); // Reset timer on R key press
-    } else if (p5.key === 'p' || p5.key === 'P') {
-      // Toggle physics
-      physicsEnabled = !physicsEnabled;
-    }
-  };
+    p5.mousePressed = () => {
+      isMousePressed = true;
+    };
 
-  const mouseMoved = (p5) => {
-    mouseX = p5.mouseX;
-    mouseY = p5.mouseY;
-  };
+    p5.mouseReleased = () => {
+      isMousePressed = false;
+    };
 
-  const mousePressed = (p5) => {
-    isMousePressed = true;
-  };
-
-  const mouseReleased = (p5) => {
-    isMousePressed = false;
-  };
-
-  const windowResized = (p5) => {
-    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    p5.windowResized = () => {
+      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    };
   };
 
   return (
-    <Sketch 
-      setup={setup} 
-      draw={draw} 
-      mouseClicked={mouseClicked}
-      mouseMoved={mouseMoved}
-      mousePressed={mousePressed}
-      mouseReleased={mouseReleased}
-      keyPressed={keyPressed}
-      windowResized={windowResized}
-    />
+    <ReactP5Wrapper sketch={sketch} />
   );
 };
 

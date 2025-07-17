@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sketch from "react-p5";
+import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "../Sketch.css";
 
 const SineWavePuddleGen2 = ({ isFullscreen = false }) => {
@@ -232,162 +232,161 @@ const SineWavePuddleGen2 = ({ isFullscreen = false }) => {
     }
   }
 
-  const setup = (p5, canvasParentRef) => {
-    const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-    
-    if (isFullscreen) {
-      canvas.class('canvas-container fullscreen');
-      canvas.elt.classList.add('fullscreen');
-    } else {
-      canvas.class('canvas-container');
-    }
-    
-    p5.colorMode(p5.HSB, 360, 100, 100, 1);
-    p5.background(0);
-    
-    // Initialize multiple walkers with different colors
-    const walkerColors = [
-      { h: 60, s: 100, b: 100 },   // Bright yellow
-      { h: 200, s: 80, b: 100 },   // Bright blue
-      { h: 320, s: 80, b: 100 }    // Bright magenta
-    ];
-    
-    walkers = [];
-    for (let i = 0; i < 3; i++) { // Changed to 3 walkers
-      const x = p5.width * (0.25 + i * 0.25); // Spread them out horizontally
-      const y = p5.height * (0.3 + p5.random(-0.2, 0.2));
-      walkers.push(new Walker(p5, x, y, walkerColors[i]));
-    }
-    
-    // Initialize wave centers
-    waveCenters = [
-      new WaveCenter(p5, p5.width * 0.3, p5.height * 0.3),
-      new WaveCenter(p5, p5.width * 0.7, p5.height * 0.7),
-    ];
-  };
-
-  const draw = (p5) => {
-    // Fade background
-    p5.fill(0, 0, 0, 0.1);
-    p5.noStroke();
-    p5.rect(0, 0, p5.width, p5.height);
-    
-    globalTime = p5.frameCount;
-    
-    // Update all walkers
-    walkers.forEach(walker => {
-      walker.update(p5, walkers);
-    });
-    
-    // Update wave centers
-    for (let i = waveCenters.length - 1; i >= 0; i--) {
-      waveCenters[i].update(p5);
-      if (waveCenters[i].isDead()) {
-        waveCenters.splice(i, 1);
+  const sketch = (p5) => {
+    p5.setup = () => {
+      const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      
+      if (isFullscreen) {
+        canvas.class('canvas-container fullscreen');
+        canvas.elt.classList.add('fullscreen');
+      } else {
+        canvas.class('canvas-container');
       }
-    }
-    
-    // Keep only the last 20 wave centers for trail effect
-    if (waveCenters.length > 20) {
-      waveCenters.splice(0, waveCenters.length - 20);
-    }
-    
-    // Draw waves
-    drawWaves(p5);
-    
-    // Draw all walkers
-    walkers.forEach(walker => {
-      walker.draw(p5);
-    });
-  };
-
-  const drawWaves = (p5) => {
-    waveCenters.forEach(center => {
-      // Draw from outer to inner for proper layering
-      for (let wave = center.waveCount - 1; wave >= 0; wave--) {
-        const wavePoints = center.generateWave(p5, wave);
-        
-        // Simple color scheme based on wave progress and life
-        const waveProgress = wave / center.waveCount;
-        const hue = p5.lerp(180, 220, waveProgress);
-        const saturation = p5.map(center.life, 0, 1, 0, 80);
-        const brightness = p5.map(waveProgress, 0, 1, 20, 80);
-        const alpha = p5.map(wave, 0, center.waveCount, 0.6, 0.1) * center.life;
-        
-        // Draw wave outline only - no fill
-        p5.stroke(hue, saturation, brightness, alpha * 0.8);
-        p5.strokeWeight(1);
-        p5.noFill();
-        
-        p5.beginShape();
-        wavePoints.forEach(point => {
-          p5.vertex(point.x, point.y);
-        });
-        p5.endShape(p5.CLOSE);
+      
+      p5.colorMode(p5.HSB, 360, 100, 100, 1);
+      p5.background(0);
+      
+      // Initialize multiple walkers with different colors
+      const walkerColors = [
+        { h: 60, s: 100, b: 100 },   // Bright yellow
+        { h: 200, s: 80, b: 100 },   // Bright blue
+        { h: 320, s: 80, b: 100 }    // Bright magenta
+      ];
+      
+      walkers = [];
+      for (let i = 0; i < 3; i++) { // Changed to 3 walkers
+        const x = p5.width * (0.25 + i * 0.25); // Spread them out horizontally
+        const y = p5.height * (0.3 + p5.random(-0.2, 0.2));
+        walkers.push(new Walker(p5, x, y, walkerColors[i]));
       }
-    });
-  };
-
-  const mouseMoved = (p5) => {
-    mouseX = p5.mouseX;
-    mouseY = p5.mouseY;
-    mouseInCanvas = true;
-    lastMouseMoveTime = p5.frameCount;
-    
-    // Set all walkers to attraction mode
-    walkers.forEach(walker => {
-      walker.attractionMode = true;
-    });
-    
-    // Create new wave center on mouse move (with throttling)
-    if (p5.frameCount % 3 === 0) { // Create every 3 frames to avoid overwhelming
-      waveCenters.push(new WaveCenter(p5, p5.mouseX, p5.mouseY));
-    }
-  };
-
-  const mousePressed = (p5) => {
-    // Keep mousePressed for additional interaction if needed
-    if (p5.mouseButton === p5.LEFT) {
-      // Add new wave center
-      waveCenters.push(new WaveCenter(p5, p5.mouseX, p5.mouseY));
-    }
-  };
-
-  const mouseExited = (p5) => {
-    mouseInCanvas = false;
-    // Set all walkers back to normal mode
-    walkers.forEach(walker => {
-      walker.attractionMode = false;
-    });
-  };
-
-  const keyPressed = (p5) => {
-    if (p5.key === 'c' || p5.key === 'C') {
-      // Clear all wave centers
-      waveCenters = [];
-    }
-    if (p5.key === 'r' || p5.key === 'R') {
-      // Reset to initial state
+      
+      // Initialize wave centers
       waveCenters = [
         new WaveCenter(p5, p5.width * 0.3, p5.height * 0.3),
         new WaveCenter(p5, p5.width * 0.7, p5.height * 0.7),
       ];
-    }
-    if (p5.key === 's' || p5.key === 'S') {
-      // Add wave center at random location
-      waveCenters.push(new WaveCenter(p5, p5.random(p5.width), p5.random(p5.height)));
-    }
+    };
+
+    p5.draw = () => {
+      // Fade background
+      p5.fill(0, 0, 0, 0.1);
+      p5.noStroke();
+      p5.rect(0, 0, p5.width, p5.height);
+      
+      globalTime = p5.frameCount;
+      
+      // Update all walkers
+      walkers.forEach(walker => {
+        walker.update(p5, walkers);
+      });
+      
+      // Update wave centers
+      for (let i = waveCenters.length - 1; i >= 0; i--) {
+        waveCenters[i].update(p5);
+        if (waveCenters[i].isDead()) {
+          waveCenters.splice(i, 1);
+        }
+      }
+      
+      // Keep only the last 20 wave centers for trail effect
+      if (waveCenters.length > 20) {
+        waveCenters.splice(0, waveCenters.length - 20);
+      }
+      
+      // Draw waves
+      drawWaves(p5);
+      
+      // Draw all walkers
+      walkers.forEach(walker => {
+        walker.draw(p5);
+      });
+    };
+
+    const drawWaves = (p5) => {
+      waveCenters.forEach(center => {
+        // Draw from outer to inner for proper layering
+        for (let wave = center.waveCount - 1; wave >= 0; wave--) {
+          const wavePoints = center.generateWave(p5, wave);
+          
+          // Simple color scheme based on wave progress and life
+          const waveProgress = wave / center.waveCount;
+          const hue = p5.lerp(180, 220, waveProgress);
+          const saturation = p5.map(center.life, 0, 1, 0, 80);
+          const brightness = p5.map(waveProgress, 0, 1, 20, 80);
+          const alpha = p5.map(wave, 0, center.waveCount, 0.6, 0.1) * center.life;
+          
+          // Draw wave outline only - no fill
+          p5.stroke(hue, saturation, brightness, alpha * 0.8);
+          p5.strokeWeight(1);
+          p5.noFill();
+          
+          p5.beginShape();
+          wavePoints.forEach(point => {
+            p5.vertex(point.x, point.y);
+          });
+          p5.endShape(p5.CLOSE);
+        }
+      });
+    };
+
+    p5.mouseMoved = () => {
+      mouseX = p5.mouseX;
+      mouseY = p5.mouseY;
+      mouseInCanvas = true;
+      lastMouseMoveTime = p5.frameCount;
+      
+      // Set all walkers to attraction mode
+      walkers.forEach(walker => {
+        walker.attractionMode = true;
+      });
+      
+      // Create new wave center on mouse move (with throttling)
+      if (p5.frameCount % 3 === 0) { // Create every 3 frames to avoid overwhelming
+        waveCenters.push(new WaveCenter(p5, p5.mouseX, p5.mouseY));
+      }
+    };
+
+    p5.mousePressed = () => {
+      // Keep mousePressed for additional interaction if needed
+      if (p5.mouseButton === p5.LEFT) {
+        // Add new wave center
+        waveCenters.push(new WaveCenter(p5, p5.mouseX, p5.mouseY));
+      }
+    };
+
+    p5.mouseExited = () => {
+      mouseInCanvas = false;
+      // Set all walkers back to normal mode
+      walkers.forEach(walker => {
+        walker.attractionMode = false;
+      });
+    };
+
+    p5.keyPressed = () => {
+      if (p5.key === 'c' || p5.key === 'C') {
+        // Clear all wave centers
+        waveCenters = [];
+      }
+      if (p5.key === 'r' || p5.key === 'R') {
+        // Reset to initial state
+        waveCenters = [
+          new WaveCenter(p5, p5.width * 0.3, p5.height * 0.3),
+          new WaveCenter(p5, p5.width * 0.7, p5.height * 0.7),
+        ];
+      }
+      if (p5.key === 's' || p5.key === 'S') {
+        // Add wave center at random location
+        waveCenters.push(new WaveCenter(p5, p5.random(p5.width), p5.random(p5.height)));
+      }
+    };
+
+    p5.windowResized = () => {
+      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    };
   };
 
   return (
-    <Sketch 
-      setup={setup} 
-      draw={draw} 
-      mouseMoved={mouseMoved}
-      mousePressed={mousePressed}
-      mouseExited={mouseExited}
-      keyPressed={keyPressed}
-    />
+    <ReactP5Wrapper sketch={sketch} />
   );
 };
 

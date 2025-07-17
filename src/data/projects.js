@@ -443,6 +443,36 @@ export const projects = {
           date: "2025-06-12",
           blog: "blog/hiroshi-1.md",
           showPhotoMode: false
+        },
+        gen2: {
+          slug: "hiroshi-2",
+          title: "Hiroshi 2",
+          description: "Spiral-based masking shapes revealing background through irregular spiral patterns",
+          sketch: "Hiroshi2",
+          tags: ["generative", "masking", "spiral", "irregular", "gradient"],
+          date: "2025-01-31",
+          blog: "blog/hiroshi-2.md",
+          showPhotoMode: false
+        },
+        gen3: {
+          slug: "hiroshi-3",
+          title: "Hiroshi 3",
+          description: "Double pendulum-inspired chaotic masking with organic, irregular shapes",
+          sketch: "Hiroshi3",
+          tags: ["generative", "masking", "pendulum", "chaotic", "organic"],
+          date: "2025-01-31",
+          blog: "blog/hiroshi-3.md",
+          showPhotoMode: false
+        },
+        gen4: {
+          slug: "hiroshi-4",
+          title: "Hiroshi 4",
+          description: "Fractal-like masking shapes using color burn blend mode for dramatic effects",
+          sketch: "Hiroshi4",
+          tags: ["generative", "masking", "fractal", "color-burn", "blend-mode"],
+          date: "2025-01-31",
+          blog: "blog/hiroshi-4.md",
+          showPhotoMode: false
         }
       }
     },

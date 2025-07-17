@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sketch from "react-p5";
+import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "../Sketch.css";
 
 const SmokeTrailsGen2 = ({ isFullscreen = false }) => {
@@ -186,121 +186,121 @@ const SmokeTrailsGen2 = ({ isFullscreen = false }) => {
     }
   }
 
-  const setup = (p5, canvasParentRef) => {
-    const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-    
-    if (isFullscreen) {
-      canvas.class('canvas-container fullscreen');
-      canvas.elt.classList.add('fullscreen');
-    } else {
-      canvas.class('canvas-container');
-    }
-    
-    p5.colorMode(p5.RGB, 255, 255, 255, 1);
-    p5.background(0);
-  };
-
-  const draw = (p5) => {
-    time += 0.005; // Slower time progression for smoother changes
-    
-    // Update environmental conditions
-    updateEnvironment(p5);
-    
-    // Fade background
-    p5.fill(0, 0, 0, 0.08); // Reduced fade rate for smoother trails
-    p5.noStroke();
-    p5.rect(0, 0, p5.width, p5.height);
-
-    // Starter smoke at bottom center (reduced rate)
-    if (starterSmokeActive && particles.length < MAX_PARTICLES * 0.8) {
-      const centerX = p5.width / 2;
-      const centerY = p5.height - 50;
+  const sketch = (p5) => {
+    p5.setup = () => {
+      const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
       
-      const randomX = centerX + p5.random(-20, 20);
-      const randomY = centerY + p5.random(-10, 10);
+      if (isFullscreen) {
+        canvas.class('canvas-container fullscreen');
+        canvas.elt.classList.add('fullscreen');
+      } else {
+        canvas.class('canvas-container');
+      }
       
-      // Create different particle types based on conditions (reduced count)
-      const particleCount = p5.floor(p5.random(1, 3)); // Reduced from 2-4
-      for (let i = 0; i < particleCount && particles.length < MAX_PARTICLES; i++) {
-        let particleType = PARTICLE_TYPES.SMOKE;
-        
-        // High temperature can create fire (reduced probability)
-        if (temperature > 0.85 && p5.random() < 0.2) { // Increased threshold, reduced probability
-          particleType = PARTICLE_TYPES.FIRE;
-        }
-        // High humidity can create steam
-        else if (humidity > 0.6 && p5.random() < 0.2) {
-          particleType = PARTICLE_TYPES.STEAM;
-        }
-        
-        particles.push(new Particle(p5, randomX, randomY, particleType));
-      }
-    }
+      p5.colorMode(p5.RGB, 255, 255, 255, 1);
+      p5.background(0);
+    };
 
-    // Add new particles when mouse is pressed (reduced rate)
-    if (isMousePressed && particles.length < MAX_PARTICLES) {
-      const mouseParticleCount = p5.floor(p5.random(1, 3)); // Reduced from 3
-      for (let i = 0; i < mouseParticleCount && particles.length < MAX_PARTICLES; i++) {
-        let particleType = PARTICLE_TYPES.SMOKE;
-        
-        // Mouse position affects particle type (reduced fire probability)
-        if (mouseY < p5.height * 0.3 && temperature > 0.8 && p5.random() < 0.3) { // Added random check
-          particleType = PARTICLE_TYPES.FIRE;
-        } else if (mouseY > p5.height * 0.7 && humidity > 0.5) {
-          particleType = PARTICLE_TYPES.STEAM;
-        }
-        
-        particles.push(new Particle(p5, mouseX, mouseY, particleType));
-      }
-    }
-
-    // Update and show particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-      particles[i].update(p5);
-      particles[i].show(p5);
+    p5.draw = () => {
+      time += 0.005; // Slower time progression for smoother changes
       
-      if (particles[i].isDead()) {
-        particles.splice(i, 1);
+      // Update environmental conditions
+      updateEnvironment(p5);
+      
+      // Fade background
+      p5.fill(0, 0, 0, 0.08); // Reduced fade rate for smoother trails
+      p5.noStroke();
+      p5.rect(0, 0, p5.width, p5.height);
+
+      // Starter smoke at bottom center (reduced rate)
+      if (starterSmokeActive && particles.length < MAX_PARTICLES * 0.8) {
+        const centerX = p5.width / 2;
+        const centerY = p5.height - 50;
+        
+        const randomX = centerX + p5.random(-20, 20);
+        const randomY = centerY + p5.random(-10, 10);
+        
+        // Create different particle types based on conditions (reduced count)
+        const particleCount = p5.floor(p5.random(1, 3)); // Reduced from 2-4
+        for (let i = 0; i < particleCount && particles.length < MAX_PARTICLES; i++) {
+          let particleType = PARTICLE_TYPES.SMOKE;
+          
+          // High temperature can create fire (reduced probability)
+          if (temperature > 0.85 && p5.random() < 0.2) { // Increased threshold, reduced probability
+            particleType = PARTICLE_TYPES.FIRE;
+          }
+          // High humidity can create steam
+          else if (humidity > 0.6 && p5.random() < 0.2) {
+            particleType = PARTICLE_TYPES.STEAM;
+          }
+          
+          particles.push(new Particle(p5, randomX, randomY, particleType));
+        }
       }
-    }
-  };
 
-  const updateEnvironment = (p5) => {
-    // Temperature varies over time (slower and smoother)
-    temperature = p5.noise(time * 0.3) * 0.3 + 0.5; // Reduced frequency
-    
-    // Humidity varies over time (slower and smoother)
-    humidity = p5.noise(time * 0.2 + 1000) * 0.4 + 0.3; // Reduced frequency
-    
-    // Wind varies over time (slower and smoother)
-    windX = p5.noise(time * 0.4 + 2000) * 2 - 1; // Reduced frequency
-    windY = p5.noise(time * 0.4 + 3000) * 2 - 1; // Reduced frequency
-  };
+      // Add new particles when mouse is pressed (reduced rate)
+      if (isMousePressed && particles.length < MAX_PARTICLES) {
+        const mouseParticleCount = p5.floor(p5.random(1, 3)); // Reduced from 3
+        for (let i = 0; i < mouseParticleCount && particles.length < MAX_PARTICLES; i++) {
+          let particleType = PARTICLE_TYPES.SMOKE;
+          
+          // Mouse position affects particle type (reduced fire probability)
+          if (mouseY < p5.height * 0.3 && temperature > 0.8 && p5.random() < 0.3) { // Added random check
+            particleType = PARTICLE_TYPES.FIRE;
+          } else if (mouseY > p5.height * 0.7 && humidity > 0.5) {
+            particleType = PARTICLE_TYPES.STEAM;
+          }
+          
+          particles.push(new Particle(p5, mouseX, mouseY, particleType));
+        }
+      }
 
-  const mousePressed = (p5) => {
-    isMousePressed = true;
-    starterSmokeActive = false;
-  };
+      // Update and show particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update(p5);
+        particles[i].show(p5);
+        
+        if (particles[i].isDead()) {
+          particles.splice(i, 1);
+        }
+      }
+    };
 
-  const mouseReleased = (p5) => {
-    isMousePressed = false;
-  };
+    const updateEnvironment = (p5) => {
+      // Temperature varies over time (slower and smoother)
+      temperature = p5.noise(time * 0.3) * 0.3 + 0.5; // Reduced frequency
+      
+      // Humidity varies over time (slower and smoother)
+      humidity = p5.noise(time * 0.2 + 1000) * 0.4 + 0.3; // Reduced frequency
+      
+      // Wind varies over time (slower and smoother)
+      windX = p5.noise(time * 0.4 + 2000) * 2 - 1; // Reduced frequency
+      windY = p5.noise(time * 0.4 + 3000) * 2 - 1; // Reduced frequency
+    };
 
-  const mouseMoved = (p5) => {
-    mouseX = p5.mouseX;
-    mouseY = p5.mouseY;
-    isMousePressed = true;
-    starterSmokeActive = false;
+    p5.mousePressed = () => {
+      isMousePressed = true;
+      starterSmokeActive = false;
+    };
+
+    p5.mouseReleased = () => {
+      isMousePressed = false;
+    };
+
+    p5.mouseMoved = () => {
+      mouseX = p5.mouseX;
+      mouseY = p5.mouseY;
+      isMousePressed = true;
+      starterSmokeActive = false;
+    };
+
+    p5.windowResized = () => {
+      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    };
   };
 
   return (
-    <Sketch 
-      setup={setup} 
-      draw={draw} 
-      mousePressed={mousePressed}
-      mouseReleased={mouseReleased}
-      mouseMoved={mouseMoved}
-    />
+    <ReactP5Wrapper sketch={sketch} />
   );
 };
 

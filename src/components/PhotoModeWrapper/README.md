@@ -49,7 +49,7 @@ const MySketch = ({ draw, isFullscreen, photoMode, ...props }) => {
     drawFunction(p5);
   };
 
-  return <Sketch setup={setup} draw={draw} />;
+  return <ReactP5Wrapper setup={setup} draw={draw} />;
 };
 
 // Wrap your sketch with photo mode
@@ -96,7 +96,7 @@ const MySketch = ({ isFullscreen = false, photoMode = false }) => {
     }
   };
 
-  return <Sketch setup={setup} draw={draw} />;
+  return <ReactP5Wrapper setup={setup} draw={draw} />;
 };
 ```
 

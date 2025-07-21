@@ -3,9 +3,6 @@ import { ReactP5Wrapper } from "@p5-wrapper/react";
 
 const Hiroshi3 = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
-    let iterationCount = 0;
-    let isDrawingComplete = false;
-
     p5.setup = () => {
       const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
       
@@ -19,18 +16,67 @@ const Hiroshi3 = ({ isFullscreen = false }) => {
       p5.colorMode(p5.HSB, 360, 100, 100, 1);
       p5.background(255);
       
-      // Start the drawing process
-      drawCompleteArtwork(p5);
+      // Draw the gradient background
+      p5.clip(pendulumMask);
+      drawGradients(p5);
+
+      // p5.background(255);
+      // p5.stroke(0);
+      // pendulumMask();
     };
 
-    const drawCompleteArtwork = (p5) => {
-      // Layer 1: Draw the gradient background
-      drawGradients(p5);
-      
-      // Layer 2: Create white canvas with clipping masks
-      createWhiteCanvasWithCutouts(p5);
-      
-      isDrawingComplete = true;
+    // Define double pendulum mask function
+    const pendulumMask = () => {
+      // Draw many pendulum paths across the canvas
+      for (let pendulum = 0; pendulum < 100; pendulum++) {
+        // Generate pendulum path points
+        const centerX = p5.random(p5.windowWidth);
+        const centerY = p5.random(p5.windowHeight);
+        const length1 = p5.random(80, 150);
+        const length2 = p5.random(60, 120);
+        const thickness = p5.random(8, 25);
+        
+        // Simulate double pendulum motion with fixed angles for static result
+        const angle1 = p5.sin(pendulum * 0.5) * 2 + p5.cos(pendulum * 0.3) * 1.5;
+        const angle2 = p5.sin(pendulum * 0.7) * 3 + p5.cos(pendulum * 0.4) * 2;
+        
+        // Generate smooth pendulum path
+        p5.beginShape();
+        p5.noFill();
+
+        // Create a smooth curve by sampling more points
+        for (let t = 0; t <= 1; t += 0.01) {
+          const chaos1 = p5.sin(t * 20 + pendulum * 2) * 15;
+          const chaos2 = p5.cos(t * 15 + pendulum * 1.5) * 12;
+          
+          const interpAngle1 = p5.lerp(0, angle1, t);
+          const interpAngle2 = p5.lerp(0, angle2, t);
+          
+          const px = centerX + p5.cos(interpAngle1) * (length1 * t) + chaos1;
+          const py = centerY + p5.sin(interpAngle1) * (length1 * t) + chaos2;
+          
+          // Add thickness by creating parallel curves
+          const dx = p5.cos(interpAngle1 + interpAngle2) * length2 * 0.1;
+          const dy = p5.sin(interpAngle1 + interpAngle2) * length2 * 0.1;
+          
+          // Create points on both sides of the curve for thickness
+          const leftX = px - dy * thickness * 0.5;
+          const leftY = py + dx * thickness * 0.5;
+          const rightX = px + dy * thickness * 0.5;
+          const rightY = py - dx * thickness * 0.5;
+          
+          if (t === 0) {
+            p5.vertex(leftX, leftY);
+            p5.vertex(rightX, rightY);
+          } else {
+            p5.curveVertex(leftX, leftY);
+            p5.curveVertex(rightX, rightY);
+          }
+        }
+        
+        // Close the shape smoothly
+        p5.endShape(p5.CLOSE);
+      }
     };
 
     const drawGradients = (p5) => {
@@ -66,96 +112,14 @@ const Hiroshi3 = ({ isFullscreen = false }) => {
       }
     };
 
-    const createWhiteCanvasWithCutouts = (p5) => {
-      // Create a white canvas
-      p5.push();
-      p5.fill(255);
-      p5.rect(0, 0, p5.width, p5.height);
-      p5.pop();
-      
-      // Draw 20 iterations of pendulum cutouts using clipping
-      for (let iteration = 0; iteration < 20; iteration++) {
-        drawPendulumCutouts(p5, iteration);
-      }
-    };
-
-    const drawPendulumCutouts = (p5, iteration) => {
-      p5.push();
-      
-      // Create clipping mask for this pendulum using proper p5.js clip() with callback
-      p5.clip(() => {
-        // Generate pendulum path points
-        const centerX = p5.random(p5.width);
-        const centerY = p5.random(p5.height);
-        const length1 = p5.random(80, 150);
-        const length2 = p5.random(60, 120);
-        const thickness = p5.random(8, 25);
-        
-        // Simulate double pendulum motion with fixed angles for static result
-        const angle1 = p5.sin(iteration * 0.5) * 2 + p5.cos(iteration * 0.3) * 1.5;
-        const angle2 = p5.sin(iteration * 0.7) * 3 + p5.cos(iteration * 0.4) * 2;
-        
-        // Calculate pendulum positions
-        const x1 = centerX + p5.cos(angle1) * length1;
-        const y1 = centerY + p5.sin(angle1) * length1;
-        const x2 = x1 + p5.cos(angle1 + angle2) * length2;
-        const y2 = y1 + p5.sin(angle1 + angle2) * length2;
-        
-        // Generate points along the pendulum path
-        const pathPoints = [];
-        for (let t = 0; t < 1; t += 0.02) {
-          const chaos1 = p5.sin(t * 20 + iteration * 2) * 15;
-          const chaos2 = p5.cos(t * 15 + iteration * 1.5) * 12;
-          
-          const interpAngle1 = p5.lerp(0, angle1, t);
-          const interpAngle2 = p5.lerp(0, angle2, t);
-          
-          const px = centerX + p5.cos(interpAngle1) * (length1 * t) + chaos1;
-          const py = centerY + p5.sin(interpAngle1) * (length1 * t) + chaos2;
-          
-          pathPoints.push({ x: px, y: py });
-        }
-        
-        // Draw the clipping shape
-        p5.beginShape();
-        for (let i = 0; i < pathPoints.length - 1; i++) {
-          const current = pathPoints[i];
-          const next = pathPoints[i + 1];
-          
-          // Calculate perpendicular direction for width
-          const dx = next.x - current.x;
-          const dy = next.y - current.y;
-          const length = p5.sqrt(dx * dx + dy * dy);
-          
-          if (length > 0) {
-            const perpX = -dy / length;
-            const perpY = dx / length;
-            
-            // Add points on both sides of the path
-            p5.vertex(current.x + perpX * thickness * 0.5, current.y + perpY * thickness * 0.5);
-            p5.vertex(current.x - perpX * thickness * 0.5, current.y - perpY * thickness * 0.5);
-          }
-        }
-        p5.endShape(p5.CLOSE);
-      });
-      
-      // Clear the clipped area to create the "hole"
-      p5.clear();
-      
-      p5.pop();
-    };
-
     p5.draw = () => {
       // No continuous drawing - artwork is static once complete
-      if (!isDrawingComplete) {
-        drawCompleteArtwork(p5);
-      }
     };
 
     p5.windowResized = () => {
       p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
       // Redraw the artwork when window is resized
-      isDrawingComplete = false;
+      p5.setup();
     };
   };
 

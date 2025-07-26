@@ -77,7 +77,7 @@ const FunWithCameras5 = ({ isFullscreen = false, photoMode = false }) => {
         if (photoModeManager.isCapturingActive()) {
           // Only draw and capture if camera is ready
           if (cameraReady) {
-            // drawEdgeDetection(p5);
+            drawEdgeDetection(p5);
 
             // Update photo mode with pure function
             photoModeManager.update(p5, drawEdgeDetection, cameraReady);

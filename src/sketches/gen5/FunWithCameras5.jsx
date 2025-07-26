@@ -41,7 +41,7 @@ const FunWithCameras5 = ({ isFullscreen = false, photoMode = false }) => {
         if (!cam || !cam.pixels) return;
         cam.loadPixels();
         p5.loadPixels();
-        
+        p5.background(220);
         for (let y = 1; y < cam.height - 1; y++) {
             for (let x = 1; x < cam.width - 1; x++) {
             // Mirror the x coordinate to flip the image horizontally

@@ -44,12 +44,15 @@ const FunWithCameras5 = ({ isFullscreen = false, photoMode = false }) => {
         
         for (let y = 1; y < cam.height - 1; y++) {
             for (let x = 1; x < cam.width - 1; x++) {
+            // Mirror the x coordinate to flip the image horizontally
+            let mirrorX = cam.width - 1 - x;
             let i = (x + y * cam.width) * 4;
+            let mirrorI = (mirrorX + y * cam.width) * 4;
             
-            // Compare brightness with the right pixel
-            let b = p5.brightness(p5.color(cam.pixels[i], cam.pixels[i + 1], cam.pixels[i + 2]));
-            let bRight = p5.brightness(p5.color(cam.pixels[i + 4], cam.pixels[i + 5], cam.pixels[i + 6]));
-            let bDown = p5.brightness(p5.color(cam.pixels[i + cam.width * 4], cam.pixels[i + cam.width * 4 + 1], cam.pixels[i + cam.width * 4 + 2]));
+            // Compare brightness with the right pixel (using mirrored coordinates)
+            let b = p5.brightness(p5.color(cam.pixels[mirrorI], cam.pixels[mirrorI + 1], cam.pixels[mirrorI + 2]));
+            let bRight = p5.brightness(p5.color(cam.pixels[mirrorI + 4], cam.pixels[mirrorI + 5], cam.pixels[mirrorI + 6]));
+            let bDown = p5.brightness(p5.color(cam.pixels[mirrorI + cam.width * 4], cam.pixels[mirrorI + cam.width * 4 + 1], cam.pixels[mirrorI + cam.width * 4 + 2]));
             
             // Edge if brightness difference is above threshold
             let edge = p5.abs(b - bRight) > threshold || p5.abs(b - bDown) > threshold;

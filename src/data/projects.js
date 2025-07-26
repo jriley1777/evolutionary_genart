@@ -537,6 +537,16 @@ export const projects = {
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-4.md",
           showPhotoMode: true
+        },
+        gen5: {
+          slug: "fun-with-cameras-5",
+          title: "Fun With Cameras 5",
+          description: "Rotoscoping edge detection with adjustable threshold",
+          sketch: "FunWithCameras5",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "rotoscoping", "edge-detection", "threshold"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras-5.md",
+          showPhotoMode: true
         }
       }
     },

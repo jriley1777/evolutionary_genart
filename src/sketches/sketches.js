@@ -15,6 +15,7 @@ import FunWithCameras2 from "./gen2/FunWithCameras2";
 import FunWithCameras3 from "./gen3/FunWithCameras3";
 import FunWithCameras4 from "./gen4/FunWithCameras4";
 import FunWithCameras5 from './gen5/FunWithCameras5.jsx';
+import FunWithCameras6 from './gen6/FunWithCameras6.jsx';
 import FunWithSounds from "./gen1/FunWithSounds";
 import SynthSpirograph2 from "./gen2/SynthSpirograph2";
 import SynthSpirograph3 from "./gen3/SynthSpirograph3";
@@ -66,6 +67,7 @@ const sketches = {
     FunWithCameras3,
     FunWithCameras4,
     FunWithCameras5,
+    FunWithCameras6,
     FunWithSounds,
     SynthSpirograph2,
     SynthSpirograph3,

@@ -547,6 +547,16 @@ export const projects = {
           date: "2025-01-31",
           blog: "blog/fun-with-cameras-5.md",
           showPhotoMode: true
+        },
+        gen6: {
+          slug: "fun-with-cameras-6",
+          title: "Fun With Cameras 6",
+          description: "Vertex-based edge detection with smooth tweening animation",
+          sketch: "FunWithCameras6",
+          tags: ["p5.js", "generative", "interactive", "camera", "video", "vertex-detection", "tweening", "performance"],
+          date: "2025-01-31",
+          blog: "blog/fun-with-cameras-6.md",
+          showPhotoMode: true
         }
       }
     },

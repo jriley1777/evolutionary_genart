@@ -55,8 +55,8 @@ const FunWithCameras6 = ({ isFullscreen = false, photoMode = false }) => {
       cam.loadPixels();
       let vertices = [];
       
-      for (let y = 2; y < cam.height - 2; y += 4) { // Sample every 4th pixel for performance
-        for (let x = 2; x < cam.width - 2; x += 4) {
+      for (let y = 2; y < cam.height - 2; y += 20) { // Sample every 4th pixel for performance
+        for (let x = 2; x < cam.width - 2; x += 20) {
           let i = (x + y * cam.width) * 4;
           
           let b = p5.brightness(p5.color(cam.pixels[i], cam.pixels[i + 1], cam.pixels[i + 2]));

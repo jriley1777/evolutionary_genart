@@ -48,6 +48,7 @@ import StaticLineArt3 from "./gen3/StaticLineArt3";
 import StaticLineArt4 from "./gen4/StaticLineArt4";
 import StaticLineArt5 from "./gen5/StaticLineArt5";
 import StaticLineArt6 from "./gen6/StaticLineArt6";
+import GridSystem1 from "./gen1/GridSystem1";
 
 const sketches = {
     SineWavePuddle,
@@ -99,7 +100,8 @@ const sketches = {
     StaticLineArt3,
     StaticLineArt4,
     StaticLineArt5,
-    StaticLineArt6
+    StaticLineArt6,
+    GridSystem1
 };
 
 export default {...sketches};

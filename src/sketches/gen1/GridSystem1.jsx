@@ -45,7 +45,7 @@ class Square {
       this.blackColor = blackColor; // Store for reuse
       
       // Circle properties
-      this.hasCircle = this.seeds.hasCircle < 0.15;
+      this.hasCircle = this.seeds.hasCircle < 0.35;
       if (this.hasCircle) {
         let circleColorName;
         let attempts = 0;
@@ -60,7 +60,7 @@ class Square {
       }
       
       // Small circle properties
-      this.hasSmallCircle = this.seeds.hasSmallCircle < 0.25;
+      this.hasSmallCircle = this.seeds.hasSmallCircle < 0.35;
       if (this.hasSmallCircle) {
         let smallCircleColorName;
         let attempts = 0;
@@ -75,7 +75,7 @@ class Square {
       }
       
       // Triangle properties
-      this.hasTriangle = this.seeds.hasTriangle < 0.15;
+      this.hasTriangle = this.seeds.hasTriangle < 0.35;
       if (this.hasTriangle) {
         let triangleColorName;
         let attempts = 0;

@@ -131,7 +131,7 @@ class Square {
       const circleY = (this.y * this.squareSize) + this.squareSize / 2;
       
       this.p5.fill(this.circleColor);
-      this.p5.noStroke();
+      this.p5.stroke(this.blackColor);
       this.p5.circle(circleX, circleY, circleRadius * 2);
     }
     
@@ -142,7 +142,7 @@ class Square {
       const smallCircleY = (this.y * this.squareSize) + this.squareSize / 2;
       
       this.p5.fill(this.smallCircleColor);
-      this.p5.noStroke();
+      this.p5.stroke(this.blackColor);
       this.p5.circle(smallCircleX, smallCircleY, smallCircleRadius * 2);
     }
     
@@ -169,7 +169,7 @@ class Square {
       }
       
       this.p5.fill(this.triangleColor);
-      this.p5.noStroke();
+      this.p5.stroke(this.blackColor);
       this.p5.triangle(x1, y1, x2, y2, x3, y3);
     }
   }

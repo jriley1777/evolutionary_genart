@@ -186,7 +186,7 @@ class Square {
 
 const GridSystem1 = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
-    let gridSize = 35; // Number of squares in height
+    let gridSize = 15; // Number of squares in height
     let squareSize = 0; // Will be calculated based on canvas height
     let numCols = 0; // Will be calculated based on canvas width
     let colorScheme; // Color scheme for the grid

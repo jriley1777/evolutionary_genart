@@ -3,11 +3,11 @@
 
 export const gridSystemColors = {
   // Convert RGBA to HSB for p5.js compatibility
-  black: { h: 0, s: 0, b: 5 },      // rgba(7, 2, 13, 1) - Very dark blue-black
-  aero: { h: 200, s: 58, b: 87 },   // rgba(93, 183, 222, 1) - Bright sky blue
-  alabaster: { h: 40, s: 9, b: 95 }, // rgba(241, 233, 219, 1) - Warm off-white
-  khaki: { h: 40, s: 15, b: 64 },   // rgba(163, 155, 139, 1) - Warm grey
-  dimGray: { h: 40, s: 19, b: 44 }  // rgba(113, 106, 92, 1) - Dark warm grey
+  spaceCadet: { h: 240, s: 35, b: 21 },    // rgba(43, 45, 66, 1) - Deep blue-grey
+  coolGray: { h: 220, s: 19, b: 68 },      // rgba(141, 153, 174, 1) - Cool grey
+  antiflashWhite: { h: 200, s: 3, b: 95 }, // rgba(237, 242, 244, 1) - Cool off-white
+  redPantone: { h: 350, s: 85, b: 94 },    // rgba(239, 35, 60, 1) - Bright red
+  fireEngineRed: { h: 350, s: 96, b: 85 }  // rgba(217, 4, 41, 1) - Deep red
 };
 
 // Helper function to get p5 color from palette
@@ -32,36 +32,36 @@ export const getGridColorWithAlpha = (p5, colorName, alpha = 1) => {
 
 // Predefined color combinations for different moods
 export const gridColorSchemes = {
-  // High contrast - black background with bright elements
+  // High contrast - space cadet background with bright red elements
   highContrast: {
-    background: 'black',
-    primary: 'aero',
-    secondary: 'alabaster',
-    accent: 'khaki'
+    background: 'spaceCadet',
+    primary: 'redPantone',
+    secondary: 'antiflashWhite',
+    accent: 'fireEngineRed'
   },
   
-  // Soft and warm - alabaster background
-  softWarm: {
-    background: 'alabaster',
-    primary: 'dimGray',
-    secondary: 'khaki',
-    accent: 'aero'
+  // Soft and cool - antiflash white background
+  softCool: {
+    background: 'antiflashWhite',
+    primary: 'spaceCadet',
+    secondary: 'coolGray',
+    accent: 'redPantone'
   },
   
-  // Neutral - khaki background
+  // Neutral - cool grey background
   neutral: {
-    background: 'khaki',
-    primary: 'black',
-    secondary: 'dimGray',
-    accent: 'aero'
+    background: 'coolGray',
+    primary: 'spaceCadet',
+    secondary: 'fireEngineRed',
+    accent: 'antiflashWhite'
   },
   
-  // Minimal - alabaster with subtle elements
+  // Minimal - antiflash white with subtle elements
   minimal: {
-    background: 'alabaster',
-    primary: 'dimGray',
-    secondary: 'khaki',
-    accent: 'black'
+    background: 'antiflashWhite',
+    primary: 'spaceCadet',
+    secondary: 'coolGray',
+    accent: 'fireEngineRed'
   }
 };
 

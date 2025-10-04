@@ -577,23 +577,7 @@ export const projects = {
         }
       }
     },
-    {
-      id: "grid-system",
-      name: "Grid System",
-      baseDescription: "Modular grid-based generative art with systematic patterns and geometric foundations",
-      generations: {
-        gen1: {
-          slug: "grid-system-1",
-          title: "Grid System 1",
-          description: "A foundational square grid system with 50 squares in height that adapts to fill the canvas width",
-          sketch: "GridSystem1",
-          tags: ["p5.js", "generative", "grid", "geometric", "systematic", "foundation"],
-          date: "2025-02-01",
-          blog: "blog/grid-system-1.md",
-          showPhotoMode: false
-        }
-      }
-    }
+
   ],
 
   // Available generations for the matrix

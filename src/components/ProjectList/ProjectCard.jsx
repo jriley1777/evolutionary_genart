@@ -16,15 +16,6 @@ const ProjectCard = ({ projectItem, isActive, onClick, index }) => (
         <h3>{projectItem.title}</h3>
       </div>
       <p className="project-description">{projectItem.description}</p>
-      <div className="project-meta">
-        <div className="project-tags">
-          {projectItem.tags?.slice(0, 3).map((tag, tagIndex) => (
-            <span key={tagIndex} className="tag">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   </Link>
 );

@@ -32,6 +32,9 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+
+  /* Consistent left indentation for title bar, panel header, and project cards */
+  --content-indent: 1.25rem;
 }
 
 * {
@@ -70,7 +73,7 @@ body {
 .title-bar {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
-  padding: 1rem 2rem;
+  padding: 1rem var(--content-indent);
   box-shadow: var(--shadow-sm);
   z-index: 100;
 }
@@ -110,7 +113,7 @@ body {
 .project-panel-header {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
-  padding: 1rem 1rem;
+  padding: 1rem var(--content-indent);
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
@@ -156,12 +159,12 @@ body {
   border: none;
   border-bottom: 1px solid var(--border-light);
   border-radius: 0;
-  padding: 1rem 1.5rem 1.25rem 1.5rem;
+  padding: 0.5rem var(--content-indent) 0.6rem var(--content-indent);
   transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  min-height: 160px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -206,7 +209,7 @@ body {
 .project-card-content {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
   height: 100%;
 }
 
@@ -231,10 +234,14 @@ body {
 
 .project-description {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.35;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-meta {
@@ -455,7 +462,7 @@ body {
   }
   
   .title-bar {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem var(--content-indent);
   }
   
   .title-content h1 {
@@ -474,12 +481,12 @@ body {
   }
   
   .project-list {
-    padding: 0.75rem;
+    padding: 0.5rem 0;
     gap: 0.5rem;
   }
   
   .project-card {
-    padding: 0.75rem;
+    padding: 0.5rem var(--content-indent) 0.6rem var(--content-indent);
   }
   
   .sketch-section {

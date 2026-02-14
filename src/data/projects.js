@@ -12,8 +12,8 @@ export const projects = {
           description: "Flow field trails with slower motion and longer, softer trails; same structure as Flow Field Trails",
           sketch: "SlowFlowTrails",
           tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "slow", "trails"],
-          date: "2025-02-14",
-          created: "2025-02-14",
+          date: "2026-02-14",
+          created: "2026-02-14",
           blog: "blog/slow-flow-trails.md",
           showPhotoMode: false
         },
@@ -23,8 +23,8 @@ export const projects = {
           description: "Flow field particle system with mouse-responsive forces and HSB color gradients",
           sketch: "FlowFieldTrails",
           tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "hsb"],
-          date: "2025-06-07",
-          created: "2025-06-07",
+          date: "2026-02-07",
+          created: "2026-02-07",
           blog: "blog/flow-field-trails.md",
           showPhotoMode: false
         },
@@ -34,8 +34,8 @@ export const projects = {
           description: "Advanced particle system with attractors, audio reactivity, and particle evolution",
           sketch: "EvolvingParticleLife",
           tags: ["p5.js", "generative", "interactive", "particles", "audio", "evolution"],
-          date: "2025-01-15",
-          created: "2025-01-15",
+          date: "2026-01-15",
+          created: "2026-01-15",
           blog: "blog/evolving-particle-life.md",
           showPhotoMode: false
         },
@@ -45,8 +45,8 @@ export const projects = {
           description: "Magnetic field system with attractors, repellers, and electromagnetic particle interactions",
           sketch: "MagneticParticleConnections",
           tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
-          date: "2025-01-23",
-          created: "2025-01-23",
+          date: "2026-01-23",
+          created: "2026-01-23",
           blog: "blog/magnetic-particle-connections.md",
           showPhotoMode: false
         },
@@ -56,8 +56,8 @@ export const projects = {
           description: "Text-based particle system with word chains, letter evolution, and flow field forces",
           sketch: "FlowingWordChains",
           tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "word-chains"],
-          date: "2025-01-29",
-          created: "2025-01-29",
+          date: "2026-01-29",
+          created: "2026-01-29",
           blog: "blog/flowing-word-chains.md",
           showPhotoMode: false
         },
@@ -67,8 +67,8 @@ export const projects = {
           description: "Evolutionary particle system with visual DNA, genetic mutations, and behavioral diversity",
           sketch: "GeneticParticleTraits",
           tags: ["p5.js", "generative", "interactive", "particles", "evolution", "dna", "genetics"],
-          date: "2025-01-30",
-          created: "2025-01-30",
+          date: "2026-01-30",
+          created: "2026-01-30",
           blog: "blog/genetic-particle-traits.md",
           showPhotoMode: false
         },
@@ -78,8 +78,8 @@ export const projects = {
           description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",
           sketch: "SynthwaveHexGlow",
           tags: ["p5.js", "generative", "interactive", "particles", "hexagonal", "synthwave", "neon", "illumination"],
-          date: "2025-01-31",
-          created: "2025-01-31",
+          date: "2026-01-31",
+          created: "2026-01-31",
           blog: "blog/synthwave-hex-glow.md",
           showPhotoMode: false
         },
@@ -89,8 +89,8 @@ export const projects = {
           description: "Triangular mesh with invisible particles affecting triangle colors through flow field",
           sketch: "TriangleMeshFlow",
           tags: ["p5.js", "generative", "interactive", "particles", "triangular", "mesh", "invisible"],
-          date: "2025-02-01",
-          created: "2025-02-01",
+          date: "2026-02-01",
+          created: "2026-02-01",
           blog: "blog/triangle-mesh-flow.md",
           showPhotoMode: false
         },
@@ -100,8 +100,8 @@ export const projects = {
           description: "Rectangle packing with particle-driven pattern changes and synthwave color transitions",
           sketch: "RectanglePackFlow",
           tags: ["p5.js", "generative", "interactive", "particles", "rectangle", "packing", "synthwave", "patterns"],
-          date: "2025-02-01",
-          created: "2025-02-01",
+          date: "2026-02-01",
+          created: "2026-02-01",
           blog: "blog/rectangle-pack-flow.md",
           showPhotoMode: false
         }

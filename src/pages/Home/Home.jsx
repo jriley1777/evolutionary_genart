@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { projects } from "../../data/projects";
 import "./Home.css";
+import ProjectList from "../../components/ProjectList/ProjectList";
 import SketchWithFullscreen from "../../components/SketchWithFullscreen/SketchWithFullscreen";
 import BlogPost from "../../components/BlogPost/BlogPost";
 import * as sketches from "../../sketches/sketches";
@@ -59,39 +60,11 @@ const Home = () => {
       {/* Main Content Area */}
       <main className="main-content">
         {/* Left Panel - Project Navigation */}
-        <aside className="project-panel">
-          <div className="project-panel-header">
-            <h2>Projects</h2>
-          </div>
-          <div className="project-list">
-            {allProjects.map((projectItem, index) => (
-              <Link
-                key={projectItem.slug}
-                to={`/${projectItem.type}/${projectItem.slug}`}
-                className={`project-card ${projectItem.slug === activeProject ? 'active' : ''}`}
-                onClick={(e) => handleProjectClick(e, projectItem.slug, projectItem.type)}
-                style={{
-                  '--item-index': index,
-                  animationDelay: `${index * 0.05}s`
-                }}
-              >
-                <div className="project-card-content">
-                  <div className="project-header">
-                    <h3>{projectItem.title}</h3>
-                  </div>
-                  <p className="project-description">{projectItem.description}</p>
-                  <div className="project-meta">
-                    <div className="project-tags">
-                      {projectItem.tags?.slice(0, 3).map((tag, tagIndex) => (
-                        <span key={tagIndex} className="tag">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </aside>
+        <ProjectList
+          projects={allProjects}
+          activeSlug={activeProject}
+          onProjectClick={handleProjectClick}
+        />
 
         {/* Right Panel - Split between Sketch and Markdown */}
         <section className="content-panel">

@@ -13,6 +13,7 @@ export const projects = {
           sketch: "FlowFieldTrails",
           tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "hsb"],
           date: "2025-06-07",
+          created: "2025-06-07",
           blog: "blog/flow-field-trails.md",
           showPhotoMode: false
         },
@@ -23,6 +24,7 @@ export const projects = {
           sketch: "EvolvingParticleLife",
           tags: ["p5.js", "generative", "interactive", "particles", "audio", "evolution"],
           date: "2025-01-15",
+          created: "2025-01-15",
           blog: "blog/evolving-particle-life.md",
           showPhotoMode: false
         },
@@ -33,6 +35,7 @@ export const projects = {
           sketch: "MagneticParticleConnections",
           tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
           date: "2025-01-23",
+          created: "2025-01-23",
           blog: "blog/magnetic-particle-connections.md",
           showPhotoMode: false
         },
@@ -43,6 +46,7 @@ export const projects = {
           sketch: "FlowingWordChains",
           tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "word-chains"],
           date: "2025-01-29",
+          created: "2025-01-29",
           blog: "blog/flowing-word-chains.md",
           showPhotoMode: false
         },
@@ -53,6 +57,7 @@ export const projects = {
           sketch: "GeneticParticleTraits",
           tags: ["p5.js", "generative", "interactive", "particles", "evolution", "dna", "genetics"],
           date: "2025-01-30",
+          created: "2025-01-30",
           blog: "blog/genetic-particle-traits.md",
           showPhotoMode: false
         },
@@ -63,6 +68,7 @@ export const projects = {
           sketch: "SynthwaveHexGlow",
           tags: ["p5.js", "generative", "interactive", "particles", "hexagonal", "synthwave", "neon", "illumination"],
           date: "2025-01-31",
+          created: "2025-01-31",
           blog: "blog/synthwave-hex-glow.md",
           showPhotoMode: false
         },
@@ -73,6 +79,7 @@ export const projects = {
           sketch: "TriangleMeshFlow",
           tags: ["p5.js", "generative", "interactive", "particles", "triangular", "mesh", "invisible"],
           date: "2025-02-01",
+          created: "2025-02-01",
           blog: "blog/triangle-mesh-flow.md",
           showPhotoMode: false
         },
@@ -83,6 +90,7 @@ export const projects = {
           sketch: "RectanglePackFlow",
           tags: ["p5.js", "generative", "interactive", "particles", "rectangle", "packing", "synthwave", "patterns"],
           date: "2025-02-01",
+          created: "2025-02-01",
           blog: "blog/rectangle-pack-flow.md",
           showPhotoMode: false
         }
@@ -90,7 +98,7 @@ export const projects = {
     }
   ],
 
-  // Helper function to get all projects in flat array format
+  // Helper function to get all projects in flat array format, sorted by created date (newest first)
   getAllProjects() {
     const allProjects = [];
     this.projectRoots.forEach(root => {
@@ -102,6 +110,7 @@ export const projects = {
         });
       });
     });
+    allProjects.sort((a, b) => (b.created || "").localeCompare(a.created || ""));
     return allProjects;
   },
 

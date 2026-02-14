@@ -24,7 +24,7 @@ Each sketch includes:
 
 Update these when adding a sketch:
 
-* `src/data/projects.js` – add the new sketch to the Particle Flow project (next gen slot)
+* `src/data/projects.js` – add the new sketch **at the top** of the Particle Flow project’s `sketches` array. Include a **created** field (YYYY-MM-DD, e.g. today’s date); the project list is sorted by `created`, newest first.
 * `src/sketches/sketches.js` – import and export the component
 
 ### 💂 Directory Guidelines

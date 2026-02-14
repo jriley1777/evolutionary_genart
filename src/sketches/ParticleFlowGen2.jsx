@@ -1,53 +1,38 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
-import "../Sketch.css";
+import "./Sketch.css";
 
-const ParticleFlowGen3 = ({ isFullscreen = false }) => {
+const ParticleFlowGen2 = ({ isFullscreen = false }) => {
   let particles = [];
   let flowField = [];
   let mouseX = 0;
   let mouseY = 0;
-  let time = 0;
-  let startTime = 0;
-  let isRunning = true;
-  let connections = [];
-
-  // Fixed parameters
-  const particleCount = 150;
-  const connectionDistance = 80;
-  const lineOpacity = 0.01;
-  const evolutionSpeed = 1.0;
-  const maxConnections = 3;
-  const backgroundFadeOpacity = 0.0;
 
   class Particle {
     constructor(p5) {
       this.pos = p5.createVector(p5.random(p5.width), p5.random(p5.height));
       this.vel = p5.createVector(0, 0);
       this.acc = p5.createVector(0, 0);
-      this.maxSpeed = p5.random(2, 5);
+      this.maxSpeed = p5.random(2, 6);
       this.prevPos = this.pos.copy();
-      this.life = 1.0;
+      this.life = 1.0; // Life starts at 1.0 and decreases
       this.age = 0;
-      this.maxAge = p5.random(400, 600);
-      this.evolutionStage = 1;
-      this.temperature = p5.random(0, 1);
+      this.maxAge = p5.random(200, 400);
+      this.evolutionStage = 0; // 0: young, 1: mature, 2: old
+      this.temperature = p5.random(0, 1); // Color temperature
       this.noiseOffset = p5.random(1000);
-      this.connections = [];
       
       // Evolution parameters
       this.originalMaxSpeed = this.maxSpeed;
-      this.originalSize = p5.random(1, 3);
+      this.originalSize = p5.random(2, 4);
       this.size = this.originalSize;
     }
 
     update(p5) {
-      if (!isRunning) return;
-      
       this.age++;
       this.life = 1.0 - (this.age / this.maxAge);
       
-      // Evolution stages (similar to Gen2)
+      // Evolution stages
       if (this.age < this.maxAge * 0.3) {
         this.evolutionStage = 0; // Young - growing
         this.size = this.originalSize + (this.age / (this.maxAge * 0.3)) * 2;
@@ -62,7 +47,7 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
       // Update temperature based on velocity
       const speed = this.vel.mag();
       this.temperature = p5.constrain(
-        this.temperature + (speed * 0.01 * evolutionSpeed),
+        this.temperature + (speed * 0.01),
         0, 1
       );
 
@@ -113,7 +98,7 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
     }
 
     show(p5) {
-      // Calculate color based on temperature and evolution stage (Gen2 style)
+      // Calculate color based on temperature and evolution stage
       let hue, saturation, brightness;
       
       if (this.evolutionStage === 0) {
@@ -133,11 +118,9 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
         brightness = 80;
       }
 
-      // Draw particle trail (Gen2 style) - just the line, no points
-      p5.stroke(hue, saturation, brightness, 0.01);
-      p5.strokeWeight(p5.random(10,200));
+      p5.stroke(hue, saturation, brightness, this.life * 255);
+      p5.strokeWeight(this.size);
       p5.line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
-      
       this.updatePrev();
     }
 
@@ -148,63 +131,6 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
 
     isDead() {
       return this.life <= 0;
-    }
-
-    findConnections(p5) {
-      this.connections = [];
-      let connectionCount = 0;
-      
-      particles.forEach(otherParticle => {
-        if (otherParticle !== this && connectionCount < maxConnections) {
-          const distance = p5.dist(this.pos.x, this.pos.y, otherParticle.pos.x, otherParticle.pos.y);
-          
-          if (distance < connectionDistance) {
-            // Calculate connection strength based on distance and life
-            const strength = p5.map(distance, 0, connectionDistance, 1, 0);
-            const avgLife = (this.life + otherParticle.life) / 2;
-            
-            this.connections.push({
-              particle: otherParticle,
-              strength: strength,
-              life: avgLife
-            });
-            connectionCount++;
-          }
-        }
-      });
-      
-      // Sort by strength and keep only the strongest connections
-      this.connections.sort((a, b) => b.strength - a.strength);
-      this.connections = this.connections.slice(0, maxConnections);
-    }
-
-    showConnections(p5) {
-      this.connections.forEach(connection => {
-        const otherParticle = connection.particle;
-        const strength = connection.strength;
-        const life = connection.life;
-        
-        // Calculate color for connection (blend of both particles)
-        const thisHue = this.getHue(p5);
-        const otherHue = otherParticle.getHue(p5);
-        const avgHue = (thisHue + otherHue) / 2;
-        
-        p5.stroke(avgHue, 70, 80, life * 255 * lineOpacity * strength);
-        p5.strokeWeight(0.01);
-        p5.line(this.pos.x, this.pos.y, otherParticle.pos.x, otherParticle.pos.y);
-      });
-    }
-
-    getHue(p5) {
-      let hue;
-      if (this.evolutionStage === 0) {
-        hue = p5.lerp(180, 120, this.temperature);
-      } else if (this.evolutionStage === 1) {
-        hue = p5.lerp(60, 30, this.temperature);
-      } else {
-        hue = p5.lerp(0, 280, this.temperature);
-      }
-      return hue;
     }
   }
 
@@ -222,36 +148,20 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
       p5.colorMode(p5.HSB, 360, 100, 100, 1);
       p5.background(0);
       
-      startTime = p5.millis();
-      initializeSystem(p5);
-    };
-
-    const initializeSystem = (p5) => {
-      particles = [];
-      
-      // Create particles
+      // Initialize particles
+      const particleCount = p5.floor((p5.width * p5.height) / 800);
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle(p5));
       }
     };
 
     p5.draw = () => {
-      time += 0.01;
-      
-      // Check if 1 minute has passed
-      if (p5.millis() - startTime > 60000) { // 60 seconds
-        isRunning = false;
-        return;
-      }
-      
-      // Optional background fade based on control
-      if (backgroundFadeOpacity > 0) {
-        p5.fill(0, 0, 0, backgroundFadeOpacity);
-        p5.noStroke();
-        p5.rect(0, 0, p5.width, p5.height);
-      }
+      // Fade background
+      p5.fill(0, 0, 0, 0.1);
+      p5.noStroke();
+      p5.rect(0, 0, p5.width, p5.height);
 
-      // Update flow field with multiple noise layers (Gen2 style)
+      // Update flow field with multiple noise layers
       const cols = p5.floor(p5.width / 20);
       const rows = p5.floor(p5.height / 20);
       flowField = new Array(cols * rows);
@@ -260,10 +170,10 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
         for (let x = 0; x < cols; x++) {
           const index = x + y * cols;
           
-          // Multiple noise layers for complex flow (Gen2 style)
-          const angle1 = p5.noise(x * 0.1, y * 0.1, time * 0.05) * p5.TWO_PI * 2;
-          const angle2 = p5.noise(x * 0.05, y * 0.05, time * 0.025) * p5.TWO_PI;
-          const angle3 = p5.noise(x * 0.02, y * 0.02, time * 0.01) * p5.PI;
+          // Multiple noise layers for complex flow
+          const angle1 = p5.noise(x * 0.1, y * 0.1, p5.frameCount * 0.01) * p5.TWO_PI * 2;
+          const angle2 = p5.noise(x * 0.05, y * 0.05, p5.frameCount * 0.005) * p5.TWO_PI;
+          const angle3 = p5.noise(x * 0.02, y * 0.02, p5.frameCount * 0.002) * p5.PI;
           
           // Combine noise layers
           const finalAngle = angle1 * 0.6 + angle2 * 0.3 + angle3 * 0.1;
@@ -284,18 +194,10 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
       // Update and show particles
       for (let i = particles.length - 1; i >= 0; i--) {
         particles[i].update(p5);
-        
-        // Find connections for this particle
-        particles[i].findConnections(p5);
-        
-        // Show connections first (behind particles)
-        particles[i].showConnections(p5);
-        
-        // Show particle
         particles[i].show(p5);
         
-        // Remove dead particles and add new ones (only if still running)
-        if (particles[i].isDead() && isRunning) {
+        // Remove dead particles and add new ones
+        if (particles[i].isDead()) {
           particles.splice(i, 1);
           particles.push(new Particle(p5));
         }
@@ -307,16 +209,11 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
       mouseY = p5.mouseY;
     };
 
-    p5.windowResized = () => {
-      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
-      p5.background(0);
-      startTime = p5.millis();
-      isRunning = true;
-      initializeSystem(p5);
-    };
   };
 
-  return <ReactP5Wrapper sketch={sketch} />;
+  return (
+    <ReactP5Wrapper sketch={sketch} />
+  );
 };
 
-export default ParticleFlowGen3; 
+export default ParticleFlowGen2; 

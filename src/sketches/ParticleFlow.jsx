@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
-import "../Sketch.css";
+import "./Sketch.css";
 
 const ParticleFlow = ({ isFullscreen = false }) => {
   const sketch = (p5) => {

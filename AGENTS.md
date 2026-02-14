@@ -10,4 +10,4 @@ This repo is a **particle flow field sketch collection**. Every sketch is a part
 ## What to do
 
 - Propose and implement **particle flow field** sketches only. Use the dimensions in `context/context.md` to vary flow, behavior, and rendering.
-- When adding a sketch: create the component in `src/sketches/genN/`, register it in `src/sketches/sketches.js` and `src/data/projects.js`, and ensure fullscreen (and PhotoMode when enabled) work. See `.cursor/rules/particle-flow-project.mdc` for the exact steps.
+- When adding a sketch: create the component in `src/sketches/`, register it in `src/sketches/sketches.js` and `src/data/projects.js`, and ensure fullscreen (and PhotoMode when enabled) work. See `.cursor/rules/particle-flow-project.mdc` for the exact steps.

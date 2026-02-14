@@ -10,7 +10,7 @@ alwaysApply: false
 
 - React component that receives `isFullscreen = false` and uses it to size the canvas (e.g. full window when true).
 - Use `@p5-wrapper/react`: `import { ReactP5Wrapper } from "@p5-wrapper/react";` and render `<ReactP5Wrapper sketch={sketch} />`.
-- Import sketch layout styles: `import "../Sketch.css";` (from a file inside a `genN` folder, the path is `../Sketch.css`).
+- Import sketch layout styles: `import "./Sketch.css";` (all sketch files live in `src/sketches/`).
 
 ## p5 sketch function
 
@@ -29,4 +29,4 @@ alwaysApply: false
 
 ## Reference
 
-- Follow patterns from existing sketches in `src/sketches/gen1/ParticleFlow.jsx` and other `genN` folders (flow field, particle class, `follow`/`update`/`show`).
+- Follow patterns from existing sketches in `src/sketches/ParticleFlow.jsx` and other `ParticleFlow*.jsx` files (flow field, particle class, `follow`/`update`/`show`).

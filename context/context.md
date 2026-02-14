@@ -29,10 +29,10 @@ Update these when adding a sketch:
 
 ### 💂 Directory Guidelines
 
-| Sketch order | Sketch directory   | Markdown directory   |
-| ------------ | ------------------ | -------------------- |
-| First        | `src/sketches/gen1/` | `public/blog/gen1/`   |
-| Next         | `src/sketches/genN/` | `public/blog/genN/`   |
+| Location     | Path               |
+| ------------ | ------------------ |
+| Sketch files | `src/sketches/` (flat; e.g. `ParticleFlow.jsx`, `ParticleFlowGen2.jsx`) |
+| Blog/docs    | `public/blog/` (optional; per sketch or subfolders) |
 
 > ℹ️ Markdown should focus on concept, influences, and goals. Avoid deep code dives.
 

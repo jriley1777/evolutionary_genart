@@ -1,11 +1,11 @@
-import ParticleFlow from "./gen1/ParticleFlow";
-import ParticleFlowGen2 from "./gen2/ParticleFlowGen2";
-import ParticleFlowGen3 from "./gen3/ParticleFlowGen3";
-import ParticleFlowGen4 from "./gen4/ParticleFlowGen4";
-import ParticleFlowGen5 from "./gen5/ParticleFlowGen5";
-import ParticleFlowGen6 from "./gen6/ParticleFlowGen6";
-import ParticleFlowGen7 from "./gen7/ParticleFlowGen7";
-import ParticleFlowGen8 from "./gen8/ParticleFlowGen8";
+import ParticleFlow from "./ParticleFlow";
+import ParticleFlowGen2 from "./ParticleFlowGen2";
+import ParticleFlowGen3 from "./ParticleFlowGen3";
+import ParticleFlowGen4 from "./ParticleFlowGen4";
+import ParticleFlowGen5 from "./ParticleFlowGen5";
+import ParticleFlowGen6 from "./ParticleFlowGen6";
+import ParticleFlowGen7 from "./ParticleFlowGen7";
+import ParticleFlowGen8 from "./ParticleFlowGen8";
 
 const sketches = {
   ParticleFlow,

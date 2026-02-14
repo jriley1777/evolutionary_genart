@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
-import "../Sketch.css";
+import "./Sketch.css";
 
 const ParticleFlowGen6 = ({ isFullscreen = false }) => {
   let flowField = [];

@@ -7,6 +7,17 @@ export const projects = {
       baseDescription: "Interactive particle systems with flowing patterns",
       sketches: [
         {
+          slug: "slow-flow-trails",
+          title: "Slow Flow Trails",
+          description: "Flow field trails with slower motion and longer, softer trails; same structure as Flow Field Trails",
+          sketch: "SlowFlowTrails",
+          tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "slow", "trails"],
+          date: "2025-02-14",
+          created: "2025-02-14",
+          blog: "blog/slow-flow-trails.md",
+          showPhotoMode: false
+        },
+        {
           slug: "flow-field-trails",
           title: "Flow Field Trails",
           description: "Flow field particle system with mouse-responsive forces and HSB color gradients",

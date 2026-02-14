@@ -1,13 +1,12 @@
-// Matrix structure: project roots (y-axis) x generations (x-axis)
+// Sketch catalog: each root has an array of sketches (slug, title, description, sketch component key, etc.).
 export const projects = {
-  // Project root concepts - each can have multiple generations
   projectRoots: [
     {
       id: "particle-flow",
       name: "Particle Flow",
       baseDescription: "Interactive particle systems with flowing patterns",
-      generations: {
-        gen1: {
+      sketches: [
+        {
           slug: "flow-field-trails",
           title: "Flow Field Trails",
           description: "Flow field particle system with mouse-responsive forces and HSB color gradients",
@@ -17,7 +16,7 @@ export const projects = {
           blog: "blog/flow-field-trails.md",
           showPhotoMode: false
         },
-        gen2: {
+        {
           slug: "evolving-particle-life",
           title: "Evolving Particle Life",
           description: "Advanced particle system with attractors, audio reactivity, and particle evolution",
@@ -27,7 +26,7 @@ export const projects = {
           blog: "blog/evolving-particle-life.md",
           showPhotoMode: false
         },
-        gen3: {
+        {
           slug: "magnetic-particle-connections",
           title: "Magnetic Particle Connections",
           description: "Magnetic field system with attractors, repellers, and electromagnetic particle interactions",
@@ -37,7 +36,7 @@ export const projects = {
           blog: "blog/magnetic-particle-connections.md",
           showPhotoMode: false
         },
-        gen4: {
+        {
           slug: "flowing-word-chains",
           title: "Flowing Word Chains",
           description: "Text-based particle system with word chains, letter evolution, and flow field forces",
@@ -47,7 +46,7 @@ export const projects = {
           blog: "blog/flowing-word-chains.md",
           showPhotoMode: false
         },
-        gen5: {
+        {
           slug: "genetic-particle-traits",
           title: "Genetic Particle Traits",
           description: "Evolutionary particle system with visual DNA, genetic mutations, and behavioral diversity",
@@ -57,7 +56,7 @@ export const projects = {
           blog: "blog/genetic-particle-traits.md",
           showPhotoMode: false
         },
-        gen6: {
+        {
           slug: "synthwave-hex-glow",
           title: "Synthwave Hex Glow",
           description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",
@@ -67,7 +66,7 @@ export const projects = {
           blog: "blog/synthwave-hex-glow.md",
           showPhotoMode: false
         },
-        gen7: {
+        {
           slug: "triangle-mesh-flow",
           title: "Triangle Mesh Flow",
           description: "Triangular mesh with invisible particles affecting triangle colors through flow field",
@@ -77,7 +76,7 @@ export const projects = {
           blog: "blog/triangle-mesh-flow.md",
           showPhotoMode: false
         },
-        gen8: {
+        {
           slug: "rectangle-pack-flow",
           title: "Rectangle Pack Flow",
           description: "Rectangle packing with particle-driven pattern changes and synthwave color transitions",
@@ -87,30 +86,17 @@ export const projects = {
           blog: "blog/rectangle-pack-flow.md",
           showPhotoMode: false
         }
-      }
+      ]
     }
   ],
 
-  // Available generations for the matrix
-  generations: [
-    { id: 'gen1', label: 'Gen1', emoji: '⚡' },
-    { id: 'gen2', label: 'Gen2', emoji: '🎯' },
-    { id: 'gen3', label: 'Gen3', emoji: '🌟' },
-    { id: 'gen4', label: 'Gen4', emoji: '🌌' },
-    { id: 'gen5', label: 'Gen5', emoji: '🎨' },
-    { id: 'gen6', label: 'Gen6', emoji: '🏙️' },
-    { id: 'gen7', label: 'Gen7', emoji: '🌱' },
-    { id: 'gen8', label: 'Gen8', emoji: '⚛️' }
-  ],
-
-  // Helper function to get all projects in flat array format (for backward compatibility)
+  // Helper function to get all projects in flat array format
   getAllProjects() {
     const allProjects = [];
     this.projectRoots.forEach(root => {
-      Object.entries(root.generations).forEach(([genType, project]) => {
+      root.sketches.forEach((project) => {
         allProjects.push({
           ...project,
-          type: genType,
           rootId: root.id,
           rootName: root.name
         });
@@ -122,33 +108,15 @@ export const projects = {
   // Helper function to find project by slug
   findProjectBySlug(slug) {
     for (const root of this.projectRoots) {
-      for (const [genType, project] of Object.entries(root.generations)) {
-        if (project.slug === slug) {
-          return {
-            ...project,
-            type: genType,
-            rootId: root.id,
-            rootName: root.name
-          };
-        }
+      const project = root.sketches.find((p) => p.slug === slug);
+      if (project) {
+        return {
+          ...project,
+          rootId: root.id,
+          rootName: root.name
+        };
       }
     }
     return null;
-  },
-
-  // Helper function to get projects by generation
-  getProjectsByGeneration(generation) {
-    const projectsInGen = [];
-    this.projectRoots.forEach(root => {
-      if (root.generations[generation]) {
-        projectsInGen.push({
-          ...root.generations[generation],
-          type: generation,
-          rootId: root.id,
-          rootName: root.name
-        });
-      }
-    });
-    return projectsInGen;
   }
 };

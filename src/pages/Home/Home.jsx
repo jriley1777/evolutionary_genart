@@ -40,12 +40,12 @@ const Home = () => {
   }, [project?.slug]);
 
   // Handle project click
-  const handleProjectClick = (e, projectSlug, projectType) => {
+  const handleProjectClick = (e, projectSlug) => {
     if (projectSlug === activeProject) {
       e.preventDefault();
       return;
     }
-    navigate(`/${projectType}/${projectSlug}`);
+    navigate(`/${projectSlug}`);
   };
 
   return (
@@ -53,7 +53,7 @@ const Home = () => {
       {/* Title Bar */}
       <header className="title-bar">
         <div className="title-content">
-          <h1>Playtesting - Evolutionary Generative Art</h1>
+          <h1>Playtesting - Free Flowing Generative Art</h1>
         </div>
       </header>
 

@@ -161,7 +161,7 @@ const SketchWithFullscreen = ({
   };
 
   // Create a unique key that changes when fullscreen mode changes
-  const uniqueSketchKey = `${project ? `${project.type}-${project.slug}` : 'default'}-${isFullscreen ? 'fullscreen' : 'normal'}-${sketchKey}`;
+  const uniqueSketchKey = `${project ? project.slug : 'default'}-${isFullscreen ? 'fullscreen' : 'normal'}-${sketchKey}`;
 
   return (
     <>
@@ -271,18 +271,9 @@ const SketchWithFullscreen = ({
               fontFamily: 'Press Start 2P, monospace',
               zIndex: 1000001,
             }}>
-              <div style={{ fontSize: '16px', marginBottom: '4px' }}>
+              <div style={{ fontSize: '16px' }}>
                 {project.title}
               </div>
-              {project.type && (
-                <div style={{ 
-                  fontSize: '12px', 
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}>
-                  Generation: {project.type}
-                </div>
-              )}
             </div>
           )}
           

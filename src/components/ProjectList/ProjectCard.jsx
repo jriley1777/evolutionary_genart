@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const ProjectCard = ({ projectItem, isActive, onClick, index }) => (
   <Link
-    to={`/${projectItem.type}/${projectItem.slug}`}
+    to={`/${projectItem.slug}`}
     className={`project-card ${isActive ? "active" : ""}`}
-    onClick={(e) => onClick(e, projectItem.slug, projectItem.type)}
+    onClick={(e) => onClick(e, projectItem.slug)}
     style={{
       "--item-index": index,
       animationDelay: `${index * 0.05}s`,

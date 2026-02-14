@@ -31,7 +31,7 @@ Update these when adding a sketch:
 
 | Location     | Path               |
 | ------------ | ------------------ |
-| Sketch files | `src/sketches/` (flat; e.g. `ParticleFlow.jsx`, `ParticleFlowGen2.jsx`) |
+| Sketch files | `src/sketches/` (flat; e.g. `FlowFieldTrails.jsx`, `SynthwaveHexGlow.jsx`) |
 | Blog/docs    | `public/blog/` (optional; per sketch or subfolders) |
 
 > ℹ️ Markdown should focus on concept, influences, and goals. Avoid deep code dives.

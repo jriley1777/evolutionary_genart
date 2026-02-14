@@ -1,21 +1,21 @@
-import ParticleFlow from "./ParticleFlow";
-import ParticleFlowGen2 from "./ParticleFlowGen2";
-import ParticleFlowGen3 from "./ParticleFlowGen3";
-import ParticleFlowGen4 from "./ParticleFlowGen4";
-import ParticleFlowGen5 from "./ParticleFlowGen5";
-import ParticleFlowGen6 from "./ParticleFlowGen6";
-import ParticleFlowGen7 from "./ParticleFlowGen7";
-import ParticleFlowGen8 from "./ParticleFlowGen8";
+import FlowFieldTrails from "./FlowFieldTrails";
+import EvolvingParticleLife from "./EvolvingParticleLife";
+import MagneticParticleConnections from "./MagneticParticleConnections";
+import FlowingWordChains from "./FlowingWordChains";
+import GeneticParticleTraits from "./GeneticParticleTraits";
+import SynthwaveHexGlow from "./SynthwaveHexGlow";
+import TriangleMeshFlow from "./TriangleMeshFlow";
+import RectanglePackFlow from "./RectanglePackFlow";
 
 const sketches = {
-  ParticleFlow,
-  ParticleFlowGen2,
-  ParticleFlowGen3,
-  ParticleFlowGen4,
-  ParticleFlowGen5,
-  ParticleFlowGen6,
-  ParticleFlowGen7,
-  ParticleFlowGen8
+  FlowFieldTrails,
+  EvolvingParticleLife,
+  MagneticParticleConnections,
+  FlowingWordChains,
+  GeneticParticleTraits,
+  SynthwaveHexGlow,
+  TriangleMeshFlow,
+  RectanglePackFlow
 };
 
 export default { ...sketches };

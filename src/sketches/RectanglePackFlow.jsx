@@ -2,7 +2,7 @@ import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen8 = ({ isFullscreen = false }) => {
+const RectanglePackFlow = ({ isFullscreen = false }) => {
   let particles = [];
   let rectangles = [];
   let flowField = [];
@@ -480,4 +480,4 @@ const ParticleFlowGen8 = ({ isFullscreen = false }) => {
   return <ReactP5Wrapper sketch={sketch}/>;
 };
 
-export default ParticleFlowGen8; 
+export default RectanglePackFlow; 

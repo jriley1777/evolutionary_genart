@@ -2,7 +2,7 @@ import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen5 = ({ isFullscreen = false }) => {
+const GeneticParticleTraits = ({ isFullscreen = false }) => {
   let particles = [];
   let flowField = [];
   let mouseX = 0;
@@ -497,4 +497,4 @@ const ParticleFlowGen5 = ({ isFullscreen = false }) => {
   );
 };
 
-export default ParticleFlowGen5; 
+export default GeneticParticleTraits; 

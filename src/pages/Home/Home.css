@@ -35,6 +35,8 @@
 
   /* Consistent left indentation for title bar, panel header, and project cards */
   --content-indent: 1.25rem;
+  /* Shared height for Projects header and sketch title header */
+  --header-height: 5rem;
 }
 
 * {
@@ -113,11 +115,12 @@ body {
 .project-panel-header {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
-  padding: 1rem var(--content-indent);
+  padding: 0 var(--content-indent);
+  height: var(--header-height);
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -317,10 +320,11 @@ body {
 .sketch-header {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
-  padding: 1rem 1.5rem;
+  padding: 0 1.5rem;
+  height: var(--header-height);
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   flex-shrink: 0;
 }

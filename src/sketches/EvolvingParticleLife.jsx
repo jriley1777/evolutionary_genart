@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen2 = ({ isFullscreen = false }) => {
+const EvolvingParticleLife = ({ isFullscreen = false }) => {
   let particles = [];
   let flowField = [];
   let mouseX = 0;
@@ -216,4 +216,4 @@ const ParticleFlowGen2 = ({ isFullscreen = false }) => {
   );
 };
 
-export default ParticleFlowGen2; 
+export default EvolvingParticleLife; 

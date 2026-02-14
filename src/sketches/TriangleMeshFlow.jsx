@@ -2,7 +2,7 @@ import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen7 = ({ isFullscreen = false }) => {
+const TriangleMeshFlow = ({ isFullscreen = false }) => {
   let particles = [];
   let triangles = [];
   let flowField = [];
@@ -350,4 +350,4 @@ const ParticleFlowGen7 = ({ isFullscreen = false }) => {
   return <ReactP5Wrapper sketch={sketch}/>;
 };
 
-export default ParticleFlowGen7; 
+export default TriangleMeshFlow; 

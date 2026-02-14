@@ -11,7 +11,7 @@ const Home = () => {
   const param = useParams();
   const navigate = useNavigate();
   const allProjects = projects.getAllProjects();
-  const [activeProject, setActiveProject] = useState(param?.slug || allProjects[0]?.slug || 'particle-flow');
+  const [activeProject, setActiveProject] = useState(param?.slug || allProjects[0]?.slug || 'flow-field-trails');
   const project = projects.findProjectBySlug(activeProject);
   const SketchComponent = project ? sketches.default[project.sketch] : null;
   const [blogContent, setBlogContent] = useState("");
@@ -26,7 +26,7 @@ const Home = () => {
   useEffect(() => {
     if (project) {
       setIsBlogLoading(true);
-      fetch(`/blog/${project.type}/${project.slug}.md`)
+      fetch(`/blog/${project.slug}.md`)
         .then(res => res.text())
         .then(content => {
           setBlogContent(content);
@@ -37,7 +37,7 @@ const Home = () => {
           setIsBlogLoading(false);
         });
     }
-  }, [project?.type, project?.slug]);
+  }, [project?.slug]);
 
   // Handle project click
   const handleProjectClick = (e, projectSlug, projectType) => {

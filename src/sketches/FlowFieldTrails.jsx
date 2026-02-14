@@ -2,7 +2,7 @@ import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlow = ({ isFullscreen = false }) => {
+const FlowFieldTrails = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
     let particles = [];
     let flowField = [];
@@ -146,4 +146,4 @@ const ParticleFlow = ({ isFullscreen = false }) => {
   return <ReactP5Wrapper sketch={sketch} />;
 };
 
-export default ParticleFlow; 
+export default FlowFieldTrails; 

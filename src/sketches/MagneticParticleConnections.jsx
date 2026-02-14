@@ -2,7 +2,7 @@ import React from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen3 = ({ isFullscreen = false }) => {
+const MagneticParticleConnections = ({ isFullscreen = false }) => {
   let particles = [];
   let flowField = [];
   let mouseX = 0;
@@ -319,4 +319,4 @@ const ParticleFlowGen3 = ({ isFullscreen = false }) => {
   return <ReactP5Wrapper sketch={sketch} />;
 };
 
-export default ParticleFlowGen3; 
+export default MagneticParticleConnections; 

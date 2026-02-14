@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
 
-const ParticleFlowGen6 = ({ isFullscreen = false }) => {
+const SynthwaveHexGlow = ({ isFullscreen = false }) => {
   let flowField = [];
   let mouseX = 0;
   let mouseY = 0;
@@ -442,4 +442,4 @@ const ParticleFlowGen6 = ({ isFullscreen = false }) => {
   return <ReactP5Wrapper sketch={sketch} />;
 };
 
-export default ParticleFlowGen6; 
+export default SynthwaveHexGlow; 

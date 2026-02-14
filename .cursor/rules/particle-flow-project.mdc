@@ -1,0 +1,29 @@
+---
+description: Project constraint and registration for all new sketches
+alwaysApply: true
+---
+
+# Particle Flow Project
+
+## Output constraint
+
+Every new sketch must be a **particle flow field sketch**: particles (or particle-like agents) moving through a flow field or under forces. Do not create other genres (static posters, kaleidoscopes, non-particle systems).
+
+Each new sketch can be an entirely new idea; there is no requirement to evolve from a previous sketch.
+
+## When adding a new sketch
+
+1. **Create the component** in `src/sketches/genN/` (use the next available gen number: gen9, gen10, …). Use React + p5 (`@p5-wrapper/react`), import `../Sketch.css`, and accept `isFullscreen` prop with fullscreen behavior.
+
+2. **Register in `src/sketches/sketches.js`**: add the import and add the component to the `sketches` object (key must match the string used in projects.js).
+
+3. **Register in `src/data/projects.js`**: under the single `particle-flow` project root, add a new entry in `generations` (e.g. `gen9: { slug, title, description, sketch: "ComponentName", tags, date, blog, showPhotoMode }`). The `sketch` value must match the key in `sketches.js`.
+
+4. **Optional**: add a blog markdown in `public/blog/genN/` describing the concept and influences.
+
+## Sketch requirements
+
+- Fullscreen mode must be supported (prop `isFullscreen`).
+- PhotoMode only if `showPhotoMode: true` for that entry in projects.js.
+
+For the full creative brief and dimensions of variation, see `context/context.md`.

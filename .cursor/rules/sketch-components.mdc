@@ -1,0 +1,32 @@
+---
+description: Conventions for particle flow sketch components (React + p5)
+globs: "**/sketches/**/*.jsx"
+alwaysApply: false
+---
+
+# Sketch component conventions
+
+## Structure
+
+- React component that receives `isFullscreen = false` and uses it to size the canvas (e.g. full window when true).
+- Use `@p5-wrapper/react`: `import { ReactP5Wrapper } from "@p5-wrapper/react";` and render `<ReactP5Wrapper sketch={sketch} />`.
+- Import sketch layout styles: `import "../Sketch.css";` (from a file inside a `genN` folder, the path is `../Sketch.css`).
+
+## p5 sketch function
+
+- Signature: `const sketch = (p5) => { ... };` with `p5.setup`, `p5.draw`, and any helpers.
+- In `setup`, create canvas with `p5.createCanvas(p5.windowWidth, p5.windowHeight)` (or use `isFullscreen` to decide dimensions). Call `p5.colorMode(p5.HSB)` (or other mode) if needed.
+- Use `p5.windowResized` to resize canvas when the window resizes so fullscreen and non-fullscreen both work.
+
+## Particle flow requirement
+
+- The sketch must implement a **particle flow field**: particles following a flow field and/or forces (e.g. attraction/repulsion, mouse). No non-particle visuals as the main concept.
+
+## Naming and export
+
+- Component name: PascalCase (e.g. `ParticleFlow`, `ParticleFlowGen9`). Export as default.
+- File name: match component name (e.g. `ParticleFlow.jsx`, `ParticleFlowGen9.jsx`).
+
+## Reference
+
+- Follow patterns from existing sketches in `src/sketches/gen1/ParticleFlow.jsx` and other `genN` folders (flow field, particle class, `follow`/`update`/`show`).

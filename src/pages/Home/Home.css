@@ -344,108 +344,6 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* Generation Navigation */
-.generation-nav {
-  background: black;
-  border-bottom: 1px solid var(--border-light);
-  padding: 0;
-  flex-shrink: 0;
-  text-transform: uppercase;
-  height: 30px;
-}
-
-.generation-nav-content {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 1.5rem;
-}
-
-.generation-nav-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  margin-right: 1rem;
-}
-
-.generation-tabs {
-  display: flex;
-  height: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.generation-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.generation-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1rem;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  border-right: 1px solid var(--border-light);
-  color: var(--text-secondary);
-  background: black;
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  min-width: 80px;
-  height: 100%;
-  text-align: center;
-  position: relative;
-}
-
-.generation-tab:last-child {
-  border-right: none;
-}
-
-.generation-tab::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--accent-blue);
-  transform: scaleX(0);
-  transition: transform 0.2s ease;
-}
-
-.generation-tab:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--text-primary);
-}
-
-.generation-tab:hover::before {
-  transform: scaleX(1);
-}
-
-.generation-tab.active {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--accent-blue);
-  font-weight: 600;
-}
-
-.generation-tab.active::before {
-  transform: scaleX(1);
-}
-
-.generation-label {
-  font-weight: 500;
-  font-size: 0.75rem;
-  line-height: 1;
-}
-
 .sketch-container {
   flex: 1;
   display: flex;
@@ -549,12 +447,6 @@ body {
   .sketch-meta {
     align-items: flex-start;
   }
-  
-  .generation-nav-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
 }
 
 @media (max-width: 768px) {
@@ -599,25 +491,9 @@ body {
   }
   
   .sketch-header,
-  .generation-nav,
   .markdown-header,
   .markdown-content {
     padding: 0.75rem 1rem;
-  }
-  
-  .generation-nav-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .generation-tabs {
-    gap: 0.25rem;
-  }
-  
-  .generation-tab {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
   }
 }
 

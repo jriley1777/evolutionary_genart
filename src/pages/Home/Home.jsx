@@ -9,8 +9,8 @@ import * as sketches from "../../sketches/sketches";
 const Home = () => {
   const param = useParams();
   const navigate = useNavigate();
-  const [activeProject, setActiveProject] = useState(param?.slug || 'sine-wave-puddle');
-  const [selectedGeneration, setSelectedGeneration] = useState(param?.type || 'gen1');
+  const allProjects = projects.getAllProjects();
+  const [activeProject, setActiveProject] = useState(param?.slug || allProjects[0]?.slug || 'particle-flow');
   const project = projects.findProjectBySlug(activeProject);
   const SketchComponent = project ? sketches.default[project.sketch] : null;
   const [blogContent, setBlogContent] = useState("");
@@ -18,10 +18,9 @@ const Home = () => {
 
   useEffect(() => {
     if (param?.slug && param.slug !== activeProject) {
-      setActiveProject(param.slug)
-      setSelectedGeneration(param.type)
+      setActiveProject(param.slug);
     }
-  }, [param])
+  }, [param?.slug])
 
   useEffect(() => {
     if (project) {
@@ -48,40 +47,6 @@ const Home = () => {
     navigate(`/${projectType}/${projectSlug}`);
   };
 
-  // Handle generation change
-  const handleGenerationChange = (generationId, fromFullscreen = false) => {
-    setSelectedGeneration(generationId);
-    // Find the project in the new generation for the same root
-    if (project) {
-      const projectRoot = projects.projectRoots.find(root => root.id === project.rootId);
-      if (projectRoot && projectRoot.generations[generationId]) {
-        const newProject = projectRoot.generations[generationId];
-        setActiveProject(newProject.slug);
-        
-        if (fromFullscreen) {
-          // Update URL with fullscreen parameter to maintain fullscreen state
-          window.history.replaceState({}, '', `/${generationId}/${newProject.slug}?sz=fullscreen`);
-        } else {
-          // Regular navigation
-          navigate(`/${generationId}/${newProject.slug}`);
-        }
-      }
-    }
-  };
-
-  // Get available generations for the active project
-  const getAvailableGenerations = () => {
-    if (!project) return [];
-    
-    const projectRoot = projects.projectRoots.find(root => root.id === project.rootId);
-    if (!projectRoot) return [];
-    
-    return projects.generations.filter(gen => projectRoot.generations[gen.id]);
-  };
-
-  // Get all projects for navigation
-  const allProjects = projects.getAllProjects();
-
   return (
     <div className="home-container">
       {/* Title Bar */}
@@ -99,24 +64,23 @@ const Home = () => {
             <h2>Projects</h2>
           </div>
           <div className="project-list">
-            {projects.getProjectsByGeneration(selectedGeneration).map((projectItem, index) => (
+            {allProjects.map((projectItem, index) => (
               <Link
                 key={projectItem.slug}
                 to={`/${projectItem.type}/${projectItem.slug}`}
                 className={`project-card ${projectItem.slug === activeProject ? 'active' : ''}`}
                 onClick={(e) => handleProjectClick(e, projectItem.slug, projectItem.type)}
-                style={{ 
+                style={{
                   '--item-index': index,
-                  animationDelay: `${index * 0.1}s`                }}
+                  animationDelay: `${index * 0.05}s`
+                }}
               >
                 <div className="project-card-content">
                   <div className="project-header">
-                    <span className="project-emoji">{projects.generations.find(g => g.id === projectItem.type)?.emoji}</span>
                     <h3>{projectItem.title}</h3>
                   </div>
                   <p className="project-description">{projectItem.description}</p>
                   <div className="project-meta">
-                    <span className="project-root">{projectItem.rootName}</span>
                     <div className="project-tags">
                       {projectItem.tags?.slice(0, 3).map((tag, tagIndex) => (
                         <span key={tagIndex} className="tag">{tag}</span>
@@ -140,28 +104,6 @@ const Home = () => {
                     <h2>{project.title}</h2>
                     <p>{project.description}</p>
                   </div>
-                  <div className="sketch-meta">
-                    <span className="project-root">Root: {project.rootName}</span>
-                    <span className="project-generation">Generation: {project.type}</span>
-                  </div>
-                </div>
-
-                {/* Generation Navigation */}
-                <div className="generation-nav">
-                  <div className="generation-nav-content">
-                    <span className="generation-nav-label">Available Generations:</span>
-                    <div className="generation-tabs">
-                      {getAvailableGenerations().map(gen => (
-                        <button
-                          key={gen.id}
-                          className={`generation-tab ${project.type === gen.id ? 'active' : ''}`}
-                          onClick={() => handleGenerationChange(gen.id, false)}
-                        >
-                          <span className="generation-label">{gen.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 <div className="sketch-container">
@@ -172,9 +114,6 @@ const Home = () => {
                       SketchComponent={SketchComponent}
                       title={project.title}
                       description={project.description}
-                      availableGenerations={getAvailableGenerations()}
-                      currentGeneration={selectedGeneration}
-                      onGenerationChange={handleGenerationChange}
                       project={project}
                     />
                   )}

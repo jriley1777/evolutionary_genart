@@ -16,21 +16,53 @@ const PALETTE = [
   "#4cc9f0",
 ];
 
+const PAD = 50;
+
 const SlowFlowTrails = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
     let particles = [];
-    let flowField = [];
+    let flowField = []; 
     let mouseX = 0;
     let mouseY = 0;
 
+    const randomInPaddedBox = (p5) => {
+      const w = p5.width;
+      const h = p5.height;
+      const x = w <= PAD * 2 ? p5.random(w) : p5.random(PAD, w - PAD);
+      const y = h <= PAD * 2 ? p5.random(h) : p5.random(PAD, h - PAD);
+      return { x, y };
+    };
+
+    const MIN_INITIAL_SPACING = 42;
+    const randomInPaddedBoxNoOverlap = (p5, existingPositions, maxAttempts = 100) => {
+      const w = p5.width;
+      const h = p5.height;
+      const xMin = w <= PAD * 2 ? 0 : PAD;
+      const xMax = w <= PAD * 2 ? w : w - PAD;
+      const yMin = h <= PAD * 2 ? 0 : PAD;
+      const yMax = h <= PAD * 2 ? h : h - PAD;
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const x = p5.random(xMin, xMax);
+        const y = p5.random(yMin, yMax);
+        const tooClose = existingPositions.some(
+          (p) => p5.dist(x, y, p.x, p.y) < MIN_INITIAL_SPACING
+        );
+        if (!tooClose) return { x, y };
+      }
+      return null;
+    };
+
     class Particle {
       constructor(p5, spawnX = null, spawnY = null) {
-        const x = spawnX != null ? spawnX : p5.random(p5.width);
-        const y = spawnY != null ? spawnY : p5.random(p5.height);
+        const pos = spawnX != null && spawnY != null
+          ? { x: spawnX, y: spawnY }
+          : randomInPaddedBox(p5);
+        const x = pos.x;
+        const y = pos.y;
         this.pos = p5.createVector(x, y);
         this.vel = p5.createVector(0, 0);
         this.acc = p5.createVector(0, 0);
-        this.maxSpeed = p5.random(0.4, 1);
+        this.maxSpeed = p5.random(0.22, 0.55);
         this.prevPos = this.pos.copy();
         const hex = PALETTE[Math.floor(p5.random(PALETTE.length))];
         this.color = p5.color(hex);
@@ -66,7 +98,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
           let delta = targetAngle - this.headAngle;
           while (delta > p5.PI) delta -= p5.TWO_PI;
           while (delta < -p5.PI) delta += p5.TWO_PI;
-          this.angularVel += delta * 0.012;
+          this.angularVel += delta * 0.004;
           this.collided = false;
         }
         this.vel.add(this.acc);
@@ -74,7 +106,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
         this.pos.add(this.vel);
         this.acc.mult(0);
         this.headAngle += this.angularVel;
-        this.angularVel *= 0.82;
+        this.angularVel *= 0.78;
       }
 
       isOffScreen(p5, margin = 80) {
@@ -104,7 +136,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
         this.acc.add(force);
       }
 
-      repelFromOthers(p5, others, minDist = 24, strength = 0.5) {
+      repelFromOthers(p5, others, minDist = 30, strength = 1.0) {
         others.forEach((other) => {
           if (other === this) return;
           const d = p5.dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
@@ -120,7 +152,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
             this.collided = true;
             const toOther = p5.createVector(other.pos.x - this.pos.x, other.pos.y - this.pos.y);
             const cross = toOther.x * this.vel.y - toOther.y * this.vel.x;
-            this.angularVel += (cross / (d * d + 1)) * magnitude * 0.006;
+            this.angularVel += (cross / (d * d + 1)) * magnitude * 0.002;
           }
         });
       }
@@ -177,6 +209,18 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
       }
     }
 
+    let fullscreenSizeCheckFrames = [1, 2, 3, 5, 8, 15, 30];
+
+    const getFullscreenTargetSize = () => {
+      const docW = document.documentElement.clientWidth;
+      const docH = document.documentElement.clientHeight;
+      const winW = window.innerWidth;
+      const winH = window.innerHeight;
+      const w = Math.max(docW, winW);
+      const h = Math.max(docH, winH);
+      return { w: w || docW, h: h || docH };
+    };
+
     p5.setup = () => {
       const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
       if (isFullscreen) {
@@ -188,12 +232,31 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
       p5.colorMode(p5.RGB, 255, 255, 255, 1);
       p5.background(10, 8, 20);
       const particleCount = p5.floor((p5.width * p5.height) / 800);
+      const existingPositions = [];
       for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(p5));
+        const pos = randomInPaddedBoxNoOverlap(p5, existingPositions) || randomInPaddedBox(p5);
+        existingPositions.push(pos);
+        particles.push(new Particle(p5, pos.x, pos.y));
       }
     };
 
     p5.draw = () => {
+      // Fullscreen: repeatedly check and fix canvas size until it matches container (fixes vertical centering)
+      if (isFullscreen && fullscreenSizeCheckFrames.includes(p5.frameCount)) {
+        const { w: tw, h: th } = getFullscreenTargetSize();
+        if (tw > 0 && th > 0 && (p5.width !== tw || p5.height !== th)) {
+          p5.resizeCanvas(tw, th);
+          const targetCount = p5.floor((tw * th) / 800);
+          const need = Math.max(0, targetCount - particles.length);
+          const existingPositions = particles.map((p) => ({ x: p.pos.x, y: p.pos.y }));
+          for (let i = 0; i < need; i++) {
+            const pos = randomInPaddedBoxNoOverlap(p5, existingPositions) || randomInPaddedBox(p5);
+            existingPositions.push(pos);
+            particles.push(new Particle(p5, pos.x, pos.y));
+          }
+        }
+      }
+
       // Very slow fade = long visible trails
       p5.fill(0, 0, 0, 0.045);
       p5.noStroke();
@@ -203,7 +266,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
       const cols = p5.floor(p5.width / cellSize);
       const rows = p5.floor(p5.height / cellSize);
       flowField = new Array(cols * rows);
-      const t = p5.frameCount * 0.002;
+      const t = p5.frameCount * 0.0008;
 
       // Divergence-free flow from stream function: no sources/sinks, every zone has entry/exit
       const thetaScale = (2 * p5.PI) / cols;
@@ -227,15 +290,15 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
           let force = p5.createVector(u, v);
           const mag = force.mag();
           if (mag > 0.0001) {
-            force.normalize().mult(0.35);
+            force.normalize().mult(0.2);
           } else {
-            force = p5.createVector(0.5, 0).mult(0.35);
+            force = p5.createVector(0.5, 0).mult(0.2);
           }
           const mouseDist = p5.dist(x * cellSize, y * cellSize, mouseX, mouseY);
           const mouseInfluence = p5.map(mouseDist, 0, 250, p5.PI, 0, true);
           const mouseVec = p5.createVector(p5.cos(mouseInfluence), p5.sin(mouseInfluence));
           force.add(mouseVec.mult(0.15));
-          if (force.mag() > 0.0001) force.normalize().mult(0.35);
+          if (force.mag() > 0.0001) force.normalize().mult(0.2);
           flowField[index] = force;
         }
       }
@@ -247,7 +310,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
         particle.show(p5);
       });
 
-      const cullMargin = 100;
+      const cullMargin = 50;
       const before = particles.length;
       particles = particles.filter((p) => !p.isOffScreen(p5, cullMargin));
       const removed = before - particles.length;

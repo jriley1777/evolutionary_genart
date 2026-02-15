@@ -82,6 +82,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
     let panelStartX = 0;
     let panelStartY = 0;
     let lastPanelRect = null;
+    let prevCellDominant = null;
 
     const sizeToFullCells = (w, h) => {
       const cw = Math.floor(w / CELL_SIZE) * CELL_SIZE;
@@ -159,6 +160,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         cellCounts = new Array(cols * rows).fill(0);
         circles = [];
         gameOver = false;
+        prevCellDominant = null;
       }
       if (orbs == null) {
         const w = p5.width;
@@ -270,6 +272,9 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         }
       }
 
+      if (prevCellDominant != null && prevCellDominant.length !== cols * rows) {
+        prevCellDominant = null;
+      }
       const cellDominant = [];
       for (let idx = 0; idx < cols * rows; idx++) {
         const counts = {};
@@ -281,15 +286,25 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           });
         });
         let maxCount = 0;
-        let bestKey = null;
         ORB_KEYS.forEach((k) => {
-          if (counts[k] > maxCount) {
-            maxCount = counts[k];
-            bestKey = k;
-          }
+          if (counts[k] > maxCount) maxCount = counts[k];
         });
+        const tiedKeys = ORB_KEYS.filter((k) => counts[k] === maxCount && maxCount > 0);
+        let bestKey = null;
+        if (tiedKeys.length === 0) {
+          bestKey = null;
+        } else if (tiedKeys.length === 1) {
+          bestKey = tiedKeys[0];
+        } else {
+          if (prevCellDominant != null && tiedKeys.indexOf(prevCellDominant[idx]) !== -1) {
+            bestKey = prevCellDominant[idx];
+          } else {
+            bestKey = tiedKeys[0];
+          }
+        }
         cellDominant[idx] = bestKey;
       }
+      prevCellDominant = cellDominant.slice();
 
       const ballsPerCell = new Array(cellCounts.length).fill(0);
       circles.forEach((c) => {
@@ -526,7 +541,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         for (let x = 0; x < cols; x++) {
           const idx = x + y * cols;
           const n = ballsPerCell[idx] || 0;
-          if (n > 0 && !winningIndices.has(idx)) {
+          if (n > 0) {
             const highlighted = (maxBallsInCell >= LEADER_ROW_COL_MIN_BALLS && (winningCols.has(x) || winningRows.has(y))) || isCellInHighlightedZone(idx);
             const opacity = highlighted ? COUNTER_OPACITY_HIGHLIGHT : COUNTER_OPACITY;
             p5.textSize(n >= 100 ? counterFontSizeThreeDigits : counterFontSize);
@@ -596,31 +611,6 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         p5.text(msg, msgX, msgY);
       }
 
-      if (maxBallsInCell > 0 && winningIndices.size > 0) {
-        const topCounterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
-        const topCounterFontSizeThreeDigits = topCounterFontSize * 0.65;
-        p5.textAlign(p5.CENTER, p5.CENTER);
-        // p5.stroke(255, 255, 255, GRID_EDGE_OPACITY);
-        // p5.strokeWeight(1);
-        winningIndices.forEach((idx) => {
-          const n = ballsPerCell[idx] || 0;
-          if (n === 0) return;
-          const x = idx % cols;
-          const y = Math.floor(idx / cols);
-          p5.textSize(n >= 100 ? topCounterFontSizeThreeDigits : topCounterFontSize);
-          const key = cellDominant[idx];
-          if (key) {
-            const [r, g, b] = ORB_COLORS[key];
-            p5.fill(r, g, b, 1);
-          } else {
-            p5.fill(255, 255, 255, 1);
-          }
-          const cx = x * CELL_SIZE + CELL_SIZE / 2;
-          const cy = y * CELL_SIZE + CELL_SIZE / 2;
-          p5.text(String(n), cx, cy);
-        });
-        p5.noStroke();
-      }
 
       p5.textAlign(p5.LEFT, p5.TOP);
       const isGO = gameOver;
@@ -735,6 +725,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         cellCounts = new Array(cols * rows).fill(0);
         gameOver = false;
         restartButton = null;
+        prevCellDominant = null;
         const w = p5.width;
         const h = p5.height;
         const margin = ORB_SPAWN_MARGIN;

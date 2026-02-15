@@ -7,6 +7,17 @@ export const projects = {
       baseDescription: "Interactive particle systems with flowing patterns",
       sketches: [
         {
+          slug: "flow-field-grid",
+          title: "Flow Field Grid",
+          description: "Visualizes the flow field grid and direction with arrows at each cell center",
+          sketch: "FlowFieldGrid",
+          tags: ["p5.js", "generative", "interactive", "flow-field", "visualization", "grid"],
+          date: "2026-02-14",
+          created: "2026-02-14",
+          blog: "blog/flow-field-grid.md",
+          showPhotoMode: false
+        },
+        {
           slug: "slow-flow-trails",
           title: "Slow Flow Trails",
           description: "Flow field trails with slower motion and longer, softer trails; same structure as Flow Field Trails",

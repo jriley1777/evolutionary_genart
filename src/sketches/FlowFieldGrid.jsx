@@ -599,9 +599,9 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       if (maxBallsInCell > 0 && winningIndices.size > 0) {
         const topCounterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
         const topCounterFontSizeThreeDigits = topCounterFontSize * 0.65;
-        const pulse = 0.94 + 0.06 * Math.sin(p5.frameCount * 0.06);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.noStroke();
+        // p5.stroke(255, 255, 255, GRID_EDGE_OPACITY);
+        // p5.strokeWeight(1);
         winningIndices.forEach((idx) => {
           const n = ballsPerCell[idx] || 0;
           if (n === 0) return;
@@ -611,14 +611,15 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           const key = cellDominant[idx];
           if (key) {
             const [r, g, b] = ORB_COLORS[key];
-            p5.fill(r * pulse, g * pulse, b * pulse, 1);
+            p5.fill(r, g, b, 1);
           } else {
-            p5.fill(255 * pulse, 255 * pulse, 255 * pulse, 1);
+            p5.fill(255, 255, 255, 1);
           }
           const cx = x * CELL_SIZE + CELL_SIZE / 2;
           const cy = y * CELL_SIZE + CELL_SIZE / 2;
           p5.text(String(n), cx, cy);
         });
+        p5.noStroke();
       }
 
       p5.textAlign(p5.LEFT, p5.TOP);

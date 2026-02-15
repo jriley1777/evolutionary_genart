@@ -255,7 +255,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
       }
       p5.colorMode(p5.RGB, 255, 255, 255, 1);
       p5.background(10, 8, 20);
-      const particleCount = p5.floor((p5.width * p5.height) / 800);
+      const particleCount = p5.floor((p5.width * p5.height) / 900);
       const existingPositions = [];
       for (let i = 0; i < particleCount; i++) {
         const pos = randomInPaddedBoxNoOverlap(p5, existingPositions) || randomInPaddedBox(p5);
@@ -281,17 +281,11 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
         }
       }
 
-      // Fade trail: one semi-transparent rect per frame. Every CLEAR_INTERVAL_FRAMES we full-clear to avoid slowdown.
-      const CLEAR_INTERVAL_FRAMES = 600;
-      if (p5.frameCount > 0 && p5.frameCount % CLEAR_INTERVAL_FRAMES === 0) {
-        p5.background(10, 8, 20);
-      } else {
-        p5.fill(0, 0, 0, 0.025);
-        p5.noStroke();
-        p5.rect(0, 0, p5.width, p5.height);
-      }
+      p5.fill(0, 0, 0, 0.025);
+      p5.noStroke();
+      p5.rect(0, 0, p5.width, p5.height);
 
-      const cellSize = 110;
+      const cellSize = p5.width/10;
       const cols = p5.floor(p5.width / cellSize);
       const rows = p5.floor(p5.height / cellSize);
       flowField = new Array(cols * rows);

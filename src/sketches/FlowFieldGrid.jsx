@@ -9,11 +9,20 @@ const CIRCLE_SPEED = 0.8;
 const DAMP = 0.96;
 const COLLISION_ITERATIONS = 8;
 const COLLISION_SEPARATION = 0.4;
+const RED_BALL_RADIUS = 10;
+const RED_BALL_SPEED = 0.8;
+const COUNTER_FONT_SIZE_RATIO = 0.82;
+const COUNTER_OPACITY = 0.14;
+const GLOW_BLUR = 28;
+const GLOW_STROKE_WEIGHT = 2;
 
 const FlowFieldGrid = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
     let flowField = [];
     let circles = [];
+    let redBall = null;
+    let cellCounts = [];
+    let redBallPrevCell = null;
 
     const sizeToFullCells = (w, h) => {
       const cw = Math.floor(w / CELL_SIZE) * CELL_SIZE;
@@ -87,6 +96,73 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         }
       }
 
+      if (cellCounts.length !== cols * rows) {
+        cellCounts = new Array(cols * rows).fill(0);
+        redBallPrevCell = null;
+      }
+      if (redBall == null) {
+        redBall = { x: p5.width / 2, y: p5.height / 2, vx: 0, vy: 0 };
+      }
+      const wrappedX = ((redBall.x % p5.width) + p5.width) % p5.width;
+      const wrappedY = ((redBall.y % p5.height) + p5.height) % p5.height;
+      const rbcx = p5.constrain(p5.floor(wrappedX / CELL_SIZE), 0, cols - 1);
+      const rbcy = p5.constrain(p5.floor(wrappedY / CELL_SIZE), 0, rows - 1);
+      const rbIndex = rbcx + rbcy * cols;
+
+      const cellLeft = p5.floor((wrappedX - RED_BALL_RADIUS) / CELL_SIZE);
+      const cellRight = p5.floor((wrappedX + RED_BALL_RADIUS) / CELL_SIZE);
+      const cellTop = p5.floor((wrappedY - RED_BALL_RADIUS) / CELL_SIZE);
+      const cellBottom = p5.floor((wrappedY + RED_BALL_RADIUS) / CELL_SIZE);
+      const fullyInOneCell =
+        cellLeft === cellRight &&
+        cellTop === cellBottom &&
+        cellLeft >= 0 &&
+        cellLeft < cols &&
+        cellTop >= 0 &&
+        cellTop < rows;
+      const fullCellX = fullyInOneCell ? cellLeft : -1;
+      const fullCellY = fullyInOneCell ? cellTop : -1;
+      if (fullyInOneCell) {
+        if (
+          redBallPrevCell == null ||
+          fullCellX !== redBallPrevCell.x ||
+          fullCellY !== redBallPrevCell.y
+        ) {
+          const idx = fullCellX + fullCellY * cols;
+          cellCounts[idx] = (cellCounts[idx] || 0) + 1;
+        }
+        redBallPrevCell = { x: fullCellX, y: fullCellY };
+      } else {
+        redBallPrevCell = null;
+      }
+      if (rbIndex >= 0 && rbIndex < flowField.length) {
+        const force = flowField[rbIndex];
+        redBall.vx += force.x * RED_BALL_SPEED;
+        redBall.vy += force.y * RED_BALL_SPEED;
+      }
+      redBall.vx *= DAMP;
+      redBall.vy *= DAMP;
+      redBall.x += redBall.vx;
+      redBall.y += redBall.vy;
+      redBall.x = ((redBall.x % p5.width) + p5.width) % p5.width;
+      redBall.y = ((redBall.y % p5.height) + p5.height) % p5.height;
+
+      const counterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
+      p5.textSize(counterFontSize);
+      p5.textAlign(p5.CENTER, p5.CENTER);
+      p5.noStroke();
+      p5.fill(255, 255, 255, COUNTER_OPACITY);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const n = cellCounts[x + y * cols] || 0;
+          if (n > 0) {
+            const cx = x * CELL_SIZE + CELL_SIZE / 2;
+            const cy = y * CELL_SIZE + CELL_SIZE / 2;
+            p5.text(String(n), cx, cy);
+          }
+        }
+      }
+
       p5.stroke(255, 255, 255, 0.12);
       p5.strokeWeight(1);
       for (let x = 0; x <= cols; x++) {
@@ -94,6 +170,28 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       }
       for (let y = 0; y <= rows; y++) {
         p5.line(0, y * CELL_SIZE, p5.width, y * CELL_SIZE);
+      }
+
+      const maxCount = cellCounts.length
+        ? Math.max(...cellCounts.map((c) => c || 0))
+        : 0;
+      if (maxCount > 0) {
+        const d = p5.drawingContext;
+        d.save();
+        d.shadowColor = "rgba(0, 255, 120, 0.95)";
+        d.shadowBlur = GLOW_BLUR;
+        p5.noFill();
+        p5.stroke(0, 255, 120);
+        p5.strokeWeight(GLOW_STROKE_WEIGHT);
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            if ((cellCounts[x + y * cols] || 0) === maxCount) {
+              p5.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+          }
+        }
+        d.shadowBlur = 0;
+        d.restore();
       }
 
       const expectedCircles = cols * rows * CIRCLES_PER_CELL;
@@ -180,6 +278,10 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       p5.noStroke();
       p5.fill(255, 255, 255, 0.9);
       circles.forEach((c) => p5.circle(c.x, c.y, CIRCLE_RADIUS * 2));
+
+      p5.noStroke();
+      p5.fill(220, 60, 60, 1);
+      p5.circle(redBall.x, redBall.y, RED_BALL_RADIUS * 2);
 
       p5.stroke(0.4 * 255, 0.6 * 255, 1 * 255, 0.85);
       p5.strokeWeight(1.5);

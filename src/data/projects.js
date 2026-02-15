@@ -51,28 +51,6 @@ export const projects = {
           showPhotoMode: false
         },
         {
-          slug: "flowing-word-chains",
-          title: "Flowing Word Chains",
-          description: "Text-based particle system with word chains, letter evolution, and flow field forces",
-          sketch: "FlowingWordChains",
-          tags: ["p5.js", "generative", "interactive", "particles", "text", "typography", "word-chains"],
-          date: "2026-01-29",
-          created: "2026-01-29",
-          blog: "blog/flowing-word-chains.md",
-          showPhotoMode: false
-        },
-        {
-          slug: "genetic-particle-traits",
-          title: "Genetic Particle Traits",
-          description: "Evolutionary particle system with visual DNA, genetic mutations, and behavioral diversity",
-          sketch: "GeneticParticleTraits",
-          tags: ["p5.js", "generative", "interactive", "particles", "evolution", "dna", "genetics"],
-          date: "2026-01-30",
-          created: "2026-01-30",
-          blog: "blog/genetic-particle-traits.md",
-          showPhotoMode: false
-        },
-        {
           slug: "synthwave-hex-glow",
           title: "Synthwave Hex Glow",
           description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",

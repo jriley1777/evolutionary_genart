@@ -1,4 +1,5 @@
 import FlowFieldGrid from "./FlowFieldGrid";
+import FlowFieldVoronoi from "./FlowFieldVoronoi";
 import FlowFieldTrails from "./FlowFieldTrails";
 import SlowFlowTrails from "./SlowFlowTrails";
 import EvolvingParticleLife from "./EvolvingParticleLife";
@@ -9,6 +10,7 @@ import RectanglePackFlow from "./RectanglePackFlow";
 
 const sketches = {
   FlowFieldGrid,
+  FlowFieldVoronoi,
   FlowFieldTrails,
   SlowFlowTrails,
   EvolvingParticleLife,

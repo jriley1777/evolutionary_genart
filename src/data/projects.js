@@ -7,6 +7,17 @@ export const projects = {
       baseDescription: "Interactive particle systems with flowing patterns",
       sketches: [
         {
+          slug: "flow-field-voronoi",
+          title: "Flow Field Voronoi",
+          description: "Flow field with Voronoi cells: 50 sites, arrows and balls per cell, red ball and entrance counters",
+          sketch: "FlowFieldVoronoi",
+          tags: ["p5.js", "generative", "interactive", "flow-field", "voronoi", "visualization"],
+          date: "2026-02-14",
+          created: "2026-02-14",
+          blog: "blog/flow-field-voronoi.md",
+          showPhotoMode: false
+        },
+        {
           slug: "flow-field-grid",
           title: "Flow Field Grid",
           description: "Visualizes the flow field grid and direction with arrows at each cell center",

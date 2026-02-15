@@ -15,6 +15,8 @@ const COUNTER_FONT_SIZE_RATIO = 0.82;
 const COUNTER_OPACITY = 0.14;
 const GLOW_BLUR = 28;
 const GLOW_STROKE_WEIGHT = 2;
+const GRID_GLOW_BLUR = 12;
+const GRID_EDGE_OPACITY = 0.2;
 
 const FlowFieldGrid = ({ isFullscreen = false }) => {
   const sketch = (p5) => {
@@ -59,7 +61,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
     };
 
     p5.draw = () => {
-      p5.background(10, 8, 20);
+      p5.background(0, 0, 0);
 
       const cols = p5.floor(p5.width / CELL_SIZE);
       const rows = p5.floor(p5.height / CELL_SIZE);
@@ -163,14 +165,20 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         }
       }
 
-      p5.stroke(255, 255, 255, 0.12);
-      p5.strokeWeight(1);
+      const d = p5.drawingContext;
+      d.save();
+      d.shadowColor = "rgba(180, 220, 255, 0.6)";
+      d.shadowBlur = GRID_GLOW_BLUR;
+      p5.stroke(255, 255, 255, GRID_EDGE_OPACITY);
+      p5.strokeWeight(1.5);
       for (let x = 0; x <= cols; x++) {
         p5.line(x * CELL_SIZE, 0, x * CELL_SIZE, p5.height);
       }
       for (let y = 0; y <= rows; y++) {
         p5.line(0, y * CELL_SIZE, p5.width, y * CELL_SIZE);
       }
+      d.shadowBlur = 0;
+      d.restore();
 
       const maxCount = cellCounts.length
         ? Math.max(...cellCounts.map((c) => c || 0))

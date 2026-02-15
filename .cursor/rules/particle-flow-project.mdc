@@ -19,7 +19,7 @@ Each new sketch can be an entirely new idea; there is no requirement to evolve f
 
 3. **Register in `src/data/projects.js`**: under the single `particle-flow` project root, add a new object **at the top** of the `sketches` array. Include `created` (YYYY-MM-DD; use today’s date). Example: `{ slug, title, description, sketch: "ComponentName", tags, date, created, blog, showPhotoMode }`. The list is sorted by `created` (newest first). The `sketch` value must match the key in `sketches.js`.
 
-4. **Optional**: add a blog markdown in `public/blog/` (e.g. per-sketch or in a subfolder) describing the concept and influences.
+4. **Optional**: add a blog markdown in `public/blog/` (e.g. `slug-from-projects.md`). Use the **simple format** only: title, short intro paragraph, `## Concept` (3–5 bullets), `## Technical notes` (2–4 bullets). No code blocks, no long sections. See `public/blog/slow-flow-trails.md` and `context/context.md` (Blog post format).
 
 ## Sketch requirements
 

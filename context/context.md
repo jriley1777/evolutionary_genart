@@ -34,7 +34,17 @@ Update these when adding a sketch:
 | Sketch files | `src/sketches/` (flat; e.g. `FlowFieldTrails.jsx`, `SynthwaveHexGlow.jsx`) |
 | Blog/docs    | `public/blog/` (optional; per sketch or subfolders) |
 
-> ℹ️ Markdown should focus on concept, influences, and goals. Avoid deep code dives.
+### Blog post format (simple only)
+
+Blog posts in `public/blog/` must use a **short, consistent format**. Use `public/blog/slow-flow-trails.md` as the reference.
+
+**Structure:**
+1. **Title** (H1) — sketch name only.
+2. **Intro** — one short paragraph (1–3 sentences) describing the sketch.
+3. **## Concept** — 3–5 bullet points on the idea and behavior.
+4. **## Technical notes** — 2–4 short bullets on implementation (no code).
+
+**Do not include:** long “Overview” or “What Makes It Unique” sections, code blocks, “Core Techniques” with subsections, “Building Your Own”, “Related Techniques”, “Conclusion”, or multi-page prose. Keep each post to one concise page of concept + technical notes.
 
 ---
 

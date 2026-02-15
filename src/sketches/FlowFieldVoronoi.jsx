@@ -11,6 +11,11 @@ const COLLISION_ITERATIONS = 8;
 const COLLISION_SEPARATION = 0.4;
 const RED_BALL_RADIUS = 10;
 const RED_BALL_SPEED = 0.8;
+const ORB_COLORS = {
+  red: [220, 60, 60],
+  yellow: [240, 220, 60],
+  teal: [60, 200, 200]
+};
 const COUNTER_OPACITY = 0.14;
 const GLOW_BLUR = 28;
 const GLOW_STROKE_WEIGHT = 2;
@@ -178,9 +183,9 @@ const FlowFieldVoronoi = ({ isFullscreen = false }) => {
     let cells = [];
     let flowField = [];
     let circles = [];
-    let redBall = null;
+    let orbs = null;
     let cellCounts = [];
-    let redBallPrevCell = null;
+    let cellColors = [];
     let lastW = 0;
     let lastH = 0;
 
@@ -253,7 +258,7 @@ const FlowFieldVoronoi = ({ isFullscreen = false }) => {
         }
         circles = [];
         cellCounts = new Array(NUM_SEEDS).fill(0);
-        redBallPrevCell = null;
+        cellColors = new Array(NUM_SEEDS).fill(null);
         for (let i = 0; i < NUM_SEEDS; i++) {
           const poly = cells[i];
           if (!poly || poly.length < 3) continue;
@@ -283,41 +288,51 @@ const FlowFieldVoronoi = ({ isFullscreen = false }) => {
         flowField[i] = force;
       }
 
-      if (redBall == null) {
-        redBall = { x: w / 2, y: h / 2, vx: 0, vy: 0 };
+      if (orbs == null) {
+        const cx = w / 2;
+        const cy = h / 2;
+        orbs = {
+          red: { x: cx, y: cy, vx: 0, vy: 0, prevCell: null },
+          yellow: { x: cx - 40, y: cy, vx: 0, vy: 0, prevCell: null },
+          teal: { x: cx + 40, y: cy, vx: 0, vy: 0, prevCell: null }
+        };
       }
-      const wrappedX = ((redBall.x % w) + w) % w;
-      const wrappedY = ((redBall.y % h) + h) % h;
-      const rbCell = findCellIndex(wrappedX, wrappedY, seeds);
-      const rbPoly = cells[rbCell];
-      let fullyInOneCell = false;
-      let fullCellIndex = -1;
-      if (rbPoly && pointInPolygon(wrappedX, wrappedY, rbPoly)) {
-        const distToEdge = distanceToPolygonEdge(wrappedX, wrappedY, rbPoly);
-        if (distToEdge >= RED_BALL_RADIUS) {
-          fullyInOneCell = true;
-          fullCellIndex = rbCell;
+      ["red", "yellow", "teal"].forEach((key) => {
+        const orb = orbs[key];
+        const wrappedX = ((orb.x % w) + w) % w;
+        const wrappedY = ((orb.y % h) + h) % h;
+        const orbCell = findCellIndex(wrappedX, wrappedY, seeds);
+        const orbPoly = cells[orbCell];
+        let fullyInOneCell = false;
+        let fullCellIndex = -1;
+        if (orbPoly && pointInPolygon(wrappedX, wrappedY, orbPoly)) {
+          const distToEdge = distanceToPolygonEdge(wrappedX, wrappedY, orbPoly);
+          if (distToEdge >= RED_BALL_RADIUS) {
+            fullyInOneCell = true;
+            fullCellIndex = orbCell;
+          }
         }
-      }
-      if (fullyInOneCell) {
-        if (redBallPrevCell == null || fullCellIndex !== redBallPrevCell) {
-          cellCounts[fullCellIndex] = (cellCounts[fullCellIndex] || 0) + 1;
+        if (fullyInOneCell) {
+          cellColors[fullCellIndex] = ORB_COLORS[key];
+          if (orb.prevCell == null || fullCellIndex !== orb.prevCell) {
+            cellCounts[fullCellIndex] = (cellCounts[fullCellIndex] || 0) + 1;
+          }
+          orb.prevCell = fullCellIndex;
+        } else {
+          orb.prevCell = null;
         }
-        redBallPrevCell = fullCellIndex;
-      } else {
-        redBallPrevCell = null;
-      }
-      if (flowField[rbCell]) {
-        const force = flowField[rbCell];
-        redBall.vx += force.x * RED_BALL_SPEED;
-        redBall.vy += force.y * RED_BALL_SPEED;
-      }
-      redBall.vx *= DAMP;
-      redBall.vy *= DAMP;
-      redBall.x += redBall.vx;
-      redBall.y += redBall.vy;
-      redBall.x = ((redBall.x % w) + w) % w;
-      redBall.y = ((redBall.y % h) + h) % h;
+        if (flowField[orbCell]) {
+          const force = flowField[orbCell];
+          orb.vx += force.x * RED_BALL_SPEED;
+          orb.vy += force.y * RED_BALL_SPEED;
+        }
+        orb.vx *= DAMP;
+        orb.vy *= DAMP;
+        orb.x += orb.vx;
+        orb.y += orb.vy;
+        orb.x = ((orb.x % w) + w) % w;
+        orb.y = ((orb.y % h) + h) % h;
+      });
 
       const maxCount = cellCounts.length ? Math.max(...cellCounts.map((c) => c || 0)) : 0;
       const cellFontSize = Math.min(w, h) / (NUM_SEEDS * 0.5);
@@ -423,12 +438,23 @@ const FlowFieldVoronoi = ({ isFullscreen = false }) => {
       }
 
       p5.noStroke();
-      p5.fill(255, 255, 255, 0.9);
-      circles.forEach((c) => p5.circle(c.x, c.y, CIRCLE_RADIUS * 2));
+      circles.forEach((c) => {
+        const col = cellColors[c.cellIndex];
+        if (col) {
+          p5.fill(col[0], col[1], col[2], 0.9);
+        } else {
+          p5.fill(255, 255, 255, 0.9);
+        }
+        p5.circle(c.x, c.y, CIRCLE_RADIUS * 2);
+      });
 
       p5.noStroke();
-      p5.fill(220, 60, 60, 1);
-      p5.circle(redBall.x, redBall.y, RED_BALL_RADIUS * 2);
+      ["red", "yellow", "teal"].forEach((key) => {
+        const orb = orbs[key];
+        const col = ORB_COLORS[key];
+        p5.fill(col[0], col[1], col[2], 1);
+        p5.circle(orb.x, orb.y, RED_BALL_RADIUS * 2);
+      });
 
       p5.stroke(0.4 * 255, 0.6 * 255, 1 * 255, 0.85);
       p5.strokeWeight(1.5);

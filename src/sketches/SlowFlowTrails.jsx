@@ -255,7 +255,7 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
       }
       p5.colorMode(p5.RGB, 255, 255, 255, 1);
       p5.background(10, 8, 20);
-      const particleCount = p5.floor((p5.width * p5.height) / 900);
+      const particleCount = p5.floor((p5.width * p5.height) / 600);
       const existingPositions = [];
       for (let i = 0; i < particleCount; i++) {
         const pos = randomInPaddedBoxNoOverlap(p5, existingPositions) || randomInPaddedBox(p5);

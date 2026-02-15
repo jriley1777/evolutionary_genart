@@ -172,10 +172,18 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
           p5.blue(this.color),
           headAlpha
         );
+        const darker = 0.75;
+        const headStrokeColor = p5.color(
+          p5.red(this.color) * darker,
+          p5.green(this.color) * darker,
+          p5.blue(this.color) * darker,
+          headAlpha
+        );
         p5.stroke(trailColor);
         p5.strokeWeight(1);
         p5.line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
-        p5.noStroke();
+        p5.stroke(headStrokeColor);
+        p5.strokeWeight(1);
         p5.fill(headColor);
         const headSize = 30;
         const r = headSize / 2.5;
@@ -188,6 +196,19 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
           p5.rect(x, y, headSize, headSize);
           p5.rectMode(p5.CORNER);
         } else {
+          const cornerDarker = 0.55;
+          const cornerColor = p5.color(
+            p5.red(this.color) * cornerDarker,
+            p5.green(this.color) * cornerDarker,
+            p5.blue(this.color) * cornerDarker,
+            headAlpha
+          );
+          const cornerPixels = [
+            [0, -r],
+            [r, 0],
+            [0, r],
+            [-r, 0]
+          ];
           p5.push();
           p5.translate(x, y);
           p5.rotate(this.headAngle);
@@ -197,6 +218,9 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
           p5.vertex(0, r);
           p5.vertex(-r, 0);
           p5.endShape(p5.CLOSE);
+          p5.noStroke();
+          p5.fill(cornerColor);
+          cornerPixels.forEach(([px, py]) => p5.circle(px, py, 1));
           p5.pop();
         }
         p5.noStroke();
@@ -257,10 +281,15 @@ const SlowFlowTrails = ({ isFullscreen = false }) => {
         }
       }
 
-      // Very slow fade = long visible trails
-      p5.fill(0, 0, 0, 0.045);
-      p5.noStroke();
-      p5.rect(0, 0, p5.width, p5.height);
+      // Fade trail: one semi-transparent rect per frame. Every CLEAR_INTERVAL_FRAMES we full-clear to avoid slowdown.
+      const CLEAR_INTERVAL_FRAMES = 600;
+      if (p5.frameCount > 0 && p5.frameCount % CLEAR_INTERVAL_FRAMES === 0) {
+        p5.background(10, 8, 20);
+      } else {
+        p5.fill(0, 0, 0, 0.025);
+        p5.noStroke();
+        p5.rect(0, 0, p5.width, p5.height);
+      }
 
       const cellSize = 110;
       const cols = p5.floor(p5.width / cellSize);

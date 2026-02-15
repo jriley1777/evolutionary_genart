@@ -61,6 +61,14 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
     let cellCounts = [];
     let gameOver = false;
     let restartButton = null;
+    let panelX = null;
+    let panelY = null;
+    let isDraggingPanel = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let panelStartX = 0;
+    let panelStartY = 0;
+    let lastPanelRect = null;
 
     const sizeToFullCells = (w, h) => {
       const cw = Math.floor(w / CELL_SIZE) * CELL_SIZE;
@@ -489,55 +497,73 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       const titleLineH = LEADERBOARD_TITLE_FONT_SIZE + 4;
       const titleBlockH = titleLineH + lineH * 2 + 6;
       const panelH = titleBlockH + (ORB_KEYS.length + 4) * lineH + pad * 2;
-      const leaderboardY = p5.height - panelH - LEADERBOARD_BOTTOM_MARGIN;
+      const panelW = lw + pad * 2;
+      if (panelY == null) {
+        panelX = LEADERBOARD_X;
+        panelY = p5.height - panelH - LEADERBOARD_BOTTOM_MARGIN;
+      }
+      const leaderboardY = panelY;
       p5.fill(0, 0, 0, 1);
       p5.stroke(255, 255, 255, GRID_EDGE_OPACITY);
       p5.strokeWeight(1);
-      p5.rect(LEADERBOARD_X, leaderboardY, lw + pad * 2, panelH);
+      p5.rect(panelX, leaderboardY, panelW, panelH);
       p5.noStroke();
       let ly = leaderboardY + pad;
       p5.textSize(LEADERBOARD_TITLE_FONT_SIZE);
       p5.fill(255, 255, 255, 0.95);
-      p5.text("The Race to 100", LEADERBOARD_X + pad, ly);
+      p5.text("The Race to 100", panelX + pad, ly);
       ly += titleLineH;
       p5.textSize(fontSize);
       p5.fill(255, 255, 255, 0.7);
-      p5.text(`Drop rate: ${currentRate} ball${currentRate !== 1 ? "s" : ""} per entry`, LEADERBOARD_X + pad, ly);
+      p5.text(`Drop rate: ${currentRate} ball${currentRate !== 1 ? "s" : ""} per entry`, panelX + pad, ly);
       ly += lineH;
-      p5.text(`${ballsToNextRate} more ball${ballsToNextRate !== 1 ? "s" : ""} until rate increases`, LEADERBOARD_X + pad, ly);
+      p5.text(`${ballsToNextRate} more ball${ballsToNextRate !== 1 ? "s" : ""} until rate increases`, panelX + pad, ly);
       ly += lineH + 6;
       p5.fill(255, 255, 255, 0.95);
-      p5.text("Leaderboard", LEADERBOARD_X + pad, ly);
+      p5.text("Leaderboard", panelX + pad, ly);
       ly += lineH;
       p5.fill(255, 255, 255, 0.6);
-      p5.text("Color", LEADERBOARD_X + pad + col1, ly);
-      p5.text("Balls", LEADERBOARD_X + pad + col2, ly);
-      p5.text("Panels", LEADERBOARD_X + pad + col3, ly);
-      p5.text("Score", LEADERBOARD_X + pad + col4, ly);
+      p5.text("Color", panelX + pad + col1, ly);
+      p5.text("Balls", panelX + pad + col2, ly);
+      p5.text("Panels", panelX + pad + col3, ly);
+      p5.text("Score", panelX + pad + col4, ly);
       ly += lineH;
       ORB_KEYS.forEach((key) => {
         const [r, g, b] = ORB_COLORS[key];
         p5.fill(r, g, b, 1);
-        p5.text(ORB_LABELS[key], LEADERBOARD_X + pad + col1, ly);
+        p5.text(ORB_LABELS[key], panelX + pad + col1, ly);
         p5.fill(255, 255, 255, 0.9);
-        p5.text(String(leaderboard.totalBalls[key]), LEADERBOARD_X + pad + col2, ly);
-        p5.text(String(leaderboard.winningPanels[key]), LEADERBOARD_X + pad + col3, ly);
-        p5.text(String(leaderboard.scoreWinning[key]), LEADERBOARD_X + pad + col4, ly);
+        p5.text(String(leaderboard.totalBalls[key]), panelX + pad + col2, ly);
+        p5.text(String(leaderboard.winningPanels[key]), panelX + pad + col3, ly);
+        p5.text(String(leaderboard.scoreWinning[key]), panelX + pad + col4, ly);
         ly += lineH;
       });
       p5.stroke(255, 255, 255, 0.3);
       p5.strokeWeight(1);
-      p5.line(LEADERBOARD_X + pad, ly, LEADERBOARD_X + lw, ly);
+      p5.line(panelX + pad, ly, panelX + lw, ly);
       ly += lineH;
       p5.noStroke();
       p5.fill(255, 255, 255, 0.95);
-      p5.text("Total", LEADERBOARD_X + pad + col1, ly);
-      p5.text(String(overallBalls), LEADERBOARD_X + pad + col2, ly);
-      p5.text("—", LEADERBOARD_X + pad + col3, ly);
-      p5.text(String(overallScore), LEADERBOARD_X + pad + col4, ly);
+      p5.text("Total", panelX + pad + col1, ly);
+      p5.text(String(overallBalls), panelX + pad + col2, ly);
+      p5.text("—", panelX + pad + col3, ly);
+      p5.text(String(overallScore), panelX + pad + col4, ly);
       ly += lineH;
       p5.fill(255, 255, 255, 0.7);
-      p5.text(cellWithMostBalls >= 0 ? `Most balls: cell #${cellWithMostBalls}` : "Most balls: —", LEADERBOARD_X + pad, ly);
+      p5.text(cellWithMostBalls >= 0 ? `Most balls: cell #${cellWithMostBalls}` : "Most balls: —", panelX + pad, ly);
+
+      lastPanelRect = { x: panelX, y: panelY, w: panelW, h: panelH };
+
+      const mx = p5.mouseX;
+      const my = p5.mouseY;
+      const overPanel = lastPanelRect && mx >= lastPanelRect.x && mx <= lastPanelRect.x + lastPanelRect.w && my >= lastPanelRect.y && my <= lastPanelRect.y + lastPanelRect.h;
+      if (isDraggingPanel) {
+        p5.cursor("grabbing");
+      } else if (overPanel) {
+        p5.cursor("grab");
+      } else {
+        p5.cursor("default");
+      }
 
       if (gameOver) {
         let winningColorKey = null;
@@ -564,7 +590,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
 
         ly = leaderboardY + panelH + 16;
         const btnW = 140;
-        const btnX = LEADERBOARD_X + (lw + pad * 2) / 2 - btnW / 2;
+        const btnX = panelX + panelW / 2 - btnW / 2;
         const btnY = ly;
         restartButton = { x: btnX, y: btnY, w: btnW, h: RESTART_BUTTON_HEIGHT };
         p5.noStroke();
@@ -580,11 +606,10 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
     };
 
     p5.mousePressed = () => {
-      if (!gameOver || !restartButton) return;
       const mx = p5.mouseX;
       const my = p5.mouseY;
-      const r = restartButton;
-      if (mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h) {
+      const onRestartButton = gameOver && restartButton && mx >= restartButton.x && mx <= restartButton.x + restartButton.w && my >= restartButton.y && my <= restartButton.y + restartButton.h;
+      if (onRestartButton) {
         const cols = p5.floor(p5.width / CELL_SIZE);
         const rows = p5.floor(p5.height / CELL_SIZE);
         circles = [];
@@ -605,7 +630,27 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           orange: { x: x0 + p5.random(x1 - x0), y: y0 + p5.random(y1 - y0), vx: 0, vy: 0, prevCell: null },
           purple: { x: x0 + p5.random(x1 - x0), y: y0 + p5.random(y1 - y0), vx: 0, vy: 0, prevCell: null }
         };
+        return;
       }
+      const inPanel = lastPanelRect && mx >= lastPanelRect.x && mx <= lastPanelRect.x + lastPanelRect.w && my >= lastPanelRect.y && my <= lastPanelRect.y + lastPanelRect.h;
+      if (inPanel) {
+        isDraggingPanel = true;
+        dragStartX = mx;
+        dragStartY = my;
+        panelStartX = panelX;
+        panelStartY = panelY;
+      }
+    };
+
+    p5.mouseDragged = () => {
+      if (isDraggingPanel) {
+        panelX = panelStartX + (p5.mouseX - dragStartX);
+        panelY = panelStartY + (p5.mouseY - dragStartY);
+      }
+    };
+
+    p5.mouseReleased = () => {
+      isDraggingPanel = false;
     };
 
     p5.windowResized = () => {

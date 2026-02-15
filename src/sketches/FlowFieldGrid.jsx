@@ -24,10 +24,23 @@ const ORB_COLORS = {
 };
 const COUNTER_FONT_SIZE_RATIO = 0.82;
 const COUNTER_OPACITY = 0.5;
+const COUNTER_OPACITY_HIGHLIGHT = 0.95;
 const CELL_INDEX_FONT_SIZE = 10;
 const CELL_INDEX_INSET = 6;
 const GLOW_BLUR = 28;
 const GLOW_STROKE_WEIGHT = 2;
+const LEADER_ROW_COL_GLOW_BLUR = 64;
+const LEADER_ROW_COL_OPACITY = 1;
+const LEADER_ROW_COL_STROKE_WEIGHT = 2.5;
+const LEADER_ROW_COL_BG_OPACITY = 0.12;
+const LEADER_ROW_COL_MIN_BALLS = 5;
+const SCORING_ZONE_BOUNDS = [
+  [0, 30],
+  [31, 60],
+  [61, 90]
+];
+const SCORING_ZONE_BG_OPACITY = 0.1;
+const WINNING_CELL_BG_OPACITY = 0.28;
 const GRID_GLOW_BLUR = 12;
 const GRID_EDGE_OPACITY = 0.2;
 const ORB_KEYS = ["red", "yellow", "teal", "orange", "purple"];
@@ -41,8 +54,8 @@ const LEADERBOARD_GO_FONT_SIZE = 15;
 const LEADERBOARD_GO_SCALE = 1.35;
 const RESTART_BUTTON_PAD = 12;
 const RESTART_BUTTON_HEIGHT = 36;
-const WINNING_BALL_COUNT = 100;
-const BALLS_PER_SPAWN_TIER = 250;
+const WINNING_BALL_COUNT = 250;
+const BALLS_PER_SPAWN_TIER = 100;
 const ORB_SPAWN_MARGIN = 50;
 function shuffleArray(arr, randomFn) {
   const a = arr.slice();
@@ -278,6 +291,12 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         cellDominant[idx] = bestKey;
       }
 
+      const ballsPerCell = new Array(cellCounts.length).fill(0);
+      circles.forEach((c) => {
+        const idx = c.cellX + c.cellY * cols;
+        if (idx >= 0 && idx < ballsPerCell.length) ballsPerCell[idx]++;
+      });
+
       const leaderboard = { totalBalls: {}, winningPanels: {}, scoreWinning: {} };
       ORB_KEYS.forEach((k) => {
         leaderboard.totalBalls[k] = circles.filter((c) => c.color === ORB_COLORS[k]).length;
@@ -286,20 +305,15 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       });
       let overallBalls = circles.length;
       let overallScore = 0;
-      const ballsPerCell = new Array(cellCounts.length).fill(0);
       for (let idx = 0; idx < cellCounts.length; idx++) {
-        const n = cellCounts[idx] || 0;
-        overallScore += n;
+        const n = ballsPerCell[idx] || 0;
         const key = cellDominant[idx];
         if (key) {
           leaderboard.winningPanels[key]++;
           leaderboard.scoreWinning[key] += n;
         }
+        overallScore += n;
       }
-      circles.forEach((c) => {
-        const idx = c.cellX + c.cellY * cols;
-        if (idx >= 0 && idx < ballsPerCell.length) ballsPerCell[idx]++;
-      });
       let cellWithMostBalls = -1;
       let maxBallsInCell = 0;
       ballsPerCell.forEach((count, idx) => {
@@ -312,28 +326,35 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         gameOver = true;
       }
 
-      const counterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
-      p5.textSize(counterFontSize);
-      p5.textAlign(p5.CENTER, p5.CENTER);
-      p5.noStroke();
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const idx = x + y * cols;
-          const n = ballsPerCell[idx] || 0;
-          if (n > 0) {
-            const key = cellDominant[idx];
-            if (key) {
-              const [r, g, b] = ORB_COLORS[key];
-              p5.fill(r, g, b, COUNTER_OPACITY);
-            } else {
-              p5.fill(255, 255, 255, COUNTER_OPACITY);
+      const winningCols = new Set();
+      const winningRows = new Set();
+      const winningIndices = new Set();
+      if (maxBallsInCell > 0) {
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const idx = x + y * cols;
+            if ((ballsPerCell[idx] || 0) === maxBallsInCell) {
+              winningCols.add(x);
+              winningRows.add(y);
+              winningIndices.add(idx);
             }
-            const cx = x * CELL_SIZE + CELL_SIZE / 2;
-            const cy = y * CELL_SIZE + CELL_SIZE / 2;
-            p5.text(String(n), cx, cy);
           }
         }
       }
+      const zonesToHighlight = new Set();
+      winningIndices.forEach((idx) => {
+        SCORING_ZONE_BOUNDS.forEach(([lo, hi], zone) => {
+          if (idx >= lo && idx <= hi) zonesToHighlight.add(zone);
+        });
+      });
+      const isCellInHighlightedZone = (idx) => {
+        for (let z = 0; z < SCORING_ZONE_BOUNDS.length; z++) {
+          if (!zonesToHighlight.has(z)) continue;
+          const [lo, hi] = SCORING_ZONE_BOUNDS[z];
+          if (idx >= lo && idx <= hi) return true;
+        }
+        return false;
+      };
 
       p5.textSize(CELL_INDEX_FONT_SIZE);
       p5.textAlign(p5.LEFT, p5.TOP);
@@ -363,10 +384,54 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       d.restore();
 
       if (maxBallsInCell > 0) {
-        const d = p5.drawingContext;
-        d.save();
-        d.shadowColor = "rgba(0, 255, 120, 0.95)";
-        d.shadowBlur = GLOW_BLUR;
+        const dc = p5.drawingContext;
+        dc.save();
+        p5.noStroke();
+        zonesToHighlight.forEach((zone) => {
+          const [lo, hi] = SCORING_ZONE_BOUNDS[zone];
+          p5.fill(0, 255, 120, SCORING_ZONE_BG_OPACITY);
+          for (let idx = lo; idx <= hi && idx < cols * rows; idx++) {
+            const x = idx % cols;
+            const y = Math.floor(idx / cols);
+            p5.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          }
+        });
+        winningIndices.forEach((idx) => {
+          const x = idx % cols;
+          const y = Math.floor(idx / cols);
+          p5.fill(0, 255, 120, WINNING_CELL_BG_OPACITY);
+          p5.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        });
+        if (maxBallsInCell >= LEADER_ROW_COL_MIN_BALLS) {
+          p5.noStroke();
+          p5.fill(255, 255, 255, LEADER_ROW_COL_BG_OPACITY);
+          for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+              if (winningCols.has(x) || winningRows.has(y)) {
+                p5.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+              }
+            }
+          }
+          dc.shadowColor = "rgba(255, 255, 255, 1)";
+          dc.shadowBlur = LEADER_ROW_COL_GLOW_BLUR;
+          p5.noFill();
+          p5.stroke(255, 255, 255, LEADER_ROW_COL_OPACITY);
+          p5.strokeWeight(LEADER_ROW_COL_STROKE_WEIGHT);
+          winningCols.forEach((x) => {
+            p5.line(x * CELL_SIZE, 0, x * CELL_SIZE, p5.height);
+            p5.line((x + 1) * CELL_SIZE, 0, (x + 1) * CELL_SIZE, p5.height);
+          });
+          winningRows.forEach((y) => {
+            p5.line(0, y * CELL_SIZE, p5.width, y * CELL_SIZE);
+            p5.line(0, (y + 1) * CELL_SIZE, p5.width, (y + 1) * CELL_SIZE);
+          });
+        }
+        dc.shadowBlur = 0;
+        dc.restore();
+
+        dc.save();
+        dc.shadowColor = "rgba(0, 255, 120, 0.95)";
+        dc.shadowBlur = GLOW_BLUR;
         p5.noFill();
         p5.stroke(0, 255, 120);
         p5.strokeWeight(GLOW_STROKE_WEIGHT);
@@ -378,8 +443,8 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
             }
           }
         }
-        d.shadowBlur = 0;
-        d.restore();
+        dc.shadowBlur = 0;
+        dc.restore();
       }
 
       const left = (cx) => cx * CELL_SIZE + CIRCLE_RADIUS;
@@ -453,6 +518,32 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         p5.circle(c.x, c.y, CIRCLE_RADIUS * 2);
       });
 
+      const counterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
+      const counterFontSizeThreeDigits = CELL_SIZE * COUNTER_FONT_SIZE_RATIO * 0.65;
+      p5.textAlign(p5.CENTER, p5.CENTER);
+      p5.noStroke();
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const idx = x + y * cols;
+          const n = ballsPerCell[idx] || 0;
+          if (n > 0 && !winningIndices.has(idx)) {
+            const highlighted = (maxBallsInCell >= LEADER_ROW_COL_MIN_BALLS && (winningCols.has(x) || winningRows.has(y))) || isCellInHighlightedZone(idx);
+            const opacity = highlighted ? COUNTER_OPACITY_HIGHLIGHT : COUNTER_OPACITY;
+            p5.textSize(n >= 100 ? counterFontSizeThreeDigits : counterFontSize);
+            const key = cellDominant[idx];
+            if (key) {
+              const [r, g, b] = ORB_COLORS[key];
+              p5.fill(r, g, b, opacity);
+            } else {
+              p5.fill(255, 255, 255, opacity);
+            }
+            const cx = x * CELL_SIZE + CELL_SIZE / 2;
+            const cy = y * CELL_SIZE + CELL_SIZE / 2;
+            p5.text(String(n), cx, cy);
+          }
+        }
+      }
+
       p5.noStroke();
       shuffleArray(ORB_KEYS, () => p5.random()).forEach((key) => {
         const orb = orbs[key];
@@ -479,6 +570,55 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           const cy = y * CELL_SIZE + CELL_SIZE / 2;
           drawArrow(p5, cx, cy, force);
         }
+      }
+
+      if (gameOver) {
+        let winningColorKeyMsg = null;
+        let maxScoreMsg = -1;
+        ORB_KEYS.forEach((key) => {
+          const s = leaderboard.scoreWinning[key] || 0;
+          if (s > maxScoreMsg) {
+            maxScoreMsg = s;
+            winningColorKeyMsg = key;
+          }
+        });
+        const winnerNameMsg = winningColorKeyMsg ? ORB_LABELS[winningColorKeyMsg] : "—";
+        const msg = `Game Over — ${winnerNameMsg} wins!`;
+        p5.textSize(28);
+        p5.textAlign(p5.CENTER, p5.CENTER);
+        const mw = p5.textWidth(msg);
+        const msgX = p5.width / 2;
+        const msgY = p5.height / 2;
+        p5.noStroke();
+        p5.fill(0, 0, 0, 0.8);
+        p5.rect(msgX - mw / 2 - 20, msgY - 24, mw + 40, 48);
+        p5.fill(255, 255, 255, 1);
+        p5.text(msg, msgX, msgY);
+      }
+
+      if (maxBallsInCell > 0 && winningIndices.size > 0) {
+        const topCounterFontSize = CELL_SIZE * COUNTER_FONT_SIZE_RATIO;
+        const topCounterFontSizeThreeDigits = topCounterFontSize * 0.65;
+        const pulse = 0.94 + 0.06 * Math.sin(p5.frameCount * 0.06);
+        p5.textAlign(p5.CENTER, p5.CENTER);
+        p5.noStroke();
+        winningIndices.forEach((idx) => {
+          const n = ballsPerCell[idx] || 0;
+          if (n === 0) return;
+          const x = idx % cols;
+          const y = Math.floor(idx / cols);
+          p5.textSize(n >= 100 ? topCounterFontSizeThreeDigits : topCounterFontSize);
+          const key = cellDominant[idx];
+          if (key) {
+            const [r, g, b] = ORB_COLORS[key];
+            p5.fill(r * pulse, g * pulse, b * pulse, 1);
+          } else {
+            p5.fill(255 * pulse, 255 * pulse, 255 * pulse, 1);
+          }
+          const cx = x * CELL_SIZE + CELL_SIZE / 2;
+          const cy = y * CELL_SIZE + CELL_SIZE / 2;
+          p5.text(String(n), cx, cy);
+        });
       }
 
       p5.textAlign(p5.LEFT, p5.TOP);
@@ -511,7 +651,7 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       let ly = leaderboardY + pad;
       p5.textSize(LEADERBOARD_TITLE_FONT_SIZE);
       p5.fill(255, 255, 255, 0.95);
-      p5.text("The Race to 100", panelX + pad, ly);
+      p5.text("The Race to 250", panelX + pad, ly);
       ly += titleLineH;
       p5.textSize(fontSize);
       p5.fill(255, 255, 255, 0.7);
@@ -566,28 +706,6 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
       }
 
       if (gameOver) {
-        let winningColorKey = null;
-        let maxScore = -1;
-        ORB_KEYS.forEach((key) => {
-          const s = leaderboard.scoreWinning[key] || 0;
-          if (s > maxScore) {
-            maxScore = s;
-            winningColorKey = key;
-          }
-        });
-        const winnerName = winningColorKey ? ORB_LABELS[winningColorKey] : "—";
-        const msg = `Game Over — ${winnerName} wins!`;
-        p5.textSize(28);
-        p5.textAlign(p5.CENTER, p5.CENTER);
-        const mw = p5.textWidth(msg);
-        const mx = p5.width / 2;
-        const my = p5.height / 2;
-        p5.noStroke();
-        p5.fill(0, 0, 0, 0.8);
-        p5.rect(mx - mw / 2 - 20, my - 24, mw + 40, 48);
-        p5.fill(255, 255, 255, 1);
-        p5.text(msg, mx, my);
-
         ly = leaderboardY + panelH + 16;
         const btnW = 140;
         const btnX = panelX + panelW / 2 - btnW / 2;

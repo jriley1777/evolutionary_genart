@@ -34,6 +34,7 @@ const LEADER_ROW_COL_OPACITY = 1;
 const LEADER_ROW_COL_STROKE_WEIGHT = 2.5;
 const LEADER_ROW_COL_BG_OPACITY = 0.12;
 const LEADER_ROW_COL_MIN_BALLS = 5;
+const PULSE_WAVE_OPACITY = 0.4;
 const SCORING_ZONE_BOUNDS = [
   [0, 30],
   [31, 60],
@@ -83,6 +84,8 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
     let panelStartY = 0;
     let lastPanelRect = null;
     let prevCellDominant = null;
+    let waveStartFrame = null;
+    let prevWaveCellWithMostBalls = null;
 
     const sizeToFullCells = (w, h) => {
       const cw = Math.floor(w / CELL_SIZE) * CELL_SIZE;
@@ -161,6 +164,8 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         circles = [];
         gameOver = false;
         prevCellDominant = null;
+        waveStartFrame = null;
+        prevWaveCellWithMostBalls = null;
       }
       if (orbs == null) {
         const w = p5.width;
@@ -274,6 +279,8 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
 
       if (prevCellDominant != null && prevCellDominant.length !== cols * rows) {
         prevCellDominant = null;
+        waveStartFrame = null;
+        prevWaveCellWithMostBalls = null;
       }
       const cellDominant = [];
       for (let idx = 0; idx < cols * rows; idx++) {
@@ -417,6 +424,9 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           p5.fill(0, 255, 120, WINNING_CELL_BG_OPACITY);
           p5.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         });
+        if (maxBallsInCell < LEADER_ROW_COL_MIN_BALLS) {
+          prevWaveCellWithMostBalls = null;
+        }
         if (maxBallsInCell >= LEADER_ROW_COL_MIN_BALLS) {
           p5.noStroke();
           p5.fill(255, 255, 255, LEADER_ROW_COL_BG_OPACITY);
@@ -439,6 +449,45 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
           winningRows.forEach((y) => {
             p5.line(0, y * CELL_SIZE, p5.width, y * CELL_SIZE);
             p5.line(0, (y + 1) * CELL_SIZE, p5.width, (y + 1) * CELL_SIZE);
+          });
+          if (cellWithMostBalls !== prevWaveCellWithMostBalls) {
+            waveStartFrame = p5.frameCount;
+            prevWaveCellWithMostBalls = cellWithMostBalls;
+          }
+          const rowToWinningCol = {};
+          const colToWinningRow = {};
+          winningIndices.forEach((idx) => {
+            const row = Math.floor(idx / cols);
+            const col = idx % cols;
+            if (rowToWinningCol[row] == null) rowToWinningCol[row] = col;
+            if (colToWinningRow[col] == null) colToWinningRow[col] = row;
+          });
+          const stepIndex = waveStartFrame != null ? p5.frameCount - waveStartFrame : 0;
+          p5.noStroke();
+          p5.fill(255, 255, 255, PULSE_WAVE_OPACITY);
+          // Left → right along each winning row
+          winningRows.forEach((y) => {
+            const winningCol = rowToWinningCol[y];
+            if (winningCol == null || stepIndex < 0 || stepIndex > winningCol) return;
+            p5.rect(stepIndex * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          });
+          // Right → left along each winning row
+          winningRows.forEach((y) => {
+            const winningCol = rowToWinningCol[y];
+            if (winningCol == null || stepIndex < 0 || stepIndex > cols - 1 - winningCol) return;
+            p5.rect((cols - 1 - stepIndex) * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          });
+          // Top → bottom along each winning column
+          winningCols.forEach((x) => {
+            const winningRow = colToWinningRow[x];
+            if (winningRow == null || stepIndex < 0 || stepIndex > winningRow) return;
+            p5.rect(x * CELL_SIZE, stepIndex * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          });
+          // Bottom → top along each winning column
+          winningCols.forEach((x) => {
+            const winningRow = colToWinningRow[x];
+            if (winningRow == null || stepIndex < 0 || stepIndex > rows - 1 - winningRow) return;
+            p5.rect(x * CELL_SIZE, (rows - 1 - stepIndex) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
           });
         }
         dc.shadowBlur = 0;
@@ -726,6 +775,8 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         gameOver = false;
         restartButton = null;
         prevCellDominant = null;
+        waveStartFrame = null;
+        prevWaveCellWithMostBalls = null;
         const w = p5.width;
         const h = p5.height;
         const margin = ORB_SPAWN_MARGIN;

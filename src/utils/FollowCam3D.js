@@ -29,9 +29,9 @@ class FollowCam3D {
     this.target = null;
     this.lookTarget = new THREE.Vector3(0, 0, -1);
     this.rollStrength = 5.6;
-    this.maxRoll = 0.85;   // ~20 degrees
-    this.rollLerp = 1.8;  // smoothing for roll angle
-    this.rollAngle = 0.5;
+    this.maxRoll = 0.35;   // ~20 degrees
+    this.rollLerp = 0.8;  // smoothing for roll angle
+    this.rollAngle = 0;
   }
 
   setTarget(target) {

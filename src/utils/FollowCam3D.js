@@ -13,7 +13,9 @@ class FollowCam3D {
     followLerp = 0.01,
     lookLerp = 0.01,
     bound = 14,
-    boxMargin = 3
+    boxMargin = 3,
+    maxSpeed = 0.4,  // world units per dt (~frame)
+    minSpeed = 0.0   // optional minimum movement per dt
   } = {}) {
     this.camera = camera;
     this.followDistance = followDistance;
@@ -22,15 +24,14 @@ class FollowCam3D {
     this.lookLerp = lookLerp;
     this.bound = bound;
     this.boxMargin = boxMargin;
+    this.maxSpeed = maxSpeed;
+    this.minSpeed = minSpeed;
     this.target = null;
     this.lookTarget = new THREE.Vector3(0, 0, -1);
   }
 
   setTarget(target) {
     this.target = target || null;
-    if (this.target && this.target.pos) {
-      this.lookTarget.copy(this.target.pos);
-    }
   }
 
   update(dt) {
@@ -76,7 +77,25 @@ class FollowCam3D {
     desiredPos.y = THREE.MathUtils.clamp(desiredPos.y, -bound + boxMargin, bound - boxMargin);
     desiredPos.z = THREE.MathUtils.clamp(desiredPos.z, -bound + boxMargin, bound - boxMargin);
 
-    camera.position.lerp(desiredPos, this.followLerp);
+    // Move toward desiredPos, but cap maximum and minimum speed so jumps to new targets are smooth
+    const toDesired = new THREE.Vector3().subVectors(desiredPos, camera.position);
+    const dist = toDesired.length();
+    if (dist > 0) {
+      const timeScale = dt || 1;
+      const maxStep = this.maxSpeed * timeScale;
+      const minStep = this.minSpeed * timeScale;
+      const desiredStep = dist * this.followLerp;
+      let step = desiredStep;
+      if (maxStep > 0) {
+        step = Math.min(step, maxStep);
+      }
+      if (minStep > 0 && dist > minStep) {
+        step = Math.max(step, minStep);
+      }
+      step = Math.min(step, dist); // never overshoot
+      const t = step / dist;
+      camera.position.add(toDesired.multiplyScalar(t));
+    }
 
     const lookAhead = vel.clone().multiplyScalar(3);
     const desiredLook = new THREE.Vector3().copy(targetPos).add(lookAhead);

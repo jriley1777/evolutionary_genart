@@ -74,22 +74,27 @@ function noise3D(x, y, z) {
   );
 }
 
-const BOUND = 3;
-const PARTICLE_COUNT = 2480;
+const BOUND = 10;
+const PARTICLE_COUNT = 3000;
 const TRAIL_LENGTH = 5;
-const TRAIL_LINEWIDTH = 1;
+const TRAIL_LINEWIDTH = 0.4;
 const FLOW_SCALE = 0.65;
 const PARTICLE_SPEED = 0.002;
 const SEPARATION_DIST = 0.6;
 const SEPARATION_STRENGTH = 0.45;
-const GRID_DIVS = 3; // cubes within the cube, Rubik-like grid
+const GRID_DIVS = 10; // cubes within the cube, Rubik-like grid
 const BG_COLOR = new THREE.Color(0x000000);
-const CAMERA_FOLLOW_LERP = 0.01;
-const CAMERA_LOOK_LERP = 0.003;
-const CAMERA_FOLLOW_DISTANCE = 7;
+const LINE_WIDTH_NEAR = 1.1;
+const LINE_WIDTH_FAR = 0.3;
+const GLOW_WIDTH_MULT = 2.2;
+const CAMERA_FOLLOW_LERP = 0.0001;
+const CAMERA_LOOK_LERP = 0.0003;
+const CAMERA_FOLLOW_DISTANCE = 10;
 const CAMERA_FOLLOW_HEIGHT = 2.2;
 const CAMERA_BOX_MARGIN = 3;
-const CAMERA_TARGET_DURATION = 1800; // ~30 seconds at 60fps (dt ~= 1)
+const CAMERA_MAX_SPEED = 0.03; // cap camera movement per frame
+const CAMERA_MIN_SPEED = 0.005; // ensure camera keeps drifting toward new targets
+const CAMERA_TARGET_DURATION = 600; // ~30 seconds at 60fps (dt ~= 1)
 const FOG_NEAR = 12;
 const FOG_FAR = 42;
 const PALETTE = [
@@ -185,7 +190,9 @@ const FlowFieldTrails3D = ({ isFullscreen = false, photoMode, sketchType }) => {
       followLerp: CAMERA_FOLLOW_LERP,
       lookLerp: CAMERA_LOOK_LERP,
       bound: BOUND,
-      boxMargin: CAMERA_BOX_MARGIN
+      boxMargin: CAMERA_BOX_MARGIN,
+      maxSpeed: CAMERA_MAX_SPEED,
+      minSpeed: CAMERA_MIN_SPEED
     });
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -227,7 +234,7 @@ const FlowFieldTrails3D = ({ isFullscreen = false, photoMode, sketchType }) => {
       // Soft outer glow (thicker, lower opacity, additive blending)
       const glowMaterial = new LineMaterial({
         color: baseColor,
-        linewidth: TRAIL_LINEWIDTH * 2.2,
+        linewidth: TRAIL_LINEWIDTH * GLOW_WIDTH_MULT,
         transparent: true,
         opacity: 0.22,
         vertexColors: false,
@@ -310,7 +317,7 @@ const FlowFieldTrails3D = ({ isFullscreen = false, photoMode, sketchType }) => {
         p.line.computeLineDistances();
       });
 
-      // Depth-based opacity: closer trails appear brighter, farther ones more transparent
+      // Depth-based opacity and line width: closer trails appear brighter and thicker, farther ones softer and thinner
       const camPos = camera.position;
       const maxDist = BOUND * 2.0;
       const coreNear = 0.85;
@@ -325,6 +332,13 @@ const FlowFieldTrails3D = ({ isFullscreen = false, photoMode, sketchType }) => {
         if (p.glowLine && p.glowLine.material) {
           const glowOpacity = THREE.MathUtils.lerp(glowNear, glowFar, t);
           p.glowLine.material.opacity = glowOpacity;
+        }
+
+        // Line width: near = thicker, far = thinner
+        const width = THREE.MathUtils.lerp(LINE_WIDTH_NEAR, LINE_WIDTH_FAR, t);
+        p.line.material.linewidth = width;
+        if (p.glowLine && p.glowLine.material) {
+          p.glowLine.material.linewidth = width * GLOW_WIDTH_MULT;
         }
       });
 

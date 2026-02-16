@@ -28,6 +28,10 @@ class FollowCam3D {
     this.minSpeed = minSpeed;
     this.target = null;
     this.lookTarget = new THREE.Vector3(0, 0, -1);
+    this.rollStrength = 5.6;
+    this.maxRoll = 0.85;   // ~20 degrees
+    this.rollLerp = 1.8;  // smoothing for roll angle
+    this.rollAngle = 0.5;
   }
 
   setTarget(target) {
@@ -97,9 +101,22 @@ class FollowCam3D {
       camera.position.add(toDesired.multiplyScalar(t));
     }
 
-    const lookAhead = vel.clone().multiplyScalar(3);
+    const lookAhead = vel.clone().multiplyScalar(2);
     const desiredLook = new THREE.Vector3().copy(targetPos).add(lookAhead);
     this.lookTarget.lerp(desiredLook, this.lookLerp);
+
+    // Bank/roll camera around its forward axis for a \"spaceship\" feel
+    const forward = new THREE.Vector3().subVectors(this.lookTarget, camera.position).normalize();
+    if (forward.lengthSq() > 1e-6) {
+      const targetRoll = THREE.MathUtils.clamp(-vel.x * this.rollStrength, -this.maxRoll, this.maxRoll);
+      this.rollAngle += (targetRoll - this.rollAngle) * this.rollLerp;
+
+      const baseUp = new THREE.Vector3(0, 1, 0);
+      const rollQuat = new THREE.Quaternion().setFromAxisAngle(forward, this.rollAngle);
+      const rolledUp = baseUp.applyQuaternion(rollQuat);
+      camera.up.copy(rolledUp);
+    }
+
     camera.lookAt(this.lookTarget);
   }
 }

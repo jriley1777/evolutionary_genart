@@ -10,7 +10,8 @@ const SketchWithFullscreen = ({
   currentGeneration = '', 
   onGenerationChange = null,
   project = null,
-  forceFullscreen = null
+  forceFullscreen = null,
+  sketchType = 'p5'
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
   const [isPhotoMode, setIsPhotoMode] = useState(false);
@@ -163,12 +164,14 @@ const SketchWithFullscreen = ({
   // Create a unique key that changes when fullscreen mode changes
   const uniqueSketchKey = `${project ? project.slug : 'default'}-${isFullscreen ? 'fullscreen' : 'normal'}-${sketchKey}`;
 
+  const sketchProps = { isFullscreen, photoMode: isPhotoMode, sketchType };
+
   return (
     <>
       {/* Regular view with fullscreen and photo mode buttons */}
-      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div style={{ position: 'relative', width: '100%', height: '100%' }} data-sketch-type={sketchType}>
         <div key={uniqueSketchKey}>
-          <SketchComponent isFullscreen={isFullscreen} photoMode={isPhotoMode} />
+          <SketchComponent {...sketchProps} />
         </div>
         
         {/* Photo Mode button */}
@@ -284,9 +287,9 @@ const SketchWithFullscreen = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
-          }}>
+          }} data-sketch-type={sketchType}>
             <div key={uniqueSketchKey}>
-              <SketchComponent isFullscreen={isFullscreen} photoMode={isPhotoMode} />
+              <SketchComponent {...sketchProps} />
             </div>
           </div>
         </div>

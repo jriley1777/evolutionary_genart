@@ -88,6 +88,7 @@ const Home = () => {
                       title={project.title}
                       description={project.description}
                       project={project}
+                      sketchType={project.sketchType ?? 'p5'}
                     />
                   )}
                 </div>

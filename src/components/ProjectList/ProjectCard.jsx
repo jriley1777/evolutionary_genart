@@ -15,6 +15,7 @@ const formatDate = (dateStr) => {
 const ProjectCard = ({ projectItem, isActive, onClick, index }) => {
   const created = projectItem.created ?? projectItem.date;
   const dateLabel = formatDate(created);
+  const sketchTypeLabel = (projectItem.sketchType ?? "p5") === "three" ? "Three.js" : "p5.js";
   return (
     <Link
       to={`/${projectItem.slug}`}
@@ -28,7 +29,10 @@ const ProjectCard = ({ projectItem, isActive, onClick, index }) => {
       <div className="project-card-content">
         <div className="project-header">
           <h3>{projectItem.title}</h3>
-          {dateLabel && <span className="project-card-date">{dateLabel}</span>}
+          <div className="project-card-meta">
+            <span className="project-card-sketch-type">{sketchTypeLabel}</span>
+            {dateLabel && <span className="project-card-date">{dateLabel}</span>}
+          </div>
         </div>
         <p className="project-description">{projectItem.description}</p>
       </div>

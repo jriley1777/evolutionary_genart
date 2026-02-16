@@ -1,0 +1,89 @@
+import * as THREE from "three";
+
+/**
+ * Reusable 3D follow camera helper.
+ * - Follows a target with position/velocity (expects { pos: Vector3, vel: Vector3 }).
+ * - Smooths camera motion and look direction.
+ * - Keeps camera inside a bounding cube and prefers an inward-facing view near walls.
+ */
+class FollowCam3D {
+  constructor(camera, {
+    followDistance = 30,
+    followHeight = 2.2,
+    followLerp = 0.01,
+    lookLerp = 0.01,
+    bound = 14,
+    boxMargin = 3
+  } = {}) {
+    this.camera = camera;
+    this.followDistance = followDistance;
+    this.followHeight = followHeight;
+    this.followLerp = followLerp;
+    this.lookLerp = lookLerp;
+    this.bound = bound;
+    this.boxMargin = boxMargin;
+    this.target = null;
+    this.lookTarget = new THREE.Vector3(0, 0, -1);
+  }
+
+  setTarget(target) {
+    this.target = target || null;
+    if (this.target && this.target.pos) {
+      this.lookTarget.copy(this.target.pos);
+    }
+  }
+
+  update(dt) {
+    const camera = this.camera;
+    const target = this.target;
+    if (!camera || !target || !target.pos || !target.vel) return;
+
+    const targetPos = target.pos;
+    const vel = target.vel.clone();
+    if (vel.lengthSq() < 1e-4) {
+      vel.set(1, 0, 0);
+    }
+    vel.normalize();
+
+    const { bound, boxMargin } = this;
+
+    const nearLeft = targetPos.x < -bound + boxMargin;
+    const nearRight = targetPos.x > bound - boxMargin;
+    const nearBottom = targetPos.y < -bound + boxMargin;
+    const nearTop = targetPos.y > bound - boxMargin;
+    const nearBack = targetPos.z < -bound + boxMargin;
+    const nearFront = targetPos.z > bound - boxMargin;
+
+    const inwardDir = new THREE.Vector3(
+      nearLeft ? 1 : nearRight ? -1 : 0,
+      nearBottom ? 1 : nearTop ? -1 : 0,
+      nearBack ? 1 : nearFront ? -1 : 0
+    );
+
+    let followDir = vel.clone().multiplyScalar(-1);
+    if (inwardDir.lengthSq() > 0) {
+      inwardDir.normalize();
+      // Blend between "behind the trail" and "toward the cube interior" when near walls
+      followDir.lerp(inwardDir, 0.7);
+    }
+    followDir.normalize();
+
+    const offset = followDir.multiplyScalar(this.followDistance);
+    const up = new THREE.Vector3(0, 1, 0).multiplyScalar(this.followHeight);
+    const desiredPos = new THREE.Vector3().copy(targetPos).add(offset).add(up);
+
+    desiredPos.x = THREE.MathUtils.clamp(desiredPos.x, -bound + boxMargin, bound - boxMargin);
+    desiredPos.y = THREE.MathUtils.clamp(desiredPos.y, -bound + boxMargin, bound - boxMargin);
+    desiredPos.z = THREE.MathUtils.clamp(desiredPos.z, -bound + boxMargin, bound - boxMargin);
+
+    camera.position.lerp(desiredPos, this.followLerp);
+
+    const lookAhead = vel.clone().multiplyScalar(3);
+    const desiredLook = new THREE.Vector3().copy(targetPos).add(lookAhead);
+    this.lookTarget.lerp(desiredLook, this.lookLerp);
+    camera.lookAt(this.lookTarget);
+  }
+}
+
+export default FollowCam3D;
+

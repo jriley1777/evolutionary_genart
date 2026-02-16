@@ -43,6 +43,18 @@ export const projects = {
           showPhotoMode: false
         },
         {
+          slug: "flow-field-trails-3d",
+          title: "Flow Field Trails 3D",
+          description: "Flow field particle trails in 3D space with a slow flying camera moving through the trails",
+          sketch: "FlowFieldTrails3D",
+          sketchType: "three",
+          tags: ["three.js", "generative", "flow-field", "particles", "3d", "trails"],
+          date: "2026-02-16",
+          created: "2026-02-16",
+          blog: "blog/flow-field-trails-3d.md",
+          showPhotoMode: false
+        },
+        {
           slug: "flow-field-trails",
           title: "Flow Field Trails",
           description: "Flow field particle system with mouse-responsive forces and HSB color gradients",

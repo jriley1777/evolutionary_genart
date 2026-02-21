@@ -1,0 +1,25 @@
+---
+description: Simple format for sketch blog posts in public/blog
+globs: public/blog/**/*.md
+alwaysApply: false
+---
+
+# Blog posts (simple format)
+
+Blog posts in `public/blog/` must use the **short, consistent format**. Reference: `public/blog/slow-flow-trails.md`.
+
+## Required structure
+
+1. **Title (H1)** — Sketch name only. No extra subtitle or tagline.
+2. **Intro** — One short paragraph (1–3 sentences) describing the sketch.
+3. **## Concept** — 3–5 bullet points on the idea and behavior.
+4. **## Technical notes** — 2–4 short bullets on implementation.
+
+## Do not include
+
+- Long "Overview", "What Makes It Unique", or "Conclusion" sections.
+- Code blocks or snippets.
+- Subsections under Concept or Technical notes (e.g. "Core Techniques" with nested bullets).
+- "Building Your Own", "Related Techniques", or multi-page prose.
+
+Keep each post to one concise page: intro + Concept + Technical notes only.

@@ -1,32 +1,27 @@
 ---
-description: Conventions for particle flow sketch components (React + p5)
-globs: "**/sketches/**/*.jsx"
+description: Conventions for sketch components in src/sketches (structure and fullscreen)
+globs: src/sketches/**/*.jsx
 alwaysApply: false
 ---
 
-# Sketch component conventions
+# Sketch components
 
-## Structure
+Files in `src/sketches/` are generative sketch components. **Genre** (e.g. particle flow, kaleidoscopes) is defined by which project root they belong to; see the relevant genre rule and context.
 
-- React component that receives `isFullscreen = false` and uses it to size the canvas (e.g. full window when true).
-- Use `@p5-wrapper/react`: `import { ReactP5Wrapper } from "@p5-wrapper/react";` and render `<ReactP5Wrapper sketch={sketch} />`.
-- Import sketch layout styles: `import "./Sketch.css";` (all sketch files live in `src/sketches/`).
+## Required structure
 
-## p5 sketch function
+- **Imports:** `React`, `ReactP5Wrapper` from `@p5-wrapper/react`, and `import "./Sketch.css"`.
+- **Component:** Accept `isFullscreen = false` as a prop (add `photoMode` or `sketchType` only if the sketch needs them).
+- **Return:** Either `<ReactP5Wrapper sketch={sketch} />` or a wrapper (e.g. a `div` with `className={isFullscreen ? "canvas-container fullscreen" : "canvas-container"}`) when the sketch uses a custom container.
 
-- Signature: `const sketch = (p5) => { ... };` with `p5.setup`, `p5.draw`, and any helpers.
-- In `setup`, create canvas with `p5.createCanvas(p5.windowWidth, p5.windowHeight)` (or use `isFullscreen` to decide dimensions). Call `p5.colorMode(p5.HSB)` (or other mode) if needed.
-- Use `p5.windowResized` to resize canvas when the window resizes so fullscreen and non-fullscreen both work.
+## Fullscreen behavior
 
-## Particle flow requirement
+- In `setup()` (or equivalent), use `isFullscreen` to set canvas dimensions: when `isFullscreen`, use `window.innerWidth` and `window.innerHeight`; otherwise use `p5.windowWidth` and `p5.windowHeight`.
+- Apply the fullscreen class to the canvas or wrapper when `isFullscreen` is true so `Sketch.css` styles (e.g. `canvas-container fullscreen`) take effect.
+- Resize or re-create canvas when `isFullscreen` changes if the component is used in a context where it can toggle.
 
-- The sketch must implement a **particle flow field**: particles following a flow field and/or forces (e.g. attraction/repulsion, mouse). No non-particle visuals as the main concept.
+## Conventions
 
-## Naming and export
-
-- Component name: PascalCase (e.g. `ParticleFlow`, `ParticleFlowGen9`). Export as default.
-- File name: match component name (e.g. `ParticleFlow.jsx`, `ParticleFlowGen9.jsx`).
-
-## Reference
-
-- Follow patterns from existing sketches in `src/sketches/ParticleFlow.jsx` and other `ParticleFlow*.jsx` files (flow field, particle class, `follow`/`update`/`show`).
+- Use a single `sketch` function passed to `ReactP5Wrapper`; define it inside the component so it can close over `isFullscreen`.
+- Export the component as default.
+- For particle flow sketches, see `context/context.md` for dimensions of variation; for other genres, see the relevant context or rule.

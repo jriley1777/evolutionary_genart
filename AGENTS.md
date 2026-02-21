@@ -1,14 +1,15 @@
 # Agent instructions
 
-This repo is a **particle flow field sketch collection**. Every sketch is a particle flow field: particles (or particle-like agents) moving through a flow field or under forces, with optional interaction. Each new sketch can be a completely new idea; there is no evolutionary lineage requirement.
+This repo is a **generative art sketch collection**. Currently the main focus is **particle flow** (particles + flow field or forces); other genres may be added later. Each new sketch can be a completely new idea; there is no evolutionary lineage requirement.
 
 ## Where to look
 
-- **Creative brief and constraints:** `context/context.md` — project goal, output constraint, dimensions of variation (grids, physics, text, color, etc.), and example prompts. Use `@context/context.md` when generating or refining sketch ideas.
-- **Conventions and registration:** `.cursor/rules/` — project rules that define how to add a new sketch and how sketch components should be built. These apply automatically when relevant.
+- **Core (all sketches):** `.cursor/rules/project-core.mdc` — registration, file structure, fullscreen, blog. Applies to any genre.
+- **Particle flow:** `.cursor/rules/particle-flow-project.mdc` — output constraint for the particle-flow project root. `context/context.md` — creative brief, dimensions of variation (grids, physics, text, color, etc.), example prompts. Use `@context/context.md` when generating or refining particle flow ideas.
+- **When editing sketches or blog:** `.cursor/rules/sketch-components.mdc` (src/sketches/**/*.jsx), `.cursor/rules/blog-posts.mdc` (public/blog/**/*.md).
 
 ## What to do
 
-- Propose and implement **particle flow field** sketches only. Use the dimensions in `context/context.md` to vary flow, behavior, and rendering.
-- When adding a sketch: create the component in `src/sketches/`, register it in `src/sketches/sketches.js` and `src/data/projects.js`, and ensure fullscreen (and PhotoMode when enabled) work. See `.cursor/rules/particle-flow-project.mdc` for the exact steps.
-- **Blog posts** for sketches must use the **simple format** only: title, short intro, `## Concept` bullets, `## Technical notes` bullets. No code blocks or long sections. Reference: `public/blog/slow-flow-trails.md` and `context/context.md` (Blog post format).
+- For **particle flow** sketches: propose and implement only particle flow field sketches under the particle-flow root; use dimensions in `context/context.md`. When adding one: follow `project-core.mdc` for steps and `particle-flow-project.mdc` for the constraint.
+- For **other genres** (when added): follow `project-core.mdc` and the genre-specific rule and context for that project root.
+- **Blog posts** for any sketch: simple format only — title, short intro, `## Concept` bullets, `## Technical notes` bullets. No code blocks or long sections. Reference: `public/blog/slow-flow-trails.md`.

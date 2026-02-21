@@ -1,5 +1,7 @@
 # 🎨 Particle Flow Field Sketches – Prompt for AI Coding Assistant
 
+*This file is the creative brief for the **particle flow** genre. Other genres may have their own context files.*
+
 ## 🦮 Project Goal
 
 Build a collection of **particle flow field** sketches. Every sketch produced for this project must be a particle flow field sketch: particles (or particle-like agents) moving through a flow field or under forces, with optional interaction.

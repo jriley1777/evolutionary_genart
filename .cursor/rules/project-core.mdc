@@ -1,0 +1,27 @@
+---
+description: Core project structure and registration for all generative sketches
+alwaysApply: true
+---
+
+# Generative sketch collection — core
+
+This repo is a **generative art sketch collection**. Project roots in `src/data/projects.js` can represent different genres (e.g. particle flow, kaleidoscopes, L-systems). Shared conventions below apply to any new sketch; genre-specific constraints and creative briefs live in separate rules and context files.
+
+## When adding a new sketch
+
+1. **Create the component** in `src/sketches/` (e.g. `YourSketchName.jsx`). Use React + p5 (`@p5-wrapper/react`), import `./Sketch.css`, and accept `isFullscreen` prop with fullscreen behavior.
+
+2. **Register in `src/sketches/sketches.js`**: add the import and add the component to the `sketches` object. The key must match the string used for that sketch in `projects.js`.
+
+3. **Register in `src/data/projects.js`**: under the **appropriate project root** (e.g. `particle-flow`), add a new object **at the top** of that root’s `sketches` array. Include `created` (YYYY-MM-DD; e.g. today’s date); lists are sorted by `created`, newest first. Example: `{ slug, title, description, sketch: "ComponentName", tags, date, created, blog, showPhotoMode }`. The `sketch` value must match the key in `sketches.js`.
+
+4. **Optional**: add a blog markdown in `public/blog/` (e.g. `slug-from-projects.md`). Use the **simple format** only: title, short intro paragraph, `## Concept` (3–5 bullets), `## Technical notes` (2–4 bullets). No code blocks, no long sections. See `public/blog/slow-flow-trails.md` and the blog-posts rule.
+
+## Sketch requirements (all genres)
+
+- **Fullscreen** mode must be supported (prop `isFullscreen`).
+- **PhotoMode** only if `showPhotoMode: true` for that entry in `projects.js`.
+
+## Genre-specific guidance
+
+- **Output constraints** and **creative briefs** (what to build, dimensions of variation, example prompts) are defined per genre. See the relevant rule and context, e.g. `particle-flow-project.mdc` and `context/context.md` for the particle flow genre.

@@ -1,29 +1,17 @@
 ---
-description: Project constraint and registration for all new sketches
+description: Particle flow genre — output constraint and creative brief
 alwaysApply: true
 ---
 
-# Particle Flow Project
+# Particle flow genre
 
 ## Output constraint
 
-Every new sketch must be a **particle flow field sketch**: particles (or particle-like agents) moving through a flow field or under forces. Do not create other genres (static posters, kaleidoscopes, non-particle systems).
+For the **particle-flow** project root, every new sketch must be a **particle flow field sketch**: particles (or particle-like agents) moving through a flow field or under forces. Do not create other genres (static posters, kaleidoscopes, non-particle systems) under this root.
 
 Each new sketch can be an entirely new idea; there is no requirement to evolve from a previous sketch.
 
-## When adding a new sketch
+## How to add a particle flow sketch
 
-1. **Create the component** in `src/sketches/` (e.g. `YourSketchName.jsx`). Use React + p5 (`@p5-wrapper/react`), import `./Sketch.css`, and accept `isFullscreen` prop with fullscreen behavior.
-
-2. **Register in `src/sketches/sketches.js`**: add the import and add the component to the `sketches` object (key must match the string used in projects.js).
-
-3. **Register in `src/data/projects.js`**: under the single `particle-flow` project root, add a new object **at the top** of the `sketches` array. Include `created` (YYYY-MM-DD; use today’s date). Example: `{ slug, title, description, sketch: "ComponentName", tags, date, created, blog, showPhotoMode }`. The list is sorted by `created` (newest first). The `sketch` value must match the key in `sketches.js`.
-
-4. **Optional**: add a blog markdown in `public/blog/` (e.g. `slug-from-projects.md`). Use the **simple format** only: title, short intro paragraph, `## Concept` (3–5 bullets), `## Technical notes` (2–4 bullets). No code blocks, no long sections. See `public/blog/slow-flow-trails.md` and `context/context.md` (Blog post format).
-
-## Sketch requirements
-
-- Fullscreen mode must be supported (prop `isFullscreen`).
-- PhotoMode only if `showPhotoMode: true` for that entry in projects.js.
-
-For the full creative brief and dimensions of variation, see `context/context.md`.
+- Follow the **registration and sketch requirements** in `project-core.mdc` (create component in `src/sketches/`, register in `sketches.js` and `projects.js` under the `particle-flow` root, fullscreen, optional blog).
+- For **creative brief, dimensions of variation, and example prompts**, see `context/context.md`.

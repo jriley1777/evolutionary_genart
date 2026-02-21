@@ -14,6 +14,10 @@ const RED_BALL_SPEED = 0.8;
 const ORB_MIN_DIST = 2 * RED_BALL_RADIUS + 8;
 const ORB_COLLISION_ITERATIONS = 6;
 const ORB_GLOW_BLUR = 24;
+const ORB_SHADOW_OFFSET_X = 3;
+const ORB_SHADOW_OFFSET_Y = 5;
+const ORB_SHADOW_OPACITY = 0.4;
+const ORB_SHADOW_RADIUS_SCALE = 1.05; // slightly larger than orb for soft edge
 // amber-gold #ffbe0b, blaze-orange #fb5607, neon-pink #ff006e, blue-violet #8338ec, azure-blue #3a86ff
 const ORB_COLORS = {
   red: [251, 86, 7],      // blaze-orange
@@ -615,6 +619,14 @@ const FlowFieldGrid = ({ isFullscreen = false }) => {
         const [r, g, b] = col;
         const dc = p5.drawingContext;
         dc.save();
+        // Shadow underneath the orb (darker, offset)
+        p5.fill(0, 0, 0, ORB_SHADOW_OPACITY);
+        p5.circle(
+          orb.x + ORB_SHADOW_OFFSET_X,
+          orb.y + ORB_SHADOW_OFFSET_Y,
+          RED_BALL_RADIUS * 2 * ORB_SHADOW_RADIUS_SCALE
+        );
+        // Orb with glow
         dc.shadowColor = `rgba(${r},${g},${b},0.9)`;
         dc.shadowBlur = ORB_GLOW_BLUR;
         p5.fill(r, g, b, 1);

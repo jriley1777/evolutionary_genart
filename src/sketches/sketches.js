@@ -8,8 +8,10 @@ import MagneticParticleConnections from "./MagneticParticleConnections";
 import SynthwaveHexGlow from "./SynthwaveHexGlow";
 import TriangleMeshFlow from "./TriangleMeshFlow";
 import RectanglePackFlow from "./RectanglePackFlow";
+import PlotterFlowPath from "./PlotterFlowPath";
 
 const sketches = {
+  PlotterFlowPath,
   FlowFieldGrid,
   FlowFieldVoronoi,
   FlowFieldTrails,

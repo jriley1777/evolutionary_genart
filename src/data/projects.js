@@ -7,6 +7,18 @@ export const projects = {
       baseDescription: "Interactive particle systems with flowing patterns",
       sketches: [
         {
+          slug: "plotter-flow-path",
+          title: "Plotter Flow Path",
+          description: "Single continuous non-crossing line driven by a flow field; plotter-art aesthetic, one path that never intersects itself",
+          sketch: "PlotterFlowPath",
+          sketchType: "p5",
+          tags: ["p5.js", "generative", "flow-field", "plotter", "single-line", "self-avoiding"],
+          date: "2026-02-20",
+          created: "2026-02-20",
+          blog: "blog/plotter-flow-path.md",
+          showPhotoMode: false
+        },
+        {
           slug: "flow-field-voronoi",
           title: "Flow Field Voronoi",
           description: "Flow field with Voronoi cells: 50 sites, arrows and balls per cell, red ball and entrance counters",

@@ -131,6 +131,27 @@ body {
   color: var(--text-primary);
 }
 
+.project-root-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-root-heading {
+  margin: 0;
+  padding: 0.75rem var(--content-indent) 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-light);
+}
+
+.project-root-group:first-child .project-root-heading {
+  border-top: none;
+  padding-top: 0.5rem;
+}
+
 .project-list {
   flex: 1;
   padding: 0.5rem 0;

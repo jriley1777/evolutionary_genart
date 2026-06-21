@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FullscreenOverlay from '../FullscreenOverlay/FullscreenOverlay';
 import { getFullscreenState, addFullscreenToUrl, removeFullscreenFromUrl } from '../../utils/urlUtils';
 
@@ -16,6 +16,7 @@ const SketchWithFullscreen = ({
   const [isFullscreen, setIsFullscreen] = useState(getFullscreenState);
   const [isPhotoMode, setIsPhotoMode] = useState(false);
   const [sketchKey, setSketchKey] = useState(0);
+  const plotterExportRef = useRef(null);
 
   // Helper function to enter browser fullscreen
   const enterBrowserFullscreen = async () => {
@@ -164,7 +165,39 @@ const SketchWithFullscreen = ({
   // Create a unique key that changes when fullscreen mode changes
   const uniqueSketchKey = `${project ? project.slug : 'default'}-${isFullscreen ? 'fullscreen' : 'normal'}-${sketchKey}`;
 
-  const sketchProps = { isFullscreen, photoMode: isPhotoMode, sketchType };
+  const showPlotterExport = project?.showPlotterExport === true;
+
+  const handlePlotterExport = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    plotterExportRef.current?.downloadSvg?.(`${project?.slug ?? 'plot'}.svg`);
+  };
+
+  const sketchProps = {
+    isFullscreen,
+    photoMode: isPhotoMode,
+    sketchType,
+    ...(showPlotterExport ? { plotterExportRef } : {}),
+  };
+
+  const plotterExportButtonStyle = {
+    position: 'absolute',
+    bottom: '40px',
+    right: '150px',
+    background: 'rgba(0, 0, 0, 0.7)',
+    border: '2px solid rgba(255, 255, 255, 0.5)',
+    borderRadius: '8px',
+    padding: '8px 12px',
+    color: 'white',
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    transition: 'all 0.2s ease',
+    zIndex: 1000,
+    fontFamily: 'Press Start 2P, monospace',
+  };
 
   return (
     <>
@@ -210,6 +243,26 @@ const SketchWithFullscreen = ({
           </button>
         )}
         
+        {showPlotterExport && (
+          <button
+            type="button"
+            onClick={handlePlotterExport}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={plotterExportButtonStyle}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(0, 0, 0, 0.9)';
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'rgba(0, 0, 0, 0.7)';
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>↓</span>
+            Export SVG
+          </button>
+        )}
+
         {/* Fullscreen button */}
         <button
           onClick={toggleFullscreen}

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import "./Sketch.css";
+import { layersToSvg, downloadSvgString, rgbToHex } from "../utils/plotterExport";
 
 const PATH_STEP = 2; // step along path for stroke gradient (smaller = smoother)
 const POINT_RADIUS = 2; // slightly smaller so 20 points don’t overwhelm
@@ -22,9 +23,35 @@ const GRID_COLS = 10;
 const GRID_ROWS = 8;
 const GRID_CELL_COUNT = GRID_COLS * GRID_ROWS;
 const BLANK_CELL_COUNT = 0; // random cells with no curves (set > 0; capped at grid size)
-const COLUMN_LINE_RGB = [188, 188, 188];
-const COLUMN_LINE_ALPHA = 85; // 0–255, lower = more transparent
+const PAPER_RGB = [250, 250, 248];
+const INK_GREY_MIN = 18;
+const INK_GREY_MAX = 95;
+const COLUMN_LINE_RGB = [220, 220, 218];
+const COLUMN_LINE_ALPHA = 140;
 const COLUMN_LINE_WEIGHT = 1;
+
+const randomInkGrey = (p5) => {
+  const v = Math.round(p5.random(INK_GREY_MIN, INK_GREY_MAX));
+  return [v, v, v];
+};
+
+const ASPECT_16_9 = 16 / 9;
+
+/** Fullscreen: largest 16:9 rect that fits the window. Embedded: sketch panel size. */
+const getCanvasSize = (p5, fullscreen) => {
+  if (!fullscreen) {
+    return { w: p5.windowWidth, h: p5.windowHeight };
+  }
+  const maxW = window.innerWidth;
+  const maxH = window.innerHeight;
+  let w = maxW;
+  let h = Math.round(w / ASPECT_16_9);
+  if (h > maxH) {
+    h = maxH;
+    w = Math.round(h * ASPECT_16_9);
+  }
+  return { w, h };
+};
 
 // Evaluate cubic Bezier at exactly t in [0, 1] — no snapping to samples
 const pointOnBezier = (seg, t) => {
@@ -122,25 +149,108 @@ const makeSmoothSegment = (p5, from, to, prevSeg) => {
   };
 };
 
-const PlotterFlowPath = ({ isFullscreen = false }) => {
-  const sketch = (p5) => {
+const PlotterFlowPath = ({ isFullscreen = false, plotterExportRef }) => {
+  const sketchStateRef = useRef({ getLayers: null, canvasW: 1, canvasH: 1 });
+  const isFullscreenRef = useRef(isFullscreen);
+  isFullscreenRef.current = isFullscreen;
+
+  useEffect(() => {
+    if (!plotterExportRef) return undefined;
+    plotterExportRef.current = {
+      downloadSvg: (filename = "plot.svg") => {
+        const getLayers = sketchStateRef.current.getLayers;
+        if (!getLayers) return;
+        const { canvasW, canvasH } = sketchStateRef.current;
+        const layers = getLayers();
+        const svg = layersToSvg(layers, {
+          sourceWidth: canvasW,
+          sourceHeight: canvasH,
+          fit: "canvas",
+        });
+        downloadSvgString(svg, filename);
+      },
+    };
+    return () => {
+      plotterExportRef.current = null;
+    };
+  }, [plotterExportRef]);
+
+  const sketch = useMemo(() => (p5) => {
     let canvasW = 0;
     let canvasH = 0;
     let gridCells = [];
 
+    const collectPlotterLayers = () => {
+      const cellW = canvasW / GRID_COLS;
+      const cellH = canvasH / GRID_ROWS;
+      const layerMap = new Map();
+
+      for (let idx = 0; idx < gridCells.length; idx++) {
+        const cell = gridCells[idx];
+        if (cell.blank) continue;
+        const col = idx % GRID_COLS;
+        const row = Math.floor(idx / GRID_COLS);
+        const ox = col * cellW;
+        const oy = row * cellH;
+
+        for (const overlay of cell.overlayCurves) {
+          const [r, g, b] = overlay.color;
+          const key = `${r},${g},${b}`;
+          if (!layerMap.has(key)) {
+            layerMap.set(key, { stroke: rgbToHex(r, g, b), paths: [] });
+          }
+          const layer = layerMap.get(key);
+          const path = overlay.path;
+          if (path.length === 0) continue;
+
+          const strokeScale = Math.max(0.08, Math.min(0.32, cellW / 380));
+          const segLengths = path.map((seg) => segmentLength(seg));
+          const totalLength = segLengths.reduce((sum, L) => sum + L, 0);
+          if (totalLength <= 0) continue;
+
+          let len = 0;
+          while (len < totalLength) {
+            const nextLen = Math.min(len + PATH_STEP, totalLength);
+            const t = len / totalLength;
+            const strokeWpx =
+              (overlay.strokeMin +
+                (overlay.strokeMax - overlay.strokeMin) * Math.sin(t * Math.PI)) *
+              strokeScale;
+            const a = positionAtPathLength(path, segLengths, len);
+            const b = positionAtPathLength(path, segLengths, nextLen);
+            if (a && b) {
+              layer.paths.push({
+                points: [
+                  { x: a.x + ox, y: a.y + oy },
+                  { x: b.x + ox, y: b.y + oy },
+                ],
+                strokeWidthPx: strokeWpx,
+              });
+            }
+            len = nextLen;
+          }
+        }
+      }
+      return Array.from(layerMap.values());
+    };
+
+    sketchStateRef.current.getLayers = collectPlotterLayers;
+
     p5.setup = () => {
-      const w = isFullscreen ? window.innerWidth : p5.windowWidth;
-      const h = isFullscreen ? window.innerHeight : p5.windowHeight;
+      const fs = isFullscreenRef.current;
+      const { w, h } = getCanvasSize(p5, fs);
       const canvas = p5.createCanvas(w, h);
-      if (isFullscreen) {
+      if (fs) {
         canvas.class("canvas-container fullscreen");
         canvas.elt.classList.add("fullscreen");
       } else {
         canvas.class("canvas-container");
       }
-      p5.background(0, 0, 0);
+      p5.background(PAPER_RGB[0], PAPER_RGB[1], PAPER_RGB[2]);
       canvasW = w;
       canvasH = h;
+      sketchStateRef.current.canvasW = w;
+      sketchStateRef.current.canvasH = h;
       initAllGridCells(w, h);
     };
 
@@ -176,10 +286,7 @@ const PlotterFlowPath = ({ isFullscreen = false }) => {
           ),
           nextWaypointIndex: 0,
           drawHead: 0,
-          color: (() => {
-            const v = p5.random(55, 255); // varied grey → white on black
-            return [v, v, v];
-          })(),
+          color: randomInkGrey(p5),
           strokeMin,
           strokeMax,
           // Absolute deadline (millis since sketch start), not a duration — so click-redraw works after load
@@ -214,16 +321,17 @@ const PlotterFlowPath = ({ isFullscreen = false }) => {
       if (eligibleForRed.length > 0) {
         const redCellIdx = eligibleForRed[Math.floor(p5.random(eligibleForRed.length))];
         for (const overlay of gridCells[redCellIdx].overlayCurves) {
-          const r = p5.random(130, 255);
-          const g = p5.random(0, 55);
-          const b = p5.random(0, 55);
-          overlay.color = [r, g, b];
+          overlay.color = [
+            Math.round(p5.random(130, 255)),
+            Math.round(p5.random(0, 55)),
+            Math.round(p5.random(0, 55)),
+          ];
         }
       }
     };
 
     p5.draw = () => {
-      p5.background(0, 0, 0);
+      p5.background(PAPER_RGB[0], PAPER_RGB[1], PAPER_RGB[2]);
       const cellW = canvasW / GRID_COLS;
       const cellH = canvasH / GRID_ROWS;
       p5.noFill();
@@ -300,12 +408,12 @@ const PlotterFlowPath = ({ isFullscreen = false }) => {
     };
 
     p5.mousePressed = () => {
-      p5.background(0, 0, 0);
+      p5.background(PAPER_RGB[0], PAPER_RGB[1], PAPER_RGB[2]);
       const w = canvasW || p5.width;
       const h = canvasH || p5.height;
       initAllGridCells(w, h);
     };
-  };
+  }, []);
 
   return <ReactP5Wrapper sketch={sketch} />;
 };

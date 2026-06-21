@@ -61,7 +61,7 @@ const Home = () => {
       <main className="main-content">
         {/* Left Panel - Project Navigation */}
         <ProjectList
-          projects={allProjects}
+          projectRoots={projects.getProjectRoots()}
           activeSlug={activeProject}
           onProjectClick={handleProjectClick}
         />

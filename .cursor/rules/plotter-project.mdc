@@ -1,0 +1,25 @@
+---
+description: Pen plotter genre — plottable SVG output and machine constraints
+globs: context/plotter-context.md, src/utils/plotterExport.js, src/sketches/*Plotter*.jsx
+---
+
+# Pen plotter genre
+
+## Output constraint
+
+For the **pen-plotter** project root, every new sketch must be **plottable**: vector paths exportable to SVG for a pen plotter (e.g. Uuna Tek). The browser preview is secondary to the exported file.
+
+Do not register particle-only screen sketches here. Do not register plotter-bound sketches under **particle-flow**.
+
+## How to add a pen plotter sketch
+
+- Follow **registration and sketch requirements** in `project-core.mdc`.
+- Register under the **pen-plotter** root in `projects.js`; set `showPlotterExport: true`.
+- Implement export via `plotterExportRef` (see `PlotterFlowPath.jsx` and `src/utils/plotterExport.js`).
+- For creative brief, machine settings, and variation ideas, see `context/plotter-context.md`.
+
+## Export requirements
+
+- One SVG layer (or group) per pen color.
+- No gradients or fills in SVG unless documented as hatch strokes.
+- Use shared helpers in `plotterExport.js` for sampling, SVG build, and download.

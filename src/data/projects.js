@@ -1,4 +1,21 @@
-// Sketch catalog: each root has an array of sketches (slug, title, description, sketch component key, etc.).
+/**
+ * Sketch catalog — single source of truth for the gallery UI.
+ *
+ * Maintenance: on every commit (or before one), review this file against
+ * src/sketches/sketches.js and public/blog/*.md. See project-core.mdc § Catalog review.
+ *
+ * Sketch entry fields:
+ *   slug, title, description — gallery + routing (slug must match public/blog/{slug}.md)
+ *   sketch — key in src/sketches/sketches.js
+ *   sketchType — "p5" | "three"
+ *   tags — string[]
+ *   created — YYYY-MM-DD (canonical sort key; newest first in UI)
+ *   blog — optional path note (e.g. blog/my-sketch.md)
+ *   showPhotoMode — boolean, default false
+ *   showPlotterExport — boolean, pen-plotter root only; enables Export SVG
+ *
+ * Array order: newest `created` at the top of each root (UI also sorts by `created`).
+ */
 export const projects = {
   projectRoots: [
     {
@@ -7,16 +24,15 @@ export const projects = {
       baseDescription: "Interactive particle systems with flowing patterns",
       sketches: [
         {
-          slug: "plotter-flow-path",
-          title: "Plotter Flow Path",
-          description: "Single continuous non-crossing line driven by a flow field; plotter-art aesthetic, one path that never intersects itself",
-          sketch: "PlotterFlowPath",
-          sketchType: "p5",
-          tags: ["p5.js", "generative", "flow-field", "plotter", "single-line", "self-avoiding"],
-          date: "2026-02-20",
-          created: "2026-02-20",
-          blog: "blog/plotter-flow-path.md",
-          showPhotoMode: false
+          slug: "flow-field-trails-3d",
+          title: "Flow Field Trails 3D",
+          description: "Flow field particle trails in 3D space with a slow flying camera moving through the trails",
+          sketch: "FlowFieldTrails3D",
+          sketchType: "three",
+          tags: ["three.js", "generative", "flow-field", "particles", "3d", "trails"],
+          created: "2026-02-16",
+          blog: "blog/flow-field-trails-3d.md",
+          showPhotoMode: false,
         },
         {
           slug: "flow-field-voronoi",
@@ -25,10 +41,9 @@ export const projects = {
           sketch: "FlowFieldVoronoi",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "flow-field", "voronoi", "visualization"],
-          date: "2026-02-14",
           created: "2026-02-14",
           blog: "blog/flow-field-voronoi.md",
-          showPhotoMode: false
+          showPhotoMode: false,
         },
         {
           slug: "flow-field-grid",
@@ -37,10 +52,9 @@ export const projects = {
           sketch: "FlowFieldGrid",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "flow-field", "visualization", "grid"],
-          date: "2026-02-14",
           created: "2026-02-14",
           blog: "blog/flow-field-grid.md",
-          showPhotoMode: false
+          showPhotoMode: false,
         },
         {
           slug: "slow-flow-trails",
@@ -49,22 +63,9 @@ export const projects = {
           sketch: "SlowFlowTrails",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "slow", "trails"],
-          date: "2026-02-14",
           created: "2026-02-14",
           blog: "blog/slow-flow-trails.md",
-          showPhotoMode: false
-        },
-        {
-          slug: "flow-field-trails-3d",
-          title: "Flow Field Trails 3D",
-          description: "Flow field particle trails in 3D space with a slow flying camera moving through the trails",
-          sketch: "FlowFieldTrails3D",
-          sketchType: "three",
-          tags: ["three.js", "generative", "flow-field", "particles", "3d", "trails"],
-          date: "2026-02-16",
-          created: "2026-02-16",
-          blog: "blog/flow-field-trails-3d.md",
-          showPhotoMode: false
+          showPhotoMode: false,
         },
         {
           slug: "flow-field-trails",
@@ -73,46 +74,9 @@ export const projects = {
           sketch: "FlowFieldTrails",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "particles", "flow-field", "hsb"],
-          date: "2026-02-07",
           created: "2026-02-07",
           blog: "blog/flow-field-trails.md",
-          showPhotoMode: false
-        },
-        {
-          slug: "evolving-particle-life",
-          title: "Evolving Particle Life",
-          description: "Advanced particle system with attractors, audio reactivity, and particle evolution",
-          sketch: "EvolvingParticleLife",
-          sketchType: "p5",
-          tags: ["p5.js", "generative", "interactive", "particles", "audio", "evolution"],
-          date: "2026-01-15",
-          created: "2026-01-15",
-          blog: "blog/evolving-particle-life.md",
-          showPhotoMode: false
-        },
-        {
-          slug: "magnetic-particle-connections",
-          title: "Magnetic Particle Connections",
-          description: "Magnetic field system with attractors, repellers, and electromagnetic particle interactions",
-          sketch: "MagneticParticleConnections",
-          sketchType: "p5",
-          tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
-          date: "2026-01-23",
-          created: "2026-01-23",
-          blog: "blog/magnetic-particle-connections.md",
-          showPhotoMode: false
-        },
-        {
-          slug: "synthwave-hex-glow",
-          title: "Synthwave Hex Glow",
-          description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",
-          sketch: "SynthwaveHexGlow",
-          sketchType: "p5",
-          tags: ["p5.js", "generative", "interactive", "particles", "hexagonal", "synthwave", "neon", "illumination"],
-          date: "2026-01-31",
-          created: "2026-01-31",
-          blog: "blog/synthwave-hex-glow.md",
-          showPhotoMode: false
+          showPhotoMode: false,
         },
         {
           slug: "triangle-mesh-flow",
@@ -121,10 +85,9 @@ export const projects = {
           sketch: "TriangleMeshFlow",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "particles", "triangular", "mesh", "invisible"],
-          date: "2026-02-01",
           created: "2026-02-01",
           blog: "blog/triangle-mesh-flow.md",
-          showPhotoMode: false
+          showPhotoMode: false,
         },
         {
           slug: "rectangle-pack-flow",
@@ -133,24 +96,89 @@ export const projects = {
           sketch: "RectanglePackFlow",
           sketchType: "p5",
           tags: ["p5.js", "generative", "interactive", "particles", "rectangle", "packing", "synthwave", "patterns"],
-          date: "2026-02-01",
           created: "2026-02-01",
           blog: "blog/rectangle-pack-flow.md",
-          showPhotoMode: false
-        }
-      ]
-    }
+          showPhotoMode: false,
+        },
+        {
+          slug: "synthwave-hex-glow",
+          title: "Synthwave Hex Glow",
+          description: "Synthwave hexagonal grid with particle illumination, neon glow effects, and color transitions",
+          sketch: "SynthwaveHexGlow",
+          sketchType: "p5",
+          tags: ["p5.js", "generative", "interactive", "particles", "hexagonal", "synthwave", "neon", "illumination"],
+          created: "2026-01-31",
+          blog: "blog/synthwave-hex-glow.md",
+          showPhotoMode: false,
+        },
+        {
+          slug: "magnetic-particle-connections",
+          title: "Magnetic Particle Connections",
+          description: "Magnetic field system with attractors, repellers, and electromagnetic particle interactions",
+          sketch: "MagneticParticleConnections",
+          sketchType: "p5",
+          tags: ["p5.js", "generative", "interactive", "particles", "magnetic", "electromagnetic", "clustering"],
+          created: "2026-01-23",
+          blog: "blog/magnetic-particle-connections.md",
+          showPhotoMode: false,
+        },
+        {
+          slug: "evolving-particle-life",
+          title: "Evolving Particle Life",
+          description: "Advanced particle system with attractors, audio reactivity, and particle evolution",
+          sketch: "EvolvingParticleLife",
+          sketchType: "p5",
+          tags: ["p5.js", "generative", "interactive", "particles", "audio", "evolution"],
+          created: "2026-01-15",
+          blog: "blog/evolving-particle-life.md",
+          showPhotoMode: false,
+        },
+      ],
+    },
+    {
+      id: "pen-plotter",
+      name: "Pen Plotter",
+      baseDescription: "Vector sketches for pen plotters — preview in browser, export SVG for plotting",
+      sketches: [
+        {
+          slug: "plotter-flow-path",
+          title: "Plotter Flow Path",
+          description: "Grid of flowing Bezier curves in grey ink with one red accent cell; 16:9 canvas-matched SVG export",
+          sketch: "PlotterFlowPath",
+          sketchType: "p5",
+          tags: ["p5.js", "generative", "plotter", "bezier", "grid", "svg-export"],
+          created: "2026-02-20",
+          blog: "blog/plotter-flow-path.md",
+          showPhotoMode: false,
+          showPlotterExport: true,
+        },
+      ],
+    },
   ],
 
-  // Helper function to get all projects in flat array format, sorted by created date (newest first)
+  getProjectRoots() {
+    return this.projectRoots.map((root) => ({
+      id: root.id,
+      name: root.name,
+      baseDescription: root.baseDescription,
+      sketches: [...root.sketches]
+        .sort((a, b) => (b.created || "").localeCompare(a.created || ""))
+        .map((sketch) => ({
+          ...sketch,
+          rootId: root.id,
+          rootName: root.name,
+        })),
+    }));
+  },
+
   getAllProjects() {
     const allProjects = [];
-    this.projectRoots.forEach(root => {
+    this.projectRoots.forEach((root) => {
       root.sketches.forEach((project) => {
         allProjects.push({
           ...project,
           rootId: root.id,
-          rootName: root.name
+          rootName: root.name,
         });
       });
     });
@@ -158,7 +186,6 @@ export const projects = {
     return allProjects;
   },
 
-  // Helper function to find project by slug
   findProjectBySlug(slug) {
     for (const root of this.projectRoots) {
       const project = root.sketches.find((p) => p.slug === slug);
@@ -166,10 +193,10 @@ export const projects = {
         return {
           ...project,
           rootId: root.id,
-          rootName: root.name
+          rootName: root.name,
         };
       }
     }
     return null;
-  }
+  },
 };

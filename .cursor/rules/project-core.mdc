@@ -13,9 +13,21 @@ This repo is a **generative art sketch collection**. Project roots in `src/data/
 
 2. **Register in `src/sketches/sketches.js`**: add the import and add the component to the `sketches` object. The key must match the string used for that sketch in `projects.js`.
 
-3. **Register in `src/data/projects.js`**: under the **appropriate project root** (e.g. `particle-flow`), add a new object **at the top** of that root’s `sketches` array. Include `created` (YYYY-MM-DD; e.g. today’s date); lists are sorted by `created`, newest first. Example: `{ slug, title, description, sketch: "ComponentName", tags, date, created, blog, showPhotoMode }`. The `sketch` value must match the key in `sketches.js`.
+3. **Register in `src/data/projects.js`**: under the **appropriate project root** (e.g. `particle-flow`), add a new object **at the top** of that root’s `sketches` array. Include `created` (YYYY-MM-DD; e.g. today’s date); lists are sorted by `created`, newest first. Example: `{ slug, title, description, sketch: "ComponentName", sketchType, tags, created, blog, showPhotoMode }`. For pen-plotter entries add `showPlotterExport: true`. The `sketch` value must match the key in `sketches.js`. See the field list in the header comment of `projects.js`.
 
 4. **Optional**: add a blog markdown in `public/blog/` (e.g. `slug-from-projects.md`). Use the **simple format** only: title, short intro paragraph, `## Concept` (3–5 bullets), `## Technical notes` (2–4 bullets). No code blocks, no long sections. See `public/blog/slow-flow-trails.md` and the blog-posts rule.
+
+## Catalog review (on every commit)
+
+Before committing (or as part of the commit), review `src/data/projects.js` and update when needed:
+
+- **New sketch file** → entry under the correct root, `sketches.js` import, `created` date, slug matches `public/blog/{slug}.md` if a blog exists.
+- **Removed or renamed sketch** → remove or update the matching entry and `sketches.js` key.
+- **Sketch behavior or genre changed** → update `description`, `tags`, root (`particle-flow` vs `pen-plotter`), `showPlotterExport`, or `showPhotoMode`.
+- **Array order** → keep newest `created` at the top of each root’s `sketches` array (UI sorts anyway, but the file should stay consistent).
+- **Cross-check** → every key in `sketches.js` appears exactly once in `projects.js`, and every `projects.js` `sketch` value exists in `sketches.js`.
+
+Do not commit sketch or blog work without this pass when `projects.js` or `sketches/` changed.
 
 ## Sketch requirements (all genres)
 
@@ -24,4 +36,4 @@ This repo is a **generative art sketch collection**. Project roots in `src/data/
 
 ## Genre-specific guidance
 
-- **Output constraints** and **creative briefs** (what to build, dimensions of variation, example prompts) are defined per genre. See the relevant rule and context, e.g. `particle-flow-project.mdc` and `context/context.md` for the particle flow genre.
+- **Output constraints** and **creative briefs** (what to build, dimensions of variation, example prompts) are defined per genre. See the relevant rule and context, e.g. `particle-flow-project.mdc` and `context/context.md` for particle flow; `plotter-project.mdc` and `context/plotter-context.md` for pen plotter.
